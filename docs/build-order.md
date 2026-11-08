@@ -7,7 +7,7 @@ This file sets the order to build Pickle in. It follows the 9 milestones in [bui
 ## Step 0: Before writing code
 
 - [ ] **Add the screen images.** Export one image per screen (01–19) from the screens canvas into `docs/screens/`. Milestones 2–7 are built from them.
-- [ ] **Fix the folder layout.** When the Next.js app is created in milestone 1, move `pickle-project-files/docs/` to `docs/` and `pickle-project-files/public/logo/` to `public/logo/` in the repo root, so Next.js serves the logo and the paths match the build plan.
+- [x] **Fix the folder layout.** Done in milestone 1: the docs are in `docs/` and the logo in `public/logo/` at the repo root.
 - [ ] **Create the starting accounts:** GitHub, Vercel (connected to this repo) and Supabase, each with two-factor sign-in. Google Cloud and Ticketmaster can wait until milestone 4.
 - [ ] **Draft the tag lists** for each category (food, bars, events). They're needed before milestone 3 (an open item in the product spec).
 
@@ -21,7 +21,7 @@ This file sets the order to build Pickle in. It follows the 9 milestones in [bui
 
 | # | Milestone | Screens | Notes |
 |---|---|---|---|
-| 1 | Project setup and design kit | – | Next.js PWA on Vercel, Outfit font, shared buttons and chips, logo and icons, security headers, secret check before each commit. Move the docs and logo to the repo root. |
+| 1 | Project setup and design kit | – | Next.js PWA on Vercel, Outfit font, shared buttons and chips, logo and icons, security headers, secret check before each commit. Docs and logo moved to the repo root. |
 | 2 | Lobby and joining **+ full data model** | 01–06, 18, 19 | All 8 tables and their row-level rules (change 1), device-token cookie, Realtime member list, remove/leave, host handover, rate limits. |
 | 3 | Host setup and picks **+ scoring logic + demo friends** | 07–09 | Setup options, Yes/No tags, cancel-out rule, lobby locks. Scoring as tested code on sample data (change 2). "Add demo friends" with simulated picks (change 3). |
 | 4 | Search with real data | 10–11 | Connect Google Places and Ticketmaster to the existing scoring code; game cache, widening by 5 mi, nothing-found screen, API cost rules 1, 2, 4, 6, 7. Set the score threshold from real searches. |
