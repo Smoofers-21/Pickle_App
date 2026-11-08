@@ -1,0 +1,222 @@
+/* ---------- Screen: content on top, main button pinned near the bottom ---------- */
+
+.screen {
+  min-height: 100dvh;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  padding: calc(env(safe-area-inset-top) + 24px) var(--gutter) 0;
+}
+
+.screenBody {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.screenFooter {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px 0 calc(env(safe-area-inset-bottom) + 20px);
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0), var(--paper) 16px);
+}
+
+/* ---------- Main button: black, 22px corners, soft shadow ---------- */
+
+.mainButton {
+  width: 100%;
+  min-height: 56px;
+  padding: 0 24px;
+  border: none;
+  border-radius: var(--radius-main);
+  background: var(--ink);
+  color: var(--paper);
+  font-weight: 600;
+  font-size: 17px;
+  box-shadow: var(--shadow-main);
+  cursor: pointer;
+  transition: transform 0.1s ease;
+}
+
+.mainButton:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.mainButton:disabled {
+  background: var(--fill-2);
+  color: var(--ink-2);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+.disabledReason {
+  text-align: center;
+  font-size: 14px;
+  color: var(--ink-2);
+}
+
+/* ---------- Secondary (pill) button: white, 1.5px black outline ---------- */
+
+.pillButton {
+  min-height: 48px;
+  padding: 0 22px;
+  border: var(--border);
+  border-radius: 999px;
+  background: var(--paper);
+  color: var(--ink);
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.pillButton.full {
+  width: 100%;
+}
+
+.pillButton:disabled {
+  border-color: var(--fill-2);
+  background: var(--fill-2);
+  color: var(--ink-2);
+  cursor: not-allowed;
+}
+
+/* ---------- Chips and tags: pills; selected = solid black ---------- */
+
+.chipRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  min-height: 40px;
+  padding: 0 16px;
+  border: var(--border);
+  border-radius: 999px;
+  background: var(--paper);
+  color: var(--ink);
+  font-weight: 400;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.chip[aria-pressed="true"] {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.chip:disabled {
+  border-color: var(--fill-2);
+  background: var(--fill-2);
+  color: var(--ink-2);
+  cursor: not-allowed;
+}
+
+/* ---------- Lobby code bar: outlined pill with round copy and share buttons ---------- */
+
+.codeBar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 6px 6px 22px;
+  border: var(--border);
+  border-radius: 999px;
+}
+
+.code {
+  flex: 1;
+  font-weight: 700;
+  font-size: 26px;
+  letter-spacing: 0.18em;
+  font-variant-numeric: tabular-nums;
+}
+
+.roundButton {
+  width: 44px;
+  height: 44px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border: var(--border);
+  border-radius: 50%;
+  background: var(--paper);
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.roundButton svg {
+  width: 20px;
+  height: 20px;
+}
+
+.copied {
+  font-size: 14px;
+  color: var(--ink-2);
+  min-height: 20px;
+  text-align: center;
+}
+
+/* ---------- Member chips: pill with an initial; host chip in black ---------- */
+
+.memberChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 4px 14px 4px 4px;
+  border: var(--border);
+  border-radius: 999px;
+  background: var(--paper);
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.memberChip.host {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.initial {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--ink);
+  color: var(--paper);
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.memberChip.host .initial {
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.memberTag {
+  font-weight: 400;
+  font-size: 13px;
+  opacity: 0.75;
+}
+
+.memberRemove {
+  margin-left: 2px;
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+.offline {
+  opacity: 0.45;
+}
