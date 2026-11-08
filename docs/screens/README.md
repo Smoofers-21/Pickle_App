@@ -7,7 +7,7 @@ These images are the approved designs for every screen in the Pickle MVP, shown 
 | `01-home.png` | Home | Everyone | Milestone 2 |
 | `02-join-code.png` | Join: enter code | Members | Milestone 2 |
 | `03-join-name.png` | Join: enter name | Members | Milestone 2 |
-| `04-join-errors.png` | Join: can't join (error messages) | Members | Milestone 9 |
+| `04-join-errors.png` | Join: can't join (error messages) | Members | Milestone 2 (messages), polish in 9 |
 | `05-lobby-host.png` | Lobby (host) | Host | Milestone 2 |
 | `06-lobby-member.png` | Lobby (member) | Members | Milestone 2 |
 | `07-host-setup.png` | Host setup | Host | Milestone 3 |

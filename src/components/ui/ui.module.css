@@ -6,14 +6,13 @@
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  padding: calc(env(safe-area-inset-top) + 24px) var(--gutter) 0;
+  padding: calc(env(safe-area-inset-top) + 20px) var(--gutter) 0;
 }
 
 .screenBody {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 16px;
 }
 
 .screenFooter {
@@ -22,16 +21,48 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-  padding: 16px 0 calc(env(safe-area-inset-bottom) + 20px);
+  padding: 16px 0 calc(env(safe-area-inset-bottom) + 24px);
   background: linear-gradient(to bottom, rgba(255, 255, 255, 0), var(--paper) 16px);
+}
+
+/* ---------- Type ---------- */
+
+.title {
+  font-size: 31px;
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 1.12;
+}
+
+.subtitle {
+  margin-top: 10px;
+  color: var(--ink-2);
+  font-size: 16px;
+}
+
+.label {
+  font-size: 12.5px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+
+.hint {
+  color: var(--ink-2);
+  font-size: 14px;
 }
 
 /* ---------- Main button: black, 22px corners, soft shadow ---------- */
 
 .mainButton {
   width: 100%;
-  min-height: 56px;
+  min-height: 58px;
   padding: 0 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
   border: none;
   border-radius: var(--radius-main);
   background: var(--ink);
@@ -41,6 +72,7 @@
   box-shadow: var(--shadow-main);
   cursor: pointer;
   transition: transform 0.1s ease;
+  text-decoration: none;
 }
 
 .mainButton:active:not(:disabled) {
@@ -54,6 +86,12 @@
   cursor: not-allowed;
 }
 
+.arrow {
+  width: 18px;
+  height: 18px;
+  flex: none;
+}
+
 .disabledReason {
   text-align: center;
   font-size: 14px;
@@ -63,8 +101,11 @@
 /* ---------- Secondary (pill) button: white, 1.5px black outline ---------- */
 
 .pillButton {
-  min-height: 48px;
-  padding: 0 22px;
+  min-height: 44px;
+  padding: 0 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   border: var(--border);
   border-radius: 999px;
   background: var(--paper);
@@ -72,10 +113,12 @@
   font-weight: 600;
   font-size: 16px;
   cursor: pointer;
+  text-decoration: none;
 }
 
 .pillButton.full {
   width: 100%;
+  min-height: 54px;
 }
 
 .pillButton:disabled {
@@ -83,6 +126,42 @@
   background: var(--fill-2);
   color: var(--ink-2);
   cursor: not-allowed;
+}
+
+/* ---------- Round buttons ---------- */
+
+.roundButton {
+  width: 44px;
+  height: 44px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border: var(--border);
+  border-radius: 50%;
+  background: var(--paper);
+  color: var(--ink);
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.roundButton.grey {
+  width: 48px;
+  height: 48px;
+  border: none;
+  background: var(--fill-2);
+}
+
+.roundButton.black {
+  width: 48px;
+  height: 48px;
+  border: none;
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.roundButton svg {
+  width: 20px;
+  height: 20px;
 }
 
 /* ---------- Chips and tags: pills; selected = solid black ---------- */
@@ -94,8 +173,10 @@
 }
 
 .chip {
-  min-height: 40px;
-  padding: 0 16px;
+  min-height: 36px;
+  padding: 0 15px;
+  display: inline-flex;
+  align-items: center;
   border: var(--border);
   border-radius: 999px;
   background: var(--paper);
@@ -103,6 +184,10 @@
   font-weight: 400;
   font-size: 15px;
   cursor: pointer;
+}
+
+span.chip {
+  cursor: default;
 }
 
 .chip[aria-pressed="true"] {
@@ -117,106 +202,328 @@
   cursor: not-allowed;
 }
 
-/* ---------- Lobby code bar: outlined pill with round copy and share buttons ---------- */
+/* ---------- Text field: outlined pill ---------- */
 
-.codeBar {
+.field {
   display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 6px 6px 22px;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.input {
+  width: 100%;
+  min-height: 57px;
+  padding: 0 22px;
   border: var(--border);
   border-radius: 999px;
+  background: var(--paper);
+  color: var(--ink);
+  font: inherit;
+  font-size: 17px;
+  outline: none;
+}
+
+.input:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 1.5px var(--ink);
+}
+
+/* ---------- Code boxes (screen 02) ---------- */
+
+.codeBoxes {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 14px;
+}
+
+.codeBox {
+  aspect-ratio: 48 / 62;
+  display: grid;
+  place-items: center;
+  border: 1.5px solid #cccccc;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 24px;
+  color: var(--ink);
+}
+
+.codeBox.filled {
+  border-color: var(--ink);
+}
+
+.codeBox.current {
+  border: 3px solid var(--ink);
+}
+
+.codeInput {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  border: none;
+  font-size: 16px; /* stops iOS zooming in */
+  caret-color: transparent;
+}
+
+/* ---------- Small code chip (screen 03) ---------- */
+
+.codeChip {
+  padding: 6px 14px;
+  border: var(--border);
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.06em;
+}
+
+/* ---------- Lobby code card: copy and share ---------- */
+
+.codeCard {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 8px 8px 24px;
+  border: var(--border);
+  border-radius: 36px;
+}
+
+.codeCardText {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 
 .code {
-  flex: 1;
   font-weight: 700;
-  font-size: 26px;
-  letter-spacing: 0.18em;
-  font-variant-numeric: tabular-nums;
-}
-
-.roundButton {
-  width: 44px;
-  height: 44px;
-  flex: none;
-  display: grid;
-  place-items: center;
-  border: var(--border);
-  border-radius: 50%;
-  background: var(--paper);
-  color: var(--ink);
-  cursor: pointer;
-}
-
-.roundButton svg {
-  width: 20px;
-  height: 20px;
+  font-size: 28px;
+  letter-spacing: 0.08em;
+  line-height: 1.1;
 }
 
 .copied {
   font-size: 14px;
   color: var(--ink-2);
   min-height: 20px;
+  margin-top: 6px;
   text-align: center;
 }
 
-/* ---------- Member chips: pill with an initial; host chip in black ---------- */
+/* ---------- Member chips: initial in a circle; host chip in black ---------- */
 
 .memberChip {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  min-height: 40px;
-  padding: 4px 14px 4px 4px;
+  gap: 10px;
+  min-height: 46px;
+  padding: 5px 18px 5px 5px;
   border: var(--border);
   border-radius: 999px;
   background: var(--paper);
-  font-weight: 600;
-  font-size: 15px;
+  color: var(--ink);
+  font: inherit;
+  font-weight: 400;
+  font-size: 16px;
+}
+
+button.memberChip {
+  cursor: pointer;
 }
 
 .memberChip.host {
   background: var(--ink);
+  border-color: var(--ink);
   color: var(--paper);
 }
 
+.memberChip.you {
+  border-width: 3px;
+  padding: 3px 16px 3px 3px;
+}
+
 .initial {
-  width: 32px;
-  height: 32px;
+  width: 34px;
+  height: 34px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--fill-2);
+  color: var(--ink);
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.memberChip.host .initial {
+  background: var(--paper);
+}
+
+.offline {
+  opacity: 0.5;
+}
+
+.waitingChip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 46px;
+  padding: 0 18px;
+  border: 1.5px dashed #9a9a9a;
+  border-radius: 999px;
+  color: var(--ink-2);
+  font-size: 16px;
+}
+
+/* ---------- Status card (screen 06) ---------- */
+
+.statusCard {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 8px 8px 8px 20px;
+  border: var(--border);
+  border-radius: 36px;
+}
+
+.statusText {
+  flex: 1;
+  font-size: 16px;
+}
+
+.spinner {
+  width: 26px;
+  height: 26px;
+  flex: none;
+  border: 3px solid var(--fill-2);
+  border-top-color: #999999;
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spinner {
+    animation-duration: 3s;
+  }
+}
+
+/* ---------- Notice (screen 18): black bar at the top ---------- */
+
+.noticeWrap {
+  position: sticky;
+  top: calc(env(safe-area-inset-top) + 12px);
+  z-index: 20;
+  margin-bottom: 4px;
+}
+
+.notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px 20px;
+  border-radius: 28px;
+  background: var(--ink);
+  color: var(--paper);
+  box-shadow: var(--shadow-main);
+  cursor: pointer;
+  animation: drop 0.25s ease-out;
+}
+
+.notice svg {
+  width: 22px;
+  height: 22px;
+  flex: none;
+  margin-top: 1px;
+}
+
+.noticeTitle {
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.noticeBody {
+  margin-top: 2px;
+  font-size: 14px;
+  color: #cfcfcf;
+}
+
+@keyframes drop {
+  from {
+    transform: translateY(-12px);
+    opacity: 0;
+  }
+}
+
+/* ---------- Error card (screen 04) ---------- */
+
+.errorCard {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px 18px;
+  border: var(--border);
+  border-radius: 26px;
+}
+
+.errorIcon {
+  width: 30px;
+  height: 30px;
+  flex: none;
   display: grid;
   place-items: center;
   border-radius: 50%;
   background: var(--ink);
   color: var(--paper);
   font-weight: 700;
-  font-size: 14px;
+  font-size: 15px;
 }
 
-.memberChip.host .initial {
-  background: var(--paper);
-  color: var(--ink);
+.errorTitle {
+  font-weight: 600;
+  font-size: 16px;
 }
 
-.memberTag {
-  font-weight: 400;
-  font-size: 13px;
-  opacity: 0.75;
+.errorBody {
+  margin-top: 2px;
+  color: var(--ink-2);
+  font-size: 15px;
 }
 
-.memberRemove {
-  margin-left: 2px;
-  width: 24px;
-  height: 24px;
-  display: grid;
-  place-items: center;
+/* ---------- Confirm dialog ---------- */
+
+.dialog {
+  width: min(100% - 2 * var(--gutter), 400px);
+  padding: 24px;
   border: none;
-  border-radius: 50%;
-  background: transparent;
-  color: inherit;
-  cursor: pointer;
+  border-radius: 28px;
+  color: var(--ink);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
 }
 
-.offline {
-  opacity: 0.45;
+.dialog::backdrop {
+  background: rgba(17, 17, 17, 0.35);
+}
+
+.dialogTitle {
+  font-size: 21px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.dialogBody {
+  margin-top: 8px;
+  color: var(--ink-2);
+}
+
+.dialogActions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 22px;
 }

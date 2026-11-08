@@ -1,0 +1,85 @@
+/* Layout shared by the join, create and lobby screens. */
+
+.topBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 34px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 34px;
+}
+
+.sectionHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 26px 0 14px;
+  padding: 0 4px;
+}
+
+.count {
+  color: var(--ink-2);
+  font-size: 15px;
+  text-align: right;
+}
+
+.note {
+  margin-top: 30px;
+  text-align: center;
+  color: var(--ink-2);
+  font-size: 15px;
+}
+
+.small {
+  color: var(--ink-2);
+  font-size: 15px;
+  margin-bottom: 6px;
+}
+
+.lobbyHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 18px 0 26px;
+}
+
+.memberHeader {
+  margin: 18px 0 30px;
+}
+
+.center {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 4px;
+}
+
+.bigIcon {
+  width: 78px;
+  height: 78px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 26px;
+  border: var(--border);
+  border-radius: 50%;
+}
+
+.bigIcon svg {
+  width: 30px;
+  height: 30px;
+}
+
+.loading {
+  flex: 1;
+  display: grid;
+  place-items: center;
+  color: var(--ink-2);
+}
