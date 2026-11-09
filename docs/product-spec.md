@@ -75,13 +75,50 @@ Each member picks one guaranteed No and, optionally, one guaranteed Yes. Picks c
 
 3.  **Cancel-out.** If one member's Yes and another member's No are the same tag, both are dropped and neither counts.
 
-**Example tags**
+**Tags** (final, decided Nov 9, 2026)
 
-| Category | Tags                                                                                             |
-|----------|--------------------------------------------------------------------------------------------------|
-| Food     | Italian, Mexican, Asian, American, Pizza, Burgers, Seafood, Vegetarian, Fast casual, Fine dining |
-| Bars     | Sports bar, Cocktail bar, Brewery, Wine bar, Dive bar, Rooftop, Live music, Club                 |
-| Events   | Country, Pop, Hip-hop, Rock, EDM, Comedy, Sports, Theater                                        |
+Each tag maps to categories the data sources return, so picks change the scores. A tag is a **primary** match when it matches a place's main type or an event's genre, and a **secondary** match when it matches another type or the subgenre (see rule 2). The exact Google type names are checked against the API in milestone 4.
+
+| Category | Tag | Matches |
+|---|---|---|
+| Food | Italian | Google: italian |
+| Food | Mexican | Google: mexican, tex-mex |
+| Food | Asian | Google: chinese, japanese, thai, korean, vietnamese, asian, ramen, sushi |
+| Food | Indian | Google: indian |
+| Food | Mediterranean | Google: mediterranean, greek, middle eastern |
+| Food | American | Google: american, diner |
+| Food | Burgers | Google: hamburger |
+| Food | Seafood | Google: seafood |
+| Food | Steakhouse | Google: steak house |
+| Food | BBQ | Google: barbecue |
+| Food | Vegetarian | Google: vegetarian, vegan |
+| Food | Fine dining | Google: fine dining |
+| Food | Breakfast | Google: breakfast |
+| Food | Brunch | Google: brunch |
+| Bars | Sports bar | Google: sports bar |
+| Bars | Cocktail bar | Google: cocktail bar, lounge |
+| Bars | Brewery | Google: brewery, brewpub, beer garden |
+| Bars | Wine bar | Google: wine bar |
+| Bars | Pub | Google: pub, irish pub |
+| Bars | Club | Google: night club |
+| Bars | Karaoke | Google: karaoke |
+| Bars | Live music | Google: live music venue |
+| Bars | Lounge | Google: lounge |
+| Bars | Rooftop | No Google type: matched by keyword (name, description), so best effort |
+| Events | Country | Ticketmaster genre: Country |
+| Events | Pop | Ticketmaster genre: Pop |
+| Events | Hip-hop | Ticketmaster genre: Hip-Hop/Rap |
+| Events | Rock | Ticketmaster genres: Rock, Alternative, Metal |
+| Events | EDM | Ticketmaster genre: Dance/Electronic |
+| Events | R&B | Ticketmaster genre: R&B |
+| Events | Latin | Ticketmaster genre: Latin |
+| Events | Jazz | Ticketmaster genres: Jazz, Blues |
+| Events | Comedy | Ticketmaster genre: Comedy |
+| Events | Theater | Ticketmaster genres: Theatre, Musical |
+| Events | Sports | Ticketmaster segment: Sports |
+| Events | Family | Ticketmaster genre: Family |
+
+The "+ Other" field is matched as a keyword against names and types: it counts, but less precisely than a tag. Age (21+) and indoor/outdoor are host settings, not tags.
 
 ## Search and matching
 
@@ -251,7 +288,7 @@ Included in the MVP. The host can tap "Add demo friends" in a lobby to add 3 sim
 
 - [x] Decided: a short search returns only what it finds; no viable results means the host is told
 
-- [ ] Finalize the tag lists for each category (later; current lists are examples)
+- [x] Decided: final tag lists for each category (see Yes / No picks)
 
 - [ ] After the MVP: evaluate more event APIs and add them as extra sources (MVP uses Ticketmaster only)
 

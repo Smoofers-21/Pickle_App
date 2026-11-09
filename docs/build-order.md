@@ -9,7 +9,7 @@ This file sets the order to build Pickle in. It follows the 9 milestones in [bui
 - [ ] **Add the screen images.** Export one image per screen (01–19) from the screens canvas into `docs/screens/`. Milestones 2–7 are built from them.
 - [x] **Fix the folder layout.** Done in milestone 1: the docs are in `docs/` and the logo in `public/logo/` at the repo root.
 - [ ] **Create the starting accounts:** GitHub, Vercel (connected to this repo) and Supabase, each with two-factor sign-in. Google Cloud and Ticketmaster can wait until milestone 4.
-- [ ] **Draft the tag lists** for each category (food, bars, events). They're needed before milestone 3 (an open item in the product spec).
+- [x] **Draft the tag lists** for each category (food, bars, events). They're needed before milestone 3 (an open item in the product spec).
 
 ## Changes to the build plan
 
