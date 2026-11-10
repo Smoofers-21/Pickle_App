@@ -4,7 +4,7 @@ import { NextRequest } from "next/server";
 vi.mock("server-only", () => ({}));
 vi.mock("./supabase", () => ({ isDatabaseConfigured: () => true }));
 
-import { ok, route } from "./api";
+import { errorLabel, ok, route } from "./api";
 
 const context = { params: Promise.resolve({}) };
 const request = (body: string, origin = "https://pickle.test") => new NextRequest("https://pickle.test/api/lobbies", {
@@ -60,5 +60,14 @@ describe("API request boundary", () => {
     expect(response.status).toBe(500);
     expect(JSON.stringify(log.mock.calls)).not.toContain("sensitive upstream detail");
     expect(await response.json()).toMatchObject({ error: "server_error" });
+  });
+});
+
+describe("errorLabel", () => {
+  it("keeps the type and a database error code, never the message", () => {
+    expect(errorLabel(Object.assign(new Error("secret detail"), { code: "42703" }))).toBe("Error 42703");
+    expect(errorLabel({ message: "secret detail", code: "PGRST116" })).toBe("DatabaseError PGRST116");
+    expect(errorLabel({ code: "not a code; drop table" })).toBe("DatabaseError");
+    expect(errorLabel("boom")).toBe("unknown error");
   });
 });

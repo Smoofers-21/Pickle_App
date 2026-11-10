@@ -39,6 +39,17 @@ async function readSmallBody(request: NextRequest): Promise<string | null> {
   }
 }
 
+/**
+ * A safe label for logs: the error's type plus, for database errors, its
+ * short code (like 42703 or PGRST116). Never the message, which could carry
+ * request data.
+ */
+export function errorLabel(err: unknown): string {
+  const name = err instanceof Error ? err.name : typeof err === "object" && err !== null ? "DatabaseError" : "unknown error";
+  const code = typeof err === "object" && err !== null ? (err as { code?: unknown }).code : undefined;
+  return typeof code === "string" && /^[A-Z0-9]{2,12}$/.test(code) ? `${name} ${code}` : name;
+}
+
 export function fail(status: number, error: string, message: string) {
   return NextResponse.json({ error, message }, { status, headers: { "Cache-Control": "no-store" } });
 }
@@ -91,7 +102,7 @@ export function route(
       return await handler({ request, body, device: getDevice(request), params });
     } catch (err) {
       // Log the error type only: no IP addresses, tokens or request bodies.
-      console.error("Route failed:", request.nextUrl.pathname, err instanceof Error ? err.name : "unknown error");
+      console.error("Route failed:", request.nextUrl.pathname, errorLabel(err));
       return fail(500, "server_error", "Something went wrong. Try again.");
     }
   };

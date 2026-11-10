@@ -42,3 +42,17 @@ Added `src/lib/server/api.test.ts` (malformed/cross-site origins, exact byte bou
 Use a disposable local database with the stubs and migrations. Create a lobby with Host, Ana, and Ben. Start a game and submit picks for Host and Ana, leaving Ben unfinished. In session A: `BEGIN; SELECT public.unready_picks(game_id, host_id);` and keep the transaction open. In session B: `SELECT public.remove_member(lobby_id, host_id, ben_id);`. Wait until B is blocked on a row lock (visible in `pg_stat_activity`), then `COMMIT` A. After B finishes, assert that the game is still at `picks` and Host's picks have `ready=false`. Before the new migration the game incorrectly became `searching`. Leaving Ben's member instead of removing it uses the same advance function.
 
 Publishing the review branch does not merge PR #9 or apply fixes to hosted services. The new SQL migration still needs the normal deployment process. GitHub's PR metadata API was forbidden in this environment; the PR was fetched directly through `refs/pull/9/head`, so review is against the exact Git commit recorded above, not an assumed branch tip. Live Supabase and multi-phone Realtime testing remain unrun.
+
+## Outcome (Claude, Nov 10, 2026)
+
+Reviewed and merged into the milestone 3 branch:
+
+- All five fixes kept as written. One follow-up: logs now include the database error code (for example `42703` or `PGRST116`) next to the error type, so failures stay debuggable without logging messages (`errorLabel` in `src/lib/server/api.ts`, with a test).
+- The concurrency fix was re-verified with two real Postgres sessions: with `unready_picks` held open and `remove_member` waiting, the game stays at `picks` and the host stays not ready.
+- This document moved from the repo root to `docs/reviews/`.
+
+Decisions on the open items (product owner):
+
+- **Rejoin by name: option A.** A name never reclaims a spot; only the phone holding that spot's device token can. Migration `20261110000005_no_rejoin_by_name.sql`, applied to the Pickle_app Supabase project.
+- **Realtime pings:** phones reload from pings at most once every 2 seconds, so fake pings can't flood anyone into their rate limit. Private, membership-checked channels are deferred until after the MVP.
+- **Location:** deleted as soon as the game's last search is done (built in milestone 4). Rate-limit row cleanup stays in milestone 9.
