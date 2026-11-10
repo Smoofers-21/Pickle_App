@@ -12,6 +12,7 @@ Supabase dashboard → **SQL Editor** → **New query** → paste the whole file
 | `20261110000001_game_setup_and_picks.sql` | 3 | Start a game (locks the lobby), Yes/No picks, demo friends, pings for games and picks |
 | `20261110000002_lock_down_rls_auto_enable.sql` | 3 | Stops browser roles calling Supabase's own `rls_auto_enable()` (security advisor warning) |
 | `20261110000003_unready_picks.sql` | 3 | "Change my picks" takes you out of "done" until you submit again |
+| `20261110000005_no_rejoin_by_name.sql` | 3 | A name never reclaims someone's spot: only the phone that owns it can (security review) |
 
 ## Testing locally
 

@@ -38,11 +38,22 @@ begin
   r := public.join_lobby('Q7K2M9', 'Whoever', 'dev-sam');
   perform pg_temp.check((r->>'member_id')::uuid = v_sam and (r->>'rejoined')::boolean, 'same device rejoins as itself');
 
-  -- Rejoin by name from a new device after going offline
+  -- A new phone using a taken name never gets that spot, even when its owner is offline
   update public.members set last_seen_at = now() - interval '5 minutes' where id = v_sam;
   r := public.join_lobby('Q7K2M9', 'SAM', 'dev-sam-new-phone');
-  perform pg_temp.check((r->>'member_id')::uuid = v_sam and r->>'name' = 'Sam', 'offline member rejoins by name from new device');
-  perform pg_temp.check((select device_token_hash from public.members where id = v_sam) = 'dev-sam-new-phone', 'device moved to new phone');
+  perform pg_temp.check((r->>'member_id')::uuid <> v_sam and (r->>'renamed')::boolean and not (r->>'rejoined')::boolean,
+                        'offline member is not taken over by name from a new device');
+  perform pg_temp.check((select device_token_hash from public.members where id = v_sam) = 'dev-sam', 'spot stays with the original phone');
+  perform public.leave_lobby(v_lobby, (r->>'member_id')::uuid);
+  r := public.join_lobby('Q7K2M9', 'Sam', 'dev-sam');
+  perform pg_temp.check((r->>'member_id')::uuid = v_sam and (r->>'rejoined')::boolean, 'original phone still gets its spot back');
+
+  -- The host can't be taken over by name either
+  update public.members set last_seen_at = now() - interval '5 minutes' where id = v_alex;
+  r := public.join_lobby('Q7K2M9', 'Alex', 'dev-impostor');
+  perform pg_temp.check((r->>'member_id')::uuid <> v_alex and (select host_member_id from public.lobbies where id = v_lobby) = v_alex,
+                        'host is not taken over by name');
+  perform public.leave_lobby(v_lobby, (r->>'member_id')::uuid);
 
   -- Remove
   perform pg_temp.check(public.remove_member(v_lobby, v_jordan, v_sam2)->>'status' = 'not_host', 'only host can remove');
@@ -52,7 +63,7 @@ begin
   perform pg_temp.check(public.check_lobby_code('Q7K2M9', 'dev-sam2') = 'removed', 'removed device sees removed');
   update public.members set last_seen_at = now() - interval '1 hour' where id = v_sam2;
   r := public.join_lobby('Q7K2M9', 'sam 2', 'dev-other');
-  perform pg_temp.check((r->>'member_id')::uuid <> v_sam2 and r->>'name' = 'sam 2 2', 'removed member cannot be taken over by name');
+  perform pg_temp.check((r->>'member_id')::uuid <> v_sam2 and (r->>'renamed')::boolean, 'removed member cannot be taken over by name');
   perform public.leave_lobby(v_lobby, (r->>'member_id')::uuid);
 
   -- Host leaves: earliest-joined active member becomes host

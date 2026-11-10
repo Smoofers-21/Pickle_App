@@ -35,13 +35,13 @@ The game's **stage** drives every screen: picks → searching → cards_and_voti
 
 Every phone subscribes to its lobby through Supabase Realtime, so joins, picks and votes appear on all screens within about a second, without refreshing.
 
-- **What phones listen to:** an empty "changed" ping on a Realtime broadcast channel named after the lobby's random id, sent by a database trigger whenever the lobby or its members change. The ping carries no data; the phone then asks the server for the lobby as it should see it (and checks in every 30 seconds in case a ping is missed). Phones never read tables directly and never receive other members' picks or rankings, which keeps picks anonymous. *(Decided in milestone 2.)*
+- **What phones listen to:** an empty "changed" ping on a Realtime broadcast channel named after the lobby's random id, sent by a database trigger whenever the lobby or its members change. The ping carries no data; the phone then asks the server for the lobby as it should see it (and checks in every 30 seconds in case a ping is missed). Phones never read tables directly and never receive other members' picks or rankings, which keeps picks anonymous. *(Decided in milestone 2.)* Phones reload at most once every 2 seconds from pings, so fake pings on the channel can't flood them into their rate limits.
 
 - **Who moves the game forward:** the server, not the phones. When the last pick or vote arrives, a server route advances the stage (for example voting → round_complete) and every phone follows. Anyone who taps "Change my picks" (or changes a submitted ranking) stops counting as done until they submit again, so the game never moves on while someone is still changing their mind.
 
 - **Cards and voting:** each member moves through cards and voting at their own pace. The round ends when every active member has submitted a ranking, or the host removes someone who is stuck.
 
-- **Online status:** Supabase Presence shows who is connected. A dropped phone reconnects with its saved token and lands on the current stage with its progress intact.
+- **Online status:** Supabase Presence shows who is connected. A dropped phone reconnects with its saved token and lands on the current stage with its progress intact. A name alone never reclaims a spot: only the phone holding that spot's device token can (decided Nov 10, 2026).
 
 - **Host handover:** if the host leaves or is removed, the server makes the earliest-joined active member the host and sends the "You're now the host" notice.
 
@@ -137,7 +137,7 @@ Secret keys live only on the server, every database table is locked down by defa
 
 - Members never see each other's IP addresses: every update travels through Supabase, never directly between phones.
 
-- The host's location is used only to center the search, is never shown to other members (they see distances only), and is deleted when the game ends.
+- The host's location is used only to center the search, is stored rounded to about 100 m, is never shown to other members (they see distances only), and is deleted as soon as the game's last search is done: after round 1's search in a 1-round game, after the last round's search otherwise, and at the latest when the game ends (built in milestone 4, decided Nov 10, 2026).
 
 - A daily cleanup job deletes lobbies, members, picks, votes and Google details more than 24 hours old.
 

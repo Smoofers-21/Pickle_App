@@ -36,7 +36,7 @@ One lobby code lasts for one full game (all rounds plus the final vote). When th
 
 - **Locking:** the lobby closes when the host starts the game, before voting begins. Latecomers can only join between full games, using the new code.
 
-- **Disconnects:** a member rejoins with the same code and name and keeps their progress.
+- **Disconnects:** a member who drops out gets their spot and progress back on the same phone and browser, automatically or by entering the code again. A name is never proof of who someone is: a different phone using a taken name joins as a new member ("Sam 2"), and the host can remove the old spot. *(Decided Nov 10, 2026, after a security review: otherwise anyone could take over the host by typing their name.)*
 
 - **Host leaves:** the host role passes automatically to the member who joined earliest.
 
@@ -184,7 +184,7 @@ Pickle keeps only what a game needs and deletes it within 24 hours; all API keys
 
 - **IP addresses:** never stored in the database; used only briefly to block abuse (for example, someone guessing lobby codes). Members never see each other's IP addresses.
 
-- **Location:** the host's location only centers the search. Other members see distances, never the host's position, and it is deleted when the game ends.
+- **Location:** the host's location only centers the search. Other members see distances, never the host's position. It is stored rounded to about 100 m and deleted as soon as the game's last search is done (at the latest when the game ends).
 
 - **Retention:** Google place details are deleted when the game ends (only place IDs are kept); lobbies, members, picks and votes are deleted after 24 hours.
 

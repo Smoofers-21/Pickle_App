@@ -127,7 +127,7 @@ export function NameForm({ code }: { code?: string }) {
           disabled={fatal}
           autoFocus
         />
-        {code && <Hint>Rejoining? Use the same name to keep your progress.</Hint>}
+        {code && <Hint>Rejoining? Use the same phone and browser to get your spot back.</Hint>}
         {problem && <ErrorCard title={problem.title}>{problem.body}</ErrorCard>}
       </form>
     </Screen>
