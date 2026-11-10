@@ -171,10 +171,18 @@ const lower = (list: string[]) => list.map((s) => s.toLowerCase());
 
 /** How central a pool entry is to a candidate. */
 export function matchStrength(entry: PoolEntry, c: Candidate): Match {
-  const primary = lower(c.primary);
-  const secondary = lower(c.secondary);
-  const text = normalizeText(`${c.name} ${c.text ?? ""} ${[...c.primary, ...c.secondary].join(" ").replace(/_/g, " ")}`);
+  return matchPrepared(entry, prepareCandidate(c));
+}
 
+function prepareCandidate(c: Candidate) {
+  return {
+    primary: lower(c.primary),
+    secondary: lower(c.secondary),
+    text: normalizeText(`${c.name} ${c.text ?? ""} ${[...c.primary, ...c.secondary].join(" ").replace(/_/g, " ")}`),
+  };
+}
+
+function matchPrepared(entry: PoolEntry, { primary, secondary, text }: ReturnType<typeof prepareCandidate>): Match {
   if (entry.tag) {
     const cats = lower(entry.tag.categories);
     if (cats.some((cat) => primary.includes(cat))) return "primary";
@@ -210,13 +218,14 @@ export function distancePoints(distanceMi: number, radiusMi: number): number {
 /** Step 5, score: start at 50, apply each adjustment, keep within 0–100. */
 export function score(c: Candidate, pool: Pool, settings: GameSettings, radiusMi: number): number {
   let s = WEIGHTS.start;
+  const prepared = prepareCandidate(c);
   for (const entry of pool.yes) {
-    const m = matchStrength(entry, c);
+    const m = matchPrepared(entry, prepared);
     if (m === "primary") s += WEIGHTS.yesPrimary * entry.count;
     else if (m === "secondary") s += WEIGHTS.yesSecondary * entry.count;
   }
   for (const entry of pool.no) {
-    const m = matchStrength(entry, c);
+    const m = matchPrepared(entry, prepared);
     if (m === "primary") s += WEIGHTS.noPrimary * entry.count;
     else if (m === "secondary") s += WEIGHTS.noSecondary * entry.count;
   }
