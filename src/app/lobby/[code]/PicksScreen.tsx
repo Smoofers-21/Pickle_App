@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import {
-  BackButton,
   Chip,
   ChipRow,
   Divider,
@@ -77,13 +76,11 @@ export function PicksScreen({
   code,
   game,
   initial,
-  onCancel,
   onSubmitted,
 }: {
   code: string;
   game: GameInfo;
   initial: { no: PickSide; yes: PickSide | null } | null;
-  onCancel?: () => void;
   onSubmitted: () => void;
 }) {
   const tags = TAGS[game.category];
@@ -123,15 +120,14 @@ export function PicksScreen({
         </MainButton>
       }
     >
-      {onCancel && (
-        <div className={styles.topBar}>
-          <BackButton onClick={onCancel} />
-        </div>
-      )}
       <div className={styles.memberHeader}>
         <p className={styles.small}>{gameLabel(game)}</p>
         <Title>Your picks</Title>
-        <Subtitle>Anonymous. The group only sees the combined pool.</Subtitle>
+        <Subtitle>
+          {initial
+            ? "You're not counted as done until you submit again. The search waits for you."
+            : "Anonymous. The group only sees the combined pool."}
+        </Subtitle>
       </div>
 
       <SectionTitle aside="Required">Guaranteed No</SectionTitle>

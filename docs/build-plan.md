@@ -37,7 +37,7 @@ Every phone subscribes to its lobby through Supabase Realtime, so joins, picks a
 
 - **What phones listen to:** an empty "changed" ping on a Realtime broadcast channel named after the lobby's random id, sent by a database trigger whenever the lobby or its members change. The ping carries no data; the phone then asks the server for the lobby as it should see it (and checks in every 30 seconds in case a ping is missed). Phones never read tables directly and never receive other members' picks or rankings, which keeps picks anonymous. *(Decided in milestone 2.)*
 
-- **Who moves the game forward:** the server, not the phones. When the last pick or vote arrives, a server route advances the stage (for example voting → round_complete) and every phone follows.
+- **Who moves the game forward:** the server, not the phones. When the last pick or vote arrives, a server route advances the stage (for example voting → round_complete) and every phone follows. Anyone who taps "Change my picks" (or changes a submitted ranking) stops counting as done until they submit again, so the game never moves on while someone is still changing their mind.
 
 - **Cards and voting:** each member moves through cards and voting at their own pace. The round ends when every active member has submitted a ranking, or the host removes someone who is stuck.
 
@@ -202,6 +202,7 @@ Each milestone ends with something you can try on your phone. Search uses sample
 6.  **Voting and rounds** (screens 13–15)
 
     - Drag to rank, points, tie-breaks, round complete, 2–3 rounds with all-new options, final vote.
+    - **Changing a ranking un-readies you** (same rule as picks, decided Nov 10, 2026): going back from Submit to change a ranking takes you out of "done" on the server until you submit again, so the round can't end while someone is still changing their ranking. Done in one locked database step, so a last submit and a change can't race.
 
     - Test: a 2-round game with 3 people, including a forced tie.
 

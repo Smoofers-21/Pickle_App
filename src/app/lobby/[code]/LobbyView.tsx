@@ -42,7 +42,7 @@ export function LobbyView() {
   const [confirmLeave, setConfirmLeave] = useState(false);
   const [toRemove, setToRemove] = useState<LobbyMember | null>(null);
   const [settingUp, setSettingUp] = useState(false);
-  const [editingPicks, setEditingPicks] = useState(false);
+  const [changingPicks, setChangingPicks] = useState(false);
   const [addingDemo, setAddingDemo] = useState(false);
 
   // Close any open confirm box when leaving this page (Next.js keeps it alive, hidden).
@@ -51,7 +51,6 @@ export function LobbyView() {
       setConfirmLeave(false);
       setToRemove(null);
       setSettingUp(false);
-      setEditingPicks(false);
     };
   }, []);
 
@@ -91,18 +90,14 @@ export function LobbyView() {
   // ----- In a game -----
   if (game) {
     if (game.stage === "picks") {
-      if (!state.myPicks || editingPicks) {
+      if (!state.myPicks || !state.myPicks.ready) {
         return (
           <PicksScreen
-            key={game.id}
+            key={`${game.id}-${state.myPicks ? "change" : "new"}`}
             code={code}
             game={game}
             initial={state.myPicks}
-            onCancel={state.myPicks ? () => setEditingPicks(false) : undefined}
-            onSubmitted={() => {
-              setEditingPicks(false);
-              refresh();
-            }}
+            onSubmitted={refresh}
           />
         );
       }
@@ -112,7 +107,15 @@ export function LobbyView() {
           members={members}
           meId={me.id}
           picksDone={state.picksDone}
-          onChange={() => setEditingPicks(true)}
+          changing={changingPicks}
+          onChange={async () => {
+            // Un-ready on the server first, so the search waits for us.
+            setChangingPicks(true);
+            const res = await post(`/api/lobbies/${code}/picks`, {}, "DELETE");
+            setChangingPicks(false);
+            if (!res.ok) showNotice({ title: res.message });
+            refresh();
+          }}
           notice={noticeBar}
         />
       );

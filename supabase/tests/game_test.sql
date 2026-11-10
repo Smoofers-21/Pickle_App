@@ -63,6 +63,20 @@ begin
   perform pg_temp.check((select stage from public.games where id = v_game) = 'searching', 'removing the last picker starts the search');
   perform pg_temp.check(public.submit_picks(v_game, v_a, 'pop', null, null, null)->>'status' = 'wrong_stage', 'no picks after the picks stage');
 
+  -- "Change my picks" un-readies the member, so the search waits for them
+  r := public.create_lobby('CHGX23', 'Host', 'dev-h5');
+  v_lobby := (r->>'lobby_id')::uuid; v_host := (r->>'member_id')::uuid;
+  v_a := (public.join_lobby('CHGX23', 'Ana', 'dev-a5')->>'member_id')::uuid;
+  v_game := (public.start_game(v_lobby, v_host, 'food', null, 5, 'all', 'either', 1::smallint, 0, 0)->>'game_id')::uuid;
+  perform public.submit_picks(v_game, v_host, 'bbq', null, 'italian', null);
+  perform pg_temp.check(public.unready_picks(v_game, v_host)->>'status' = 'ok', 'host taps Change my picks');
+  perform pg_temp.check(not (select ready from public.picks where game_id = v_game and member_id = v_host), 'host is no longer done');
+  perform pg_temp.check((select no_tag from public.picks where game_id = v_game and member_id = v_host) = 'bbq', 'previous picks are kept for pre-filling');
+  perform pg_temp.check(public.submit_picks(v_game, v_a, 'pub', null, null, null)->>'stage' = 'picks', 'last other picker does not start the search while host is changing');
+  perform pg_temp.check(public.submit_picks(v_game, v_host, 'seafood', null, null, null)->>'stage' = 'searching', 'host re-submitting starts the search');
+  perform pg_temp.check(public.unready_picks(v_game, v_host)->>'status' = 'wrong_stage', 'too late to change once the search started');
+  perform pg_temp.check((select ready from public.picks where game_id = v_game and member_id = v_host), 'picks stay ready after a late change attempt');
+
   -- Everyone picks
   r := public.create_lobby('PKXX23', 'Host', 'dev-h2');
   v_lobby := (r->>'lobby_id')::uuid; v_host := (r->>'member_id')::uuid;
@@ -105,5 +119,11 @@ begin
   perform public.submit_picks(gen_random_uuid(), gen_random_uuid(), 'pop', null, null, null);
   raise exception 'FAILED: anon could call submit_picks';
 exception when insufficient_privilege then raise notice 'ok - anon cannot call submit_picks';
+end $$;
+do $$
+begin
+  perform public.unready_picks(gen_random_uuid(), gen_random_uuid());
+  raise exception 'FAILED: anon could call unready_picks';
+exception when insufficient_privilege then raise notice 'ok - anon cannot call unready_picks';
 end $$;
 reset role;

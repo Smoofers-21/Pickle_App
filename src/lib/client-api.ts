@@ -3,10 +3,10 @@
 
 export type ApiResult<T> = { ok: true; data: T } | { ok: false; error: string; message: string };
 
-export async function post<T>(path: string, body: unknown = {}): Promise<ApiResult<T>> {
+export async function post<T>(path: string, body: unknown = {}, method: "POST" | "DELETE" = "POST"): Promise<ApiResult<T>> {
   try {
     const res = await fetch(path, {
-      method: "POST",
+      method,
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
       cache: "no-store",

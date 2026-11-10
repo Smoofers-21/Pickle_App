@@ -49,3 +49,24 @@ export const POST = route(async ({ request, body, device, params }) => {
   if (data.status !== "ok") return fail(404, "not_found", "There's no game to pick for.");
   return ok({ status: "ok", stage: data.stage });
 });
+
+// "Change my picks": you stop counting as done until you submit again, so
+// the search can't start while you're still changing them.
+export const DELETE = route(async ({ request, device, params }) => {
+  if (!(await allow(request, device.hash, LIMITS.change))) return tooMany();
+  if (!isValidCode(params.code)) return fail(404, "not_found", "This lobby has ended.");
+
+  const found = await findActiveMember(params.code, device.hash);
+  if (!found || !found.lobby.current_game_id) return fail(404, "not_found", "There's no game to pick for.");
+
+  const { data, error } = await db().rpc("unready_picks", {
+    p_game_id: found.lobby.current_game_id,
+    p_member_id: found.me.id,
+  });
+  if (error) throw error;
+  if (data.status === "wrong_stage") {
+    return fail(409, "wrong_stage", "Too late: everyone was in, so the search has started.");
+  }
+  if (data.status !== "ok") return fail(404, "not_found", "There's no game to pick for.");
+  return ok({ status: "ok" });
+});

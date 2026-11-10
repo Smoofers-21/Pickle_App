@@ -37,6 +37,7 @@ export type PickRow = {
   yes_tag: string | null;
   yes_other: string | null;
   submitted_at: string;
+  ready: boolean;
 };
 
 export async function findLobby(code: string): Promise<LobbyRow | null> {
@@ -86,7 +87,7 @@ export async function findGame(gameId: string): Promise<GameRow | null> {
 export async function findPicks(gameId: string): Promise<PickRow[]> {
   const { data, error } = await db()
     .from("picks")
-    .select("member_id, no_tag, no_other, yes_tag, yes_other, submitted_at")
+    .select("member_id, no_tag, no_other, yes_tag, yes_other, submitted_at, ready")
     .eq("game_id", gameId);
   if (error) throw error;
   return (data ?? []) as PickRow[];
@@ -161,9 +162,13 @@ export async function lobbyState(code: string, deviceHash: string): Promise<Lobb
           currentRound: currentGame.current_round,
         }
       : null,
-    picksDone: picks.map((p) => p.member_id),
+    picksDone: picks.filter((p) => p.ready).map((p) => p.member_id),
     myPicks: mine
-      ? { no: side(mine.no_tag, mine.no_other), yes: mine.yes_tag ? side(mine.yes_tag, mine.yes_other) : null }
+      ? {
+          no: side(mine.no_tag, mine.no_other),
+          yes: mine.yes_tag ? side(mine.yes_tag, mine.yes_other) : null,
+          ready: mine.ready,
+        }
       : null,
     demoPending,
   };

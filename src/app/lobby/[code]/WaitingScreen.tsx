@@ -12,6 +12,7 @@ export function WaitingScreen({
   meId,
   picksDone,
   onChange,
+  changing,
   notice,
 }: {
   game: GameInfo;
@@ -19,6 +20,7 @@ export function WaitingScreen({
   meId: string;
   picksDone: string[];
   onChange: () => void;
+  changing?: boolean;
   notice?: React.ReactNode;
 }) {
   const done = new Set(picksDone);
@@ -29,8 +31,8 @@ export function WaitingScreen({
   return (
     <Screen
       footer={
-        <PillButton full onClick={onChange}>
-          Change my picks
+        <PillButton full onClick={onChange} disabled={changing}>
+          {changing ? "Opening your picks…" : "Change my picks"}
         </PillButton>
       }
     >

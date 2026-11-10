@@ -37,8 +37,11 @@ export type LobbyState =
       game: GameInfo | null;
       /** Members who have submitted picks. Never what they picked. */
       picksDone: string[];
-      /** This phone's own picks, so they can be changed. */
-      myPicks: { no: PickSide; yes: PickSide | null } | null;
+      /**
+       * This phone's own picks, so they can be changed. `ready` is false
+       * after "Change my picks" until they are submitted again.
+       */
+      myPicks: { no: PickSide; yes: PickSide | null; ready: boolean } | null;
       /** Demo friends are still about to pick: check back soon. */
       demoPending: boolean;
     }
