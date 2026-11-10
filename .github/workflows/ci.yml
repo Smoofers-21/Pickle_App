@@ -12,7 +12,7 @@ jobs:
   check:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0 # full history, so the secret scan sees every commit
 
@@ -46,7 +46,7 @@ jobs:
       PGUSER: postgres
       PGPASSWORD: postgres
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Apply migrations and run database tests
         run: |
           createdb pickle_test
