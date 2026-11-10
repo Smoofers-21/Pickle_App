@@ -527,3 +527,221 @@ button.memberChip {
   gap: 10px;
   margin-top: 22px;
 }
+
+/* ---------- Section heading with a small right-hand label (screen 08) ---------- */
+
+.sectionTitleRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.sectionTitle {
+  font-size: 21px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.divider {
+  height: 1px;
+  margin: 26px 0;
+  border: none;
+  background: var(--fill-2);
+}
+
+/* "+ Other" chip and its text field */
+
+.otherChip {
+  border-style: dashed;
+  border-color: #9a9a9a;
+  color: var(--ink-2);
+}
+
+.otherChip[aria-pressed="true"] {
+  border-style: solid;
+  border-color: var(--ink);
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.chip:disabled.otherChip {
+  border-style: dashed;
+}
+
+/* ---------- Select (outlined pill with a chevron) ---------- */
+
+.selectWrap {
+  position: relative;
+}
+
+.select {
+  width: 100%;
+  min-height: 52px;
+  padding: 0 52px 0 22px;
+  border: var(--border);
+  border-radius: 999px;
+  background: var(--paper);
+  color: var(--ink);
+  font: inherit;
+  font-size: 17px;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+}
+
+.selectChevron {
+  position: absolute;
+  right: 22px;
+  top: 50%;
+  width: 18px;
+  height: 18px;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+/* ---------- Progress bar (screen 09) ---------- */
+
+.progress {
+  height: 12px;
+  border-radius: 999px;
+  background: var(--fill-2);
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--ink);
+  transition: width 0.3s ease;
+}
+
+/* ---------- Done / still-picking chips (screen 09) ---------- */
+
+.statusChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 46px;
+  padding: 5px 18px 5px 5px;
+  border: var(--border);
+  border-radius: 999px;
+  font-size: 16px;
+}
+
+.statusChip.you {
+  border-width: 3px;
+  padding: 3px 16px 3px 3px;
+}
+
+.statusChip.pending {
+  border: 1.5px dashed #9a9a9a;
+  color: var(--ink-2);
+}
+
+.checkCircle {
+  width: 34px;
+  height: 34px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.checkCircle svg {
+  width: 16px;
+  height: 16px;
+}
+
+.dashedCircle {
+  width: 34px;
+  height: 34px;
+  flex: none;
+  border: 2px dashed #9a9a9a;
+  border-radius: 50%;
+}
+
+/* ---------- Checklist card (screen 10) ---------- */
+
+.checklist {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  padding: 22px 20px;
+  border: var(--border);
+  border-radius: 32px;
+}
+
+.checkItem {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 16px;
+}
+
+.checkItem.active {
+  font-weight: 600;
+}
+
+.checkItem.todo {
+  color: var(--ink-2);
+}
+
+.todoCircle {
+  width: 28px;
+  height: 28px;
+  flex: none;
+  border: 2px solid #cfcfcf;
+  border-radius: 50%;
+}
+
+.checkItem .checkCircle,
+.checkItem .spinner {
+  width: 28px;
+  height: 28px;
+}
+
+.bigSpinner {
+  width: 80px;
+  height: 80px;
+  border-width: 7px;
+  border-top-color: var(--ink);
+}
+
+/* ---------- Soft grey pill button (Add demo friends) ---------- */
+
+.softButton {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 0 20px;
+  border: none;
+  border-radius: 999px;
+  background: var(--fill);
+  color: var(--ink);
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.softButton svg {
+  width: 18px;
+  height: 18px;
+}
+
+.softButton:disabled {
+  color: var(--ink-2);
+  cursor: not-allowed;
+}
+
+/* Bigger chips for choices (setup and picks screens) */
+.chip.large {
+  min-height: 44px;
+  padding: 0 19px;
+  font-size: 17px;
+}

@@ -1,11 +1,31 @@
 // Shapes the server routes send to the phone.
 
+import type { Category } from "./game/tags";
+
 export type LobbyMember = {
   id: string;
   name: string;
   isHost: boolean;
   isDemo: boolean;
 };
+
+export type Stage = "picks" | "searching" | "cards_and_voting" | "round_complete" | "final_vote" | "results";
+
+/** The game's criteria. The host's location is never sent to phones. */
+export type GameInfo = {
+  id: string;
+  stage: Stage;
+  category: Category;
+  eventDate: string | null;
+  radiusMi: number;
+  age: "all" | "21_plus";
+  indoorOutdoor: "either" | "indoor" | "outdoor";
+  roundsTotal: number;
+  currentRound: number;
+};
+
+/** One side of a pick: a preset tag key, or "other" with typed text. */
+export type PickSide = { tag: string; other?: string | null };
 
 export type LobbyState =
   | {
@@ -14,6 +34,13 @@ export type LobbyState =
       me: { id: string; name: string; isHost: boolean };
       members: LobbyMember[];
       maxMembers: number;
+      game: GameInfo | null;
+      /** Members who have submitted picks. Never what they picked. */
+      picksDone: string[];
+      /** This phone's own picks, so they can be changed. */
+      myPicks: { no: PickSide; yes: PickSide | null } | null;
+      /** Demo friends are still about to pick: check back soon. */
+      demoPending: boolean;
     }
   | { status: "removed"; code: string }
   | { status: "not_member" }

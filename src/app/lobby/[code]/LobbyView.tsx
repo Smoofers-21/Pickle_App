@@ -16,6 +16,7 @@ import {
   PillLink,
   Screen,
   ShareButton,
+  SoftButton,
   StatusCard,
   Subtitle,
   Title,
@@ -23,23 +24,34 @@ import {
 } from "@/components/ui";
 import { cleanCodeInput } from "@/lib/lobby-rules";
 import type { LobbyMember } from "@/lib/lobby-types";
+import { post } from "@/lib/client-api";
 import styles from "../../flow.module.css";
+import { PicksScreen } from "./PicksScreen";
+import { SearchingScreen } from "./SearchingScreen";
+import { SetupScreen } from "./SetupScreen";
 import { useLobby } from "./useLobby";
+import { WaitingScreen } from "./WaitingScreen";
 
-// Screens 05 (host), 06 (member), 18 (host left notice) and 19 (removed).
+// Screens 05 (host), 06 (member), 07 (setup), 08 (picks), 09 (waiting for
+// picks), 10 (searching), 18 (host left notice) and 19 (removed).
 export function LobbyView() {
   const params = useParams<{ code: string }>();
   const code = cleanCodeInput(params.code ?? "");
   const router = useRouter();
-  const { state, online, notice, dismissNotice, error, leave, remove } = useLobby(code);
+  const { state, online, notice, dismissNotice, showNotice, error, leave, remove, refresh } = useLobby(code);
   const [confirmLeave, setConfirmLeave] = useState(false);
   const [toRemove, setToRemove] = useState<LobbyMember | null>(null);
+  const [settingUp, setSettingUp] = useState(false);
+  const [editingPicks, setEditingPicks] = useState(false);
+  const [addingDemo, setAddingDemo] = useState(false);
 
   // Close any open confirm box when leaving this page (Next.js keeps it alive, hidden).
   useLayoutEffect(() => {
     return () => {
       setConfirmLeave(false);
       setToRemove(null);
+      setSettingUp(false);
+      setEditingPicks(false);
     };
   }, []);
 
@@ -69,9 +81,58 @@ export function LobbyView() {
     );
   }
 
-  const { me, members, maxMembers, lobby } = state;
+  const { me, members, maxMembers, lobby, game } = state;
   const host = members.find((m) => m.isHost);
-  const isOffline = (id: string) => id !== me.id && online !== null && !online.has(id);
+  // Demo friends are never "connected", but they count as here.
+  const isOffline = (id: string) =>
+    id !== me.id && online !== null && !online.has(id) && !members.find((m) => m.id === id)?.isDemo;
+  const noticeBar = notice && <Notice key={notice.id} title={notice.title} body={notice.body} onClose={dismissNotice} />;
+
+  // ----- In a game -----
+  if (game) {
+    if (game.stage === "picks") {
+      if (!state.myPicks || editingPicks) {
+        return (
+          <PicksScreen
+            key={game.id}
+            code={code}
+            game={game}
+            initial={state.myPicks}
+            onCancel={state.myPicks ? () => setEditingPicks(false) : undefined}
+            onSubmitted={() => {
+              setEditingPicks(false);
+              refresh();
+            }}
+          />
+        );
+      }
+      return (
+        <WaitingScreen
+          game={game}
+          members={members}
+          meId={me.id}
+          picksDone={state.picksDone}
+          onChange={() => setEditingPicks(true)}
+          notice={noticeBar}
+        />
+      );
+    }
+    return <SearchingScreen game={game} notice={noticeBar} />;
+  }
+
+  if (me.isHost && settingUp && lobby.status === "open") {
+    return <SetupScreen code={code} onBack={() => setSettingUp(false)} />;
+  }
+
+  async function addDemoFriends() {
+    setAddingDemo(true);
+    const res = await post(`/api/lobbies/${code}/demo`);
+    setAddingDemo(false);
+    if (!res.ok) showNotice({ title: res.message });
+    refresh();
+  }
+  const hasDemo = members.some((m) => m.isDemo);
+  const roomForDemo = members.length + 3 <= maxMembers;
 
   async function doLeave() {
     setConfirmLeave(false);
@@ -123,13 +184,11 @@ export function LobbyView() {
     </>
   );
 
-  const noticeBar = notice && <Notice key={notice.id} title={notice.title} body={notice.body} onClose={dismissNotice} />;
-
   if (me.isHost) {
     return (
       <Screen
         footer={
-          <MainButton arrow disabled disabledReason="Game setup arrives in milestone 3">
+          <MainButton arrow onClick={() => setSettingUp(true)}>
             Set up the game
           </MainButton>
         }
@@ -148,6 +207,13 @@ export function LobbyView() {
           </span>
         </div>
         {chips}
+        {!hasDemo && roomForDemo && (
+          <div className={styles.otherField}>
+            <SoftButton onClick={addDemoFriends} disabled={addingDemo}>
+              {addingDemo ? "Adding…" : "Add demo friends"}
+            </SoftButton>
+          </div>
+        )}
         <p className={styles.note}>The lobby locks when you start the game.</p>
         {dialogs}
       </Screen>

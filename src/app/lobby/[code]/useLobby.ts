@@ -106,6 +106,14 @@ export function useLobby(code: string) {
     };
   }, [lobbyId, myId, refresh]);
 
+  // While demo friends are about to pick, check back every couple of seconds.
+  const demoPending = state?.status === "ok" && state.demoPending;
+  useEffect(() => {
+    if (!demoPending) return;
+    const t = window.setInterval(refresh, 1500);
+    return () => window.clearInterval(t);
+  }, [demoPending, refresh]);
+
   // "Sam was taken, so you're Sam 2" after joining.
   useEffect(() => {
     if (state?.status !== "ok") return;
@@ -137,5 +145,5 @@ export function useLobby(code: string) {
     [code, refresh, showNotice],
   );
 
-  return { state, online, notice, dismissNotice: () => setNotice(null), error, leave, remove };
+  return { state, online, notice, dismissNotice: () => setNotice(null), showNotice, error, leave, remove, refresh };
 }
