@@ -1,19 +1,19 @@
 import Image from "next/image";
-import { MainButton, PillButton, Screen } from "@/components/ui";
+import { ChipRow, MainLink, PillLink, Screen, StaticChip } from "@/components/ui";
 import styles from "./page.module.css";
 
-// Screen 01: Home. Creating and joining lobbies arrive in milestone 2.
+// Screen 01: Home.
 export default function Home() {
   return (
     <Screen
       footer={
         <>
-          <MainButton disabled disabledReason="Lobbies arrive in milestone 2">
+          <MainLink href="/new" arrow>
             Create a lobby
-          </MainButton>
-          <PillButton full disabled>
+          </MainLink>
+          <PillLink href="/join" full>
             Join with a code
-          </PillButton>
+          </PillLink>
         </>
       }
     >
@@ -26,7 +26,13 @@ export default function Home() {
           priority
           className={styles.logo}
         />
-        <p className={styles.tagline}>Decide what to do with your friends in a few minutes.</p>
+        <h1 className={styles.headline}>Decide where to go, together.</h1>
+        <ChipRow>
+          <StaticChip>Food</StaticChip>
+          <StaticChip>Bars</StaticChip>
+          <StaticChip>Events</StaticChip>
+        </ChipRow>
+        <p className={styles.body}>Join with a code, pick one Yes and one No, then rank the options as a group.</p>
       </div>
     </Screen>
   );

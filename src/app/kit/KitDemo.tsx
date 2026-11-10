@@ -1,7 +1,20 @@
 "use client";
 
 import { useState } from "react";
-import { Chip, ChipRow, CodeBar, MainButton, MemberChip, PillButton, Screen } from "@/components/ui";
+import {
+  Chip,
+  ChipRow,
+  CodeCard,
+  ErrorCard,
+  MainButton,
+  MemberChip,
+  Notice,
+  PillButton,
+  ShareButton,
+  StatusCard,
+  Screen,
+  WaitingChip,
+} from "@/components/ui";
 import styles from "./kit.module.css";
 
 const TAGS = ["Pizza", "Sushi", "Tacos", "Burgers", "Thai", "Vegan"];
@@ -9,13 +22,14 @@ const TAGS = ["Pizza", "Sushi", "Tacos", "Burgers", "Thai", "Vegan"];
 export function KitDemo() {
   const [selected, setSelected] = useState<string[]>(["Sushi"]);
   const [ready, setReady] = useState(false);
+  const [notice, setNotice] = useState(false);
   const toggle = (tag: string) =>
     setSelected((s) => (s.includes(tag) ? s.filter((t) => t !== tag) : [...s, tag]));
 
   return (
     <Screen
       footer={
-        <MainButton disabled={!ready} disabledReason="3 of 6 seen" onClick={() => setReady(false)}>
+        <MainButton arrow disabled={!ready} disabledReason="3 of 6 seen" onClick={() => setReady(false)}>
           Go vote
         </MainButton>
       }
@@ -25,16 +39,18 @@ export function KitDemo() {
 
       <section className={styles.section}>
         <h2>Lobby code</h2>
-        <CodeBar code="K7MQ4X" />
+        <CodeCard code="K7MQ4X" />
+        <StatusCard action={<ShareButton code="K7MQ4X" />}>The host is setting up the game</StatusCard>
       </section>
 
       <section className={styles.section}>
         <h2>Members</h2>
         <ChipRow>
-          <MemberChip name="Santiago" host you />
-          <MemberChip name="Maya" />
-          <MemberChip name="Jordan" onRemove={() => {}} />
-          <MemberChip name="Maya 2" offline />
+          <MemberChip name="Alex" host />
+          <MemberChip name="Sam" you />
+          <MemberChip name="Jordan" onClick={() => {}} />
+          <MemberChip name="Sam 2" offline />
+          <WaitingChip />
         </ChipRow>
       </section>
 
@@ -59,6 +75,13 @@ export function KitDemo() {
           <PillButton disabled>Disabled</PillButton>
         </div>
         <PillButton full>Leave lobby</PillButton>
+      </section>
+
+      <section className={styles.section}>
+        <h2>Notices and errors</h2>
+        <ErrorCard title="Code not found">This code doesn&apos;t exist or has expired. Check it with the host.</ErrorCard>
+        <PillButton onClick={() => setNotice((n) => !n)}>{notice ? "Hide notice" : "Show notice"}</PillButton>
+        {notice && <Notice title="Alex left. You're now the host." body="The game continues where it left off." />}
       </section>
 
       <section className={styles.section}>

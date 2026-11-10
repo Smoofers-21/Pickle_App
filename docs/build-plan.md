@@ -16,7 +16,7 @@ Google Places and Ticketmaster are called only by the server, so API keys and co
 
 ## Data model
 
-Eight tables in Supabase (Postgres) hold everything. No user accounts: a member is identified by a random token saved in their browser, plus the name they typed.
+Eight tables in Supabase (Postgres) hold everything. No user accounts: a member is identified by a random token saved in their browser, plus the name they typed. The database stores only a hash of the token (members.device_token_hash), plus members.left_at for members who left on their own and a rate_limits table keyed by device.
 
 | Table         | What it holds                                                                                                                                              | Key fields                                                                                                                                                                                                  |
 |---------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -35,7 +35,7 @@ The game's **stage** drives every screen: picks → searching → cards_and_voti
 
 Every phone subscribes to its lobby through Supabase Realtime, so joins, picks and votes appear on all screens within about a second, without refreshing.
 
-- **What phones listen to:** changes to the lobby, its members, the current game's stage, and which members have finished their picks or votes (never what they chose). Phones never receive other members' picks or rankings, which keeps picks anonymous.
+- **What phones listen to:** an empty "changed" ping on a Realtime broadcast channel named after the lobby's random id, sent by a database trigger whenever the lobby or its members change. The ping carries no data; the phone then asks the server for the lobby as it should see it (and checks in every 30 seconds in case a ping is missed). Phones never read tables directly and never receive other members' picks or rankings, which keeps picks anonymous. *(Decided in milestone 2.)*
 
 - **Who moves the game forward:** the server, not the phones. When the last pick or vote arrives, a server route advances the stage (for example voting → round_complete) and every phone follows.
 
@@ -45,7 +45,7 @@ Every phone subscribes to its lobby through Supabase Realtime, so joins, picks a
 
 - **Host handover:** if the host leaves or is removed, the server makes the earliest-joined active member the host and sends the "You're now the host" notice.
 
-- **Security:** database rules let a phone write only its own picks, card views and votes, and only while the game is in the matching stage.
+- **Security:** phones can't read or write any table. Every action (join, pick, vote) goes through a server route that checks the device token, the stage and the input, then writes with the secret key. *(Decided in milestone 2: stricter than per-member database rules, and it keeps the device token out of page scripts.)*
 
 ## Search and scoring
 
@@ -117,7 +117,7 @@ Secret keys live only on the server, every database table is locked down by defa
 
 **Database**
 
-- Row-level security is turned on for every Supabase table, with nothing allowed by default. Rules then let a member read only their own lobby and write only their own picks, card views and votes.
+- Row-level security is turned on for every Supabase table, with no policies at all, and the browser roles have no grants, so the publishable key can read and write nothing. Only server routes, using the secret key, touch the tables.
 
 - The Supabase publishable key (formerly the anon key) is designed to be visible in the browser; the row-level rules are what protect the data. The secret key bypasses those rules, so it stays on the server. Use Supabase's new publishable and secret keys from the start, since the older keys are being deprecated.
 
