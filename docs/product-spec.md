@@ -57,7 +57,7 @@ The host sets the game's criteria before members make their picks; every round i
 | Indoor/outdoor | Indoor, Outdoor, Either        | Either          |
 | Rounds         | 1, 2, 3                        | 1               |
 
-Food and bars only show places open today; cards show their open and close times. Indoor/outdoor is a preference, not a strict filter, because the data is incomplete (see Data limits).
+Food and bars only show places open now (Google's open-now filter at search time); cards say "Open now" rather than open and close times, which would cost a more expensive Google request. Indoor/outdoor is a preference, not a strict filter, because the data is incomplete (see Data limits).
 
 ## Yes / No picks
 
@@ -128,11 +128,11 @@ Each round aims for 6 options that score at or above the match threshold (about 
 
 - **Duplicates:** chains appear once, using the closest location. Results from different sources are merged by normalized name.
 
-- **Match score:** combines Yes boosts, scaled No penalties, host criteria (age, indoor/outdoor), distance and rating.
+- **Match score:** combines Yes boosts, scaled No penalties, host criteria (age, indoor/outdoor), distance and Google's result order. Google star ratings and review counts are not used, to keep searches in Google's cheaper Pro tier.
 
 - **Fewer than 6 matches:** widen the radius by 5 mi once. If there are still fewer than 6, the round uses only what was found. If nothing viable is found, the host is told and can change the criteria.
 
-- **Later rounds:** same criteria, all-new results. No option repeats within a game. To keep API costs down, every place found is saved for the whole game (Google details are deleted when the game ends; only place IDs are kept): later rounds use saved results first, and a wider search never re-fetches a place already found. The full cost rules (field limits, lazy photo loading, quota caps) are in the [Pickle MVP Build Plan](https://claude.ai/artifact/7Cw68JuzPSG17P7eJqub6c).
+- **Later rounds:** same criteria, all-new results. No option repeats within a game. To keep API costs down, every place found is saved for the whole game (Google details are deleted when the game ends; only place IDs are kept): later rounds use saved results first, and a wider search never re-fetches a place already found. The full cost rules (Pro fields only, one shared photo per place, quota caps) are in the [Pickle MVP Build Plan](https://claude.ai/artifact/7Cw68JuzPSG17P7eJqub6c).
 
 ## Cards, voting and rounds
 
@@ -140,7 +140,7 @@ Members must view every card (normally 6) before they can vote. Rankings are com
 
 **Cards (view only)**
 
-- Each card shows up to 3 photos (tap the sides of the photo to flip), open/close times, rating, distance or travel time, a short description, and a menu or lineup link. Cards and results using Google data show "Google Maps" attribution, the photo author's credit and a link to the place on Google Maps, as Google's policies require.
+- Each card shows one photo, "Open now" (places) or the start time (events), distance, the type of place or event, and a link: Google Maps for places, the ticket page for events. If the month's free photo allowance is nearly used, the photo becomes a "Show photo" button that loads it on request. Cards and results using Google data show "Google Maps" attribution, the photo author's credit and a link to the place on Google Maps, as Google's policies require.
 
 - Swiping or the arrow buttons only move between cards; they do not record likes.
 
@@ -232,7 +232,7 @@ The app uses a black-and-white "2F" style: pill-shaped chips and secondary butto
 | Chips and tags    | Pills; selected = solid black with white text                                                                                                                                                                   |
 | Lobby code        | Outlined pill bar with round copy and share buttons                                                                                                                                                             |
 | Members           | Pill chips with an initial; host chip in black                                                                                                                                                                  |
-| Option card       | Contained card filling most of the screen; photo on top with up to 3 photos (story bars); details and a lineup or menu link below                                                                               |
+| Option card       | Contained card filling most of the screen; one photo on top (no story bars); details and a Google Maps or ticket link below                                                                               |
 | Ranking           | Drag to reorder; dragged row lifts with a shadow and a dashed drop slot                                                                                                                                         |
 | Disabled states   | Light grey fill with grey text, plus a short reason ("3 of 6 seen")                                                                                                                                             |
 
@@ -264,7 +264,7 @@ The app uses the owner's Pickle logo (a green ballot box with a smiling pickle g
 
 - **21+:** reliable for ticketed events. For bars and clubs it is inferred from the venue type.
 
-- **Indoor/outdoor:** Google lists outdoor seating for many restaurants but little for events. Used as a preference, not a filter.
+- **Indoor/outdoor:** Google's outdoor-seating data costs a more expensive request, so for food and bars it is inferred from the place type where possible (for example a beer garden). Used as a preference, not a filter.
 
 - **Event sources:** Ticketmaster only for the MVP. Search is built so more event sources can be added later without changing the rest of the app.
 

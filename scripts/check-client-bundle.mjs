@@ -1,0 +1,47 @@
+// After `npm run build`: fails if anything that should stay on the server
+// ended up in the JavaScript sent to phones. The real key values never
+// exist in CI, so this checks for the names and the Google endpoint, which
+// would only be there if server code leaked into the browser bundle.
+
+import { readdirSync, readFileSync, statSync } from "node:fs";
+import { join } from "node:path";
+
+const FORBIDDEN = [
+  "GOOGLE_PLACES_API_KEY",
+  "TICKETMASTER_API_KEY",
+  "SUPABASE_SECRET_KEY",
+  "places.googleapis.com",
+  "app.ticketmaster.com",
+  "X-Goog-Api-Key",
+];
+
+// Values of secrets present in this environment (only on Vercel or locally).
+for (const name of ["GOOGLE_PLACES_API_KEY", "TICKETMASTER_API_KEY", "SUPABASE_SECRET_KEY"]) {
+  const value = process.env[name];
+  if (value && value.length >= 12) FORBIDDEN.push(value);
+}
+
+function* files(dir) {
+  for (const entry of readdirSync(dir)) {
+    const path = join(dir, entry);
+    if (statSync(path).isDirectory()) yield* files(path);
+    else if (/\.(js|css|html|json|txt)$/.test(entry)) yield path;
+  }
+}
+
+const problems = [];
+for (const file of files(".next/static")) {
+  const text = readFileSync(file, "utf8");
+  for (const needle of FORBIDDEN) {
+    if (text.includes(needle)) {
+      const label = needle.length > 30 || /^[A-Za-z0-9_-]{20,}$/.test(needle) ? "a secret value" : needle;
+      problems.push(`${file}: contains ${label}`);
+    }
+  }
+}
+
+if (problems.length) {
+  console.error("Server-only values found in the browser bundle:\n  " + problems.join("\n  "));
+  process.exit(1);
+}
+console.log("Browser bundle check passed: no server-only names, endpoints or key values.");
