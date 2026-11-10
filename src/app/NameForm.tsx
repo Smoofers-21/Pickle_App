@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import {
   BackButton,
   CodeChip,
@@ -31,6 +31,16 @@ export function NameForm({ code }: { code?: string }) {
   const [name, setName] = useState("");
   const [busy, setBusy] = useState(false);
   const [problem, setProblem] = useState<Problem | null>(null);
+
+  // Next.js keeps this page alive (hidden) after you leave it. Start fresh
+  // each time it's shown again, instead of a stuck "Creating…" button.
+  useLayoutEffect(() => {
+    return () => {
+      setName("");
+      setBusy(false);
+      setProblem(null);
+    };
+  }, []);
 
   // People who open an invite link land here directly, so check the code first.
   useEffect(() => {

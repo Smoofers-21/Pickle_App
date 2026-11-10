@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import {
   ChipRow,
   CodeCard,
@@ -34,6 +34,14 @@ export function LobbyView() {
   const { state, online, notice, dismissNotice, error, leave, remove } = useLobby(code);
   const [confirmLeave, setConfirmLeave] = useState(false);
   const [toRemove, setToRemove] = useState<LobbyMember | null>(null);
+
+  // Close any open confirm box when leaving this page (Next.js keeps it alive, hidden).
+  useLayoutEffect(() => {
+    return () => {
+      setConfirmLeave(false);
+      setToRemove(null);
+    };
+  }, []);
 
   // Not in this lobby yet: go to the name step.
   useEffect(() => {

@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import { BackButton, CodeBoxes, ErrorCard, Label, MainButton, Screen, Subtitle, Title } from "@/components/ui";
 import { post } from "@/lib/client-api";
 import { joinError } from "@/lib/join-messages";
@@ -15,6 +15,17 @@ export default function JoinCodePage() {
   const [code, setCode] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<{ title: string; body: string } | null>(null);
+
+  // Next.js keeps this page alive (hidden) after you leave it. Start fresh
+  // each time it's shown again, instead of restoring the old code or a stuck
+  // "Checking…" button.
+  useLayoutEffect(() => {
+    return () => {
+      setCode("");
+      setBusy(false);
+      setError(null);
+    };
+  }, []);
 
   async function submit(value = code) {
     if (value.length !== CODE_LENGTH || busy) return;
