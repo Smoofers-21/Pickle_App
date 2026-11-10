@@ -4,12 +4,13 @@
 
 ## Applying a migration
 
-Supabase dashboard → **SQL Editor** → **New query** → paste the whole file → **Run**. Run each file once, in order. The pull request for each milestone says which new files to run.
+Supabase dashboard → **SQL Editor** → **New query** → paste the whole file → **Run**. Run each file once, in order. Applied to the Pickle_app project so far: all files listed below. The pull request for each milestone says which new files to run.
 
 | File | Milestone | What it does |
 |---|---|---|
 | `20261108000001_initial_schema.sql` | 2 | All tables locked down (RLS on, no browser access), lobby functions, live-update pings |
 | `20261110000001_game_setup_and_picks.sql` | 3 | Start a game (locks the lobby), Yes/No picks, demo friends, pings for games and picks |
+| `20261110000002_lock_down_rls_auto_enable.sql` | 3 | Stops browser roles calling Supabase's own `rls_auto_enable()` (security advisor warning) |
 
 ## Testing locally
 
