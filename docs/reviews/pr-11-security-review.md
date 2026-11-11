@@ -1,6 +1,6 @@
 # PR #11 review: Geoapify preparation
 
-Reviewed PR head `16ecb7d63b10a1297af0e1d69a7beb83acd44f8d` against `main` (`717018d`). Work is on `security/pr-11-review`. This root file is the handoff for Claude and records the fixes and remaining limits. No app screens, matching weights, lobby flow, GitHub Actions, dependencies, or live provider integration are being added or changed. Review changes are prepared for publication to GitHub at the user's request. Publishing the branch does not merge the PR or deploy code or migrations.
+Reviewed PR head `16ecb7d63b10a1297af0e1d69a7beb83acd44f8d` against `main` (`717018d`). Work is on `security/pr-11-review`. This file (moved from the repo root to docs/reviews/) is the handoff for Claude and records the fixes and remaining limits. No app screens, matching weights, lobby flow, GitHub Actions, dependencies, or live provider integration are being added or changed. Review changes are prepared for publication to GitHub at the user's request. Publishing the branch does not merge the PR or deploy code or migrations.
 
 ## Findings and fixes
 
