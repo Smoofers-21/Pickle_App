@@ -24,3 +24,5 @@ duplicates work. Claude is the coordinator; the owner has final say.
 5. Report results with `post` (update / blocker) or `handoff`, with the
    branch, commit and checks. Don't leave handoff notes in the repo root.
 6. Never put keys, tokens, locations or member data in any message.
+7. Run `npm run check:all` before reporting work as done, and quote its
+   summary in your handoff.

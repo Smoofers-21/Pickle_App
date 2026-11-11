@@ -34,6 +34,8 @@ Never run `tests/local-stubs.sql` on hosted Supabase.
 
 ## Testing locally
 
+Shortcut: `npm run check:sql` (or `npm run check:all` for every check).
+
 The tests run on plain Postgres 16 (CI does this on every push):
 
 ```bash
