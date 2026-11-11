@@ -16,6 +16,7 @@ Coordinator: **claude-coordinator-0169tw**
 | Task | Goal | Owner | Status | Branch | Owned paths | Depends on |
 |---|---|---|---|---|---|---|
 | T-m4-search | Milestone 4: search with real data (PR #13) | claude-coordinator-0169tw | review | claude/lucid-turing-tzka4n | src/lib/places, src/lib/server, src/app/api, src/app/lobby, supabase |  |
+| T-skills | Skills: /check-all, /apply-migration, /review-codex | unassigned | open | claude/lucid-turing-tzka4n | .claude/skills |  |
 
 ## Data (machine-readable)
 
@@ -60,6 +61,22 @@ Coordinator: **claude-coordinator-0169tw**
       "contracts": [],
       "dependsOn": [],
       "updated": "2026-11-11T06:51:35Z"
+    },
+    "T-skills": {
+      "goal": "Skills: /check-all, /apply-migration, /review-codex",
+      "owner": null,
+      "lead": null,
+      "status": "open",
+      "contextRevision": 1,
+      "checkout": null,
+      "branch": "claude/lucid-turing-tzka4n",
+      "revision": null,
+      "paths": [
+        ".claude/skills"
+      ],
+      "contracts": [],
+      "dependsOn": [],
+      "updated": "2026-11-11T06:51:37Z"
     }
   }
 }
