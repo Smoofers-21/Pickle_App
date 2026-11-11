@@ -17,7 +17,7 @@ Coordinator: **claude-coordinator-0169tw**
 | Task | Goal | Owner | Status | Branch | Owned paths | Depends on |
 |---|---|---|---|---|---|---|
 | T-m4-search | Milestone 4: search with real data (PR #13) | unassigned | done | claude/lucid-turing-tzka4n | src/lib/places, src/lib/server, src/app/api, src/app/lobby, supabase |  |
-| T-skills | Skills: /check-all, /apply-migration, /review-codex | claude-coordinator-0169tw | review | claude/lucid-turing-tzka4n | .claude/skills |  |
+| T-skills | Skills: /check-all, /apply-migration, /review-codex | unassigned | done | claude/lucid-turing-tzka4n | .claude/skills |  |
 | T-m5-cards | Milestone 5: option cards (screen 12) and Pickle green Yes/No pills | unassigned | open |  | src/app/lobby, src/components/ui, public/images/restaurants | T-m4-search |
 | T-pickle-team-standard | Pickle team skill (.claude/skills/pickle-team/SKILL.md) | unassigned | done | security/pickle-team-standard | .claude/skills/pickle-team |  |
 
@@ -80,9 +80,9 @@ Coordinator: **claude-coordinator-0169tw**
     },
     "T-skills": {
       "goal": "Skills: /check-all, /apply-migration, /review-codex",
-      "owner": "claude-coordinator-0169tw",
+      "owner": null,
       "lead": null,
-      "status": "review",
+      "status": "done",
       "contextRevision": 1,
       "checkout": null,
       "branch": "claude/lucid-turing-tzka4n",
@@ -92,7 +92,7 @@ Coordinator: **claude-coordinator-0169tw**
       ],
       "contracts": [],
       "dependsOn": [],
-      "updated": "2026-11-11T06:56:19Z"
+      "updated": "2026-11-11T07:44:47Z"
     },
     "T-m5-cards": {
       "goal": "Milestone 5: option cards (screen 12) and Pickle green Yes/No pills",
