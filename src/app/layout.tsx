@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { WebAnalytics } from "@/components/WebAnalytics";
 import "@fontsource-variable/outfit";
 import "./globals.css";
 
@@ -44,7 +45,10 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        {children}
+        {process.env.VERCEL_ENV === "production" && <WebAnalytics />}
+      </body>
     </html>
   );
 }

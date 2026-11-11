@@ -52,4 +52,15 @@ The cloud process initially had no Supabase URL/key bindings or local env files,
 
 Git push succeeded: the implementation is commit `5ed3b16` on `security/pr-13-review`. The explicit `gh pr create` attempt failed with `Post https://api.github.com/graphql: Forbidden`; no follow-up PR was created or assigned a number. A fresh HTTPS request also received a proxy CONNECT 403. An additive `api.github.com` domain request was saved to the existing environment draft, preserving the existing Supabase destination, but the runtime still reports revision 1 without that access. Review/save the draft and publish the environment configuration as appropriate; saving the proposal alone did not apply it. Once access is available, retry creation against `main` with this branch and the change summary.
 
-The fix branch includes PR #13's commits and can be proposed against `main` as the corrected replacement/follow-up. No branch is merged and no application or hosted migration is deployed by publication.
+Update after the user published the environment: GitHub API access now works,
+and [PR #14](https://github.com/Smoofers-21/Pickle_App/pull/14) was found open
+against `main` for this branch. The earlier denial above is historical. The new
+runtime has the Supabase URL but no secret bindings, so hosted database validation
+remains incomplete. No environment changes were reapplied by this follow-up.
+
+The fix branch includes PR #13's commits as the corrected replacement/follow-up.
+It also includes the subsequently requested Vercel Web Analytics addition; see
+[VERCEL_ANALYTICS.md](VERCEL_ANALYTICS.md) for its privacy filter, new dependency,
+118-test validation and enablement steps. Statements above about unchanged
+dependencies describe the original search fixes. No branch is merged and no
+production application or hosted migration was deployed by this work.
