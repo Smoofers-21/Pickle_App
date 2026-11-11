@@ -156,3 +156,6 @@ next-env.d.ts
 
 # Full-size cuisine photos (only the processed copies in public/ are committed)
 /assets/restaurant-originals/
+
+# Agent coordination checkout (branch agents/coordination; see docs/agents/protocol.md)
+/.agent-coord/
