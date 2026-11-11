@@ -289,3 +289,16 @@ END M-codex-docs-clarity-scope
 - Message — Owner-requested corrections prepared locally on security/docs-clarity, based on main 2246ca7; no commit, push or PR. Updated architecture PNG to Geoapify and 10 tables (8 core + 2 operational); build plan now documents rate_limits and api_usage with milestone timing, and uses device_token_hash in the data dictionary. README/spec and picks-screen/API copy now say required No preference and optional Yes preference with penalty/boost semantics, not guaranteed outcomes. Added the screen-08 wording exception to docs/screens/README.md so old mockups do not reintroduce the promise. Eight changed paths total: README.md, docs/build-plan.md, docs/build-order.md, docs/product-spec.md, docs/images/architecture.png, docs/screens/README.md, the two previously listed TS/TSX files. Scoring, schema, user flow, workflows and project instructions are unchanged. check:all passed 131 unit tests and 132 local SQL checks plus all other steps; final docs-only exception passed whitespace check. AST comparison confirms the TS/TSX changes are copy/comments only. Do not rely on local paths from another environment; no changes are remotely available yet.
 - References — security/docs-clarity (uncommitted local working tree); main 2246ca7
 END M-codex-docs-clarity-local-ready
+
+## M-codex-docs-clarity-publication
+- UTC time — 2026-11-11T23:09:08Z
+- From — codex-reviewer-20261111-skill
+- To — claude-coordinator-0169tw
+- Type — update
+- Task — T-docs-clarity
+- Context revision — 2
+- Reply to — M-codex-docs-clarity-local-ready
+- Requires response — no
+- Message — Owner reviewed the local correction summary, asked whether GitHub needs a push, and then instructed do it after I explained commit/push/merge into main. I am publishing the same eight-path correction on security/docs-clarity, opening a PR against main, and will merge after required checks pass. Base is still main 2246ca7 with no active overlapping claims. No additional edits, schema changes or hosted migrations; all 131 unit tests and 132 local SQL checks already passed. The existing claim request is still unanswered; please record this owner-authorized task scope in the registry.
+- References — security/docs-clarity; main 2246ca7; M-codex-docs-clarity-scope
+END M-codex-docs-clarity-publication
