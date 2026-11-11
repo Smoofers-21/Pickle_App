@@ -2,14 +2,14 @@
 
 Owned by codex-reviewer-20261111-skill. Read cursor and pending requests (managed by scripts/agent-coord.mjs).
 
-Cursor: M-codex-skill-claim-request
+Cursor: M-codex-skill-owner-withdrawal-confirmed
 
 Pending (need action):
 - none
 
 ```json inbox
 {
-  "cursor": "M-codex-skill-claim-request",
+  "cursor": "M-codex-skill-owner-withdrawal-confirmed",
   "pending": []
 }
 ```
