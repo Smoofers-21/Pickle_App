@@ -8,7 +8,7 @@ import os from "node:os";
 import path from "node:path";
 import { promisify } from "node:util";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import { claimConflicts, parseRecords, pathsOverlap } from "../../scripts/agent-coord.mjs";
+import { claimConflicts, parseRecords, pathsOverlap, postMessage, transaction } from "../../scripts/agent-coord.mjs";
 
 const run = promisify(execFile);
 const SCRIPT = path.resolve("scripts/agent-coord.mjs");
@@ -164,6 +164,43 @@ describe("agent coordination", () => {
     expect((await json(cli(claude, COORD, "context-publish", "--file", file))).revision).toBe(1);
     expect((await cli(codex, CODEX, "context-publish", "--file", file)).err).toMatch(/only the coordinator/);
     expect(remoteFile("PROJECT_CONTEXT.md")).toMatch(/Context revision: 1/);
+  }, 60_000);
+});
+
+// Codex's review of the coordination script (Nov 11, 2026): C1–C3.
+describe("coordination fixes from review", () => {
+  it("C1: a read during a local write can't erase the write", () => {
+    const id = "M-c1-during-read";
+    const result = transaction(claude, COORD, "c1", (dir: string, reg: unknown) => {
+      const r = postMessage(dir, reg, COORD, { id, message: "written while another command reads" });
+      // Another command on the same machine reads while this write is uncommitted.
+      execFileSync("node", [SCRIPT, "read"], { cwd: claude, env: { ...process.env, AGENT_ID: COORD, AGENT_COORD_ROOT: "" }, stdio: "ignore" });
+      return r;
+    });
+    expect(result.added).toBe(true);
+    expect(parseRecords(remoteFile(".agent/channel.md")).some((r: { id: string }) => r.id === id)).toBe(true);
+  }, 60_000);
+
+  it("C2: an owner can't release its own claim; only the coordinator can", async () => {
+    await json(cli(claude, COORD, "task", "create", "--id", "T-c2", "--goal", "C2 owned", "--paths", "src/shared"));
+    await json(cli(claude, COORD, "task", "grant", "--id", "T-c2", "--owner", REVIEW));
+    for (const status of ["released", "done", "open", "claimed"]) {
+      expect((await cli(codex, REVIEW, "task", "update", "--id", "T-c2", "--status", status)).err).toMatch(/only the coordinator/);
+    }
+    expect((await cli(codex, REVIEW, "task", "update", "--id", "T-c2", "--status", "in_progress")).ok).toBe(true);
+    await json(cli(claude, COORD, "task", "create", "--id", "T-c2b", "--goal", "C2 overlap", "--paths", "src/shared/x.ts"));
+    expect((await cli(claude, COORD, "task", "grant", "--id", "T-c2b", "--owner", COORD)).err).toMatch(/scope conflict/);
+  }, 60_000);
+
+  it("C3: a clone that fetches only main still finds the branch and sees new messages", async () => {
+    const narrow = path.join(tmp, "narrow");
+    git(tmp, "clone", "--quiet", "--single-branch", "--branch", "main", remote, narrow);
+    expect((await cli(narrow, null, "setup")).ok).toBe(true);
+    const before = await json(cli(narrow, REVIEW, "read"));
+    const posted = await json(cli(claude, COORD, "post", "--to", REVIEW, "--message", "seen by a narrow clone?"));
+    const after = await json(cli(narrow, REVIEW, "inbox"));
+    expect(after.unread.map((m: { id: string }) => m.id)).toContain(posted.id);
+    expect(before.coordinator).toBe(COORD);
   }, 60_000);
 });
 

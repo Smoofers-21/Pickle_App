@@ -93,15 +93,50 @@ export function formatRecord(id, fields) {
 }
 
 // ---------------------------------------------------------------------------
+// Reading state: from the transaction's checkout, or read-only from the branch
+// ---------------------------------------------------------------------------
+
+/**
+ * `src` is a checkout directory (inside a transaction) or a snapshot from
+ * `remoteSnapshot` (read-only commands). Snapshots read committed files with
+ * `git show` and never touch the checkout, so a read can't undo a write that
+ * another command on this machine is in the middle of (C1).
+ */
+function readText(src, rel) {
+  if (typeof src === "object") return src.read(rel);
+  const file = path.join(src, rel);
+  return fs.existsSync(file) ? fs.readFileSync(file, "utf8") : null;
+}
+
+function fetchBranch(cwd) {
+  // An explicit refspec, so the remote-tracking ref updates even in a clone
+  // that was set up to fetch only main (C3).
+  return tryGit(cwd, ["fetch", "--quiet", REMOTE, `+refs/heads/${BRANCH}:refs/remotes/${REMOTE}/${BRANCH}`]);
+}
+
+export function remoteSnapshot(dir) {
+  const fetched = fetchBranch(dir);
+  if (!fetched.ok) throw new Error(`cannot fetch ${REMOTE}/${BRANCH}: ${fetched.out.trim()}`);
+  const ref = git(dir, ["rev-parse", `${REMOTE}/${BRANCH}`]);
+  return {
+    ref,
+    read(rel) {
+      const r = tryGit(dir, ["show", `${ref}:${rel}`]);
+      return r.ok ? r.out + "\n" : null;
+    },
+  };
+}
+
+// ---------------------------------------------------------------------------
 // Registry (human tables + one machine-readable JSON block)
 // ---------------------------------------------------------------------------
 
 const EMPTY_REGISTRY = { version: 1, coordinator: null, actors: {}, tasks: {} };
 
-export function readRegistry(dir) {
-  const file = path.join(dir, P.registry);
-  if (!fs.existsSync(file)) return structuredClone(EMPTY_REGISTRY);
-  const m = /```json registry\n([\s\S]*?)\n```/.exec(fs.readFileSync(file, "utf8"));
+export function readRegistry(src) {
+  const text = readText(src, P.registry);
+  if (text === null) return structuredClone(EMPTY_REGISTRY);
+  const m = /```json registry\n([\s\S]*?)\n```/.exec(text);
   return m ? JSON.parse(m[1]) : structuredClone(EMPTY_REGISTRY);
 }
 
@@ -217,7 +252,7 @@ function ensureWorktree(cwd) {
 }
 
 function syncToRemote(dir) {
-  const fetched = tryGit(dir, ["fetch", "--quiet", REMOTE, BRANCH]);
+  const fetched = fetchBranch(dir);
   if (!fetched.ok) throw new Error(`cannot fetch ${REMOTE}/${BRANCH}: ${fetched.out.trim()}`);
   git(dir, ["reset", "--quiet", "--hard", `${REMOTE}/${BRANCH}`]);
   git(dir, ["clean", "--quiet", "-fd", "-e", ".agent/.coordination-lock"]);
@@ -236,7 +271,13 @@ export function transaction(cwd, actor, summary, apply) {
       const reg = readRegistry(dir);
       const result = apply(dir, reg);
       git(dir, ["add", "-A"]); // the lock file is in the branch's .gitignore
-      if (!tryGit(dir, ["diff", "--cached", "--quiet"]).ok) {
+      const changed = !tryGit(dir, ["diff", "--cached", "--quiet"]).ok;
+      if (!changed && result && result.added === true) {
+        // The write reported success but nothing reached the checkout: never report it as done.
+        if (attempt === MAX_TRIES) throw new Error("write was lost before it could be committed; retry the command");
+        continue;
+      }
+      if (changed) {
         git(dir, ["-c", "user.name=agent-coord", "-c", "user.email=agent-coord@users.noreply.github.com",
           "commit", "--quiet", "-m", `${actor}: ${summary}`]);
         const pushed = tryGit(dir, ["push", "--quiet", REMOTE, `HEAD:${BRANCH}`]);
@@ -257,9 +298,9 @@ export function transaction(cwd, actor, summary, apply) {
 // Operations
 // ---------------------------------------------------------------------------
 
-function contextRevision(dir) {
-  const file = path.join(dir, P.context);
-  const m = fs.existsSync(file) ? /Context revision:\s*(\d+)/.exec(fs.readFileSync(file, "utf8")) : null;
+function contextRevision(src) {
+  const text = readText(src, P.context);
+  const m = text ? /Context revision:\s*(\d+)/.exec(text) : null;
   return m ? Number(m[1]) : 0;
 }
 
@@ -291,10 +332,10 @@ export function postMessage(dir, reg, actor, o) {
 
 const INBOX_HEADER = (actor) => `# Inbox: ${actor}\n\nOwned by ${actor}. Read cursor and pending requests (managed by scripts/agent-coord.mjs).\n\n`;
 
-export function readInbox(dir, actor) {
-  const file = path.join(dir, P.inbox(actor));
-  if (!fs.existsSync(file)) return { cursor: null, pending: [] };
-  const m = /```json inbox\n([\s\S]*?)\n```/.exec(fs.readFileSync(file, "utf8"));
+export function readInbox(src, actor) {
+  const text = readText(src, P.inbox(actor));
+  if (text === null) return { cursor: null, pending: [] };
+  const m = /```json inbox\n([\s\S]*?)\n```/.exec(text);
   return m ? JSON.parse(m[1]) : { cursor: null, pending: [] };
 }
 
@@ -312,7 +353,7 @@ const addressedTo = (rec, actor, reg) => {
 
 /** Messages addressed to the actor after its cursor, plus requests still pending. */
 export function unread(dir, reg, actor) {
-  const records = parseRecords(fs.existsSync(path.join(dir, P.channel)) ? fs.readFileSync(path.join(dir, P.channel), "utf8") : "");
+  const records = parseRecords(readText(dir, P.channel) ?? "");
   const box = readInbox(dir, actor);
   const start = box.cursor ? records.findIndex((r) => r.id === box.cursor) + 1 : 0;
   const fresh = records.slice(start).filter((r) => r.fields.From !== actor && addressedTo(r, actor, reg));
@@ -392,9 +433,17 @@ export function taskOp(dir, reg, actor, op, o) {
     Object.assign(t, { owner: null, status: o.status || "released", updated: now() });
   } else if (op === "update") {
     if (!t) throw new Error(`no task ${id}`);
-    if (t.owner !== actor && reg.coordinator !== actor) throw new Error(`only ${t.owner} or the coordinator can update ${id}`);
+    const isCoordinator = reg.coordinator === actor;
+    if (t.owner !== actor && !isCoordinator) throw new Error(`only ${t.owner} or the coordinator can update ${id}`);
+    // Owners report progress; only the coordinator opens, grants, releases or
+    // completes claims (C2: an owner could otherwise release its own claim).
+    const OWNER_STATUSES = ["in_progress", "blocked", "review"];
+    const ALL_STATUSES = [...OWNER_STATUSES, "open", "claimed", "released", "done"];
+    if (o.status && !ALL_STATUSES.includes(o.status)) throw new Error(`unknown status ${o.status}`);
+    if (o.status && !isCoordinator && !OWNER_STATUSES.includes(o.status)) {
+      throw new Error(`only the coordinator can set status ${o.status}; owners use ${OWNER_STATUSES.join(", ")}`);
+    }
     for (const k of ["status", "branch", "revision", "checkout"]) if (o[k]) t[k] = o[k];
-    if (o.status === "done" && reg.coordinator !== actor) t.status = "review"; // done is recorded by the coordinator
     t.updated = now();
   } else {
     throw new Error(`unknown task operation ${op}`);
@@ -486,8 +535,7 @@ function main() {
       const root = coordinationRoot(cwd);
       const dir = path.join(root, ".agent-coord");
       if (fs.existsSync(path.join(dir, ".git"))) return print(`already set up: ${dir}`);
-      git(root, ["fetch", "--quiet", REMOTE]);
-      if (tryGit(root, ["rev-parse", "--verify", `${REMOTE}/${BRANCH}`]).ok) {
+      if (fetchBranch(root).ok && tryGit(root, ["rev-parse", "--verify", `${REMOTE}/${BRANCH}`]).ok) {
         git(root, ["worktree", "add", "--quiet", "--detach", dir, `${REMOTE}/${BRANCH}`]);
         return print(`coordination checkout ready: ${dir}`);
       }
@@ -510,12 +558,11 @@ function main() {
       return print(`created ${REMOTE}/${BRANCH}; checkout at ${dir}`);
     }
     case "read": {
-      const dir = ensureWorktree(cwd);
-      syncToRemote(dir);
-      const reg = readRegistry(dir);
-      const me = actor && reg.actors[actor] ? unread(dir, reg, actor) : null;
+      const snap = remoteSnapshot(ensureWorktree(cwd));
+      const reg = readRegistry(snap);
+      const me = actor && reg.actors[actor] ? unread(snap, reg, actor) : null;
       return print({
-        contextRevision: contextRevision(dir),
+        contextRevision: contextRevision(snap),
         coordinator: reg.coordinator,
         actors: reg.actors,
         tasks: reg.tasks,
@@ -536,9 +583,8 @@ function main() {
           return args.advance ? advanceInbox(dir, reg, actor) : readInbox(dir, actor);
         }));
       }
-      const dir = ensureWorktree(cwd);
-      syncToRemote(dir);
-      const { fresh, pending } = unread(dir, readRegistry(dir), actor);
+      const snap = remoteSnapshot(ensureWorktree(cwd));
+      const { fresh, pending } = unread(snap, readRegistry(snap), actor);
       return print({ unread: fresh.map((r) => ({ id: r.id, ...r.fields })), pending: pending.map((r) => ({ id: r.id, ...r.fields })) });
     }
     case "task":
