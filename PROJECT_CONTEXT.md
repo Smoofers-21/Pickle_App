@@ -1,6 +1,6 @@
 # Project context: Pickle
 
-Context revision: 1
+Context revision: 2
 
 Accepted goals, constraints and decisions. Only the coordinator
 (Claude) changes this file. Proposals go to `.agent/channel.md` first.
@@ -25,14 +25,14 @@ The full specs are in the repo: `docs/build-order.md`, `docs/build-plan.md`,
 ## Decisions
 
 - D1 (Nov 11): Geoapify replaces Google Places; local illustrative cuisine photos. Merged (PR #11).
-- D2 (Nov 11): Search fenced by a private claim token per search (migration 20261111000003). Implemented in PR #13, applied to Supabase.
-- D3 (Nov 11): Demo lobbies use saved samples, never live API credits (Codex review). Implemented in PR #13.
-- D4 (Nov 11): Vercel Web Analytics, production only, URLs sanitized. Implemented in PR #13; owner enables it in Vercel after merge.
+- D2 (Nov 11): Search fenced by a private claim token per search (migration 20261111000003). Merged, applied to Supabase.
+- D3 (Nov 11): Demo lobbies use saved samples, never live API credits (Codex review). Merged.
+- D4 (Nov 11): Vercel Web Analytics, production only, URLs sanitized. Merged; owner enables it in Vercel.
 - D5 (Nov 11): Pickle green #2F5E36 is the only accent: selected Yes/No pills (M5), ranking outline (M6). Documented; to implement.
 - D6 (Nov 11): Agent coordination via branch `agents/coordination` and `scripts/agent-coord.mjs`; Claude is coordinator.
 
 ## Current state
 
-- Milestones 1–3: merged. Milestone 4 (search): PR #13 open, includes Codex's PR #14 commits; owner to test, merge #13, close #14.
+- Milestones 1–4: merged (PR #13 at main 2246ca7, which also carried PR #14 security fixes and analytics, PR #15 pickle-team skill, agent coordination and the skills).
 - Database: all migrations through 20261111000003 applied to Supabase; security audit passed.
-- Next: skills /check-all, /apply-migration, /review-codex (Claude); then milestone 5 (option cards). Owner to supply cuisine photos.
+- Next: milestone 5 (option cards, Pickle green Yes/No pills). Owner to enable Vercel Web Analytics and supply cuisine photos.
