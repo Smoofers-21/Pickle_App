@@ -1,0 +1,1488 @@
+{
+ "_note": "Trimmed sample of a real Geoapify Places response (Austin, TX, Nov 2026), used only by tests. Data (c) OpenStreetMap contributors, ODbL; via Geoapify.",
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Lanai",
+    "categories": [
+     "catering",
+     "catering.bar"
+    ],
+    "formatted": "Lanai, West 5th Street, Austin, TX 78701, United States of America",
+    "address_line1": "Lanai",
+    "address_line2": "West 5th Street, Austin, TX 78701, United States of America",
+    "distance": 42,
+    "place_id": "51f57ddd8e956f58c05917fcec365e443e40f00103f901ef455158000000009203054c616e6169",
+    "lat": 30.2670626,
+    "lon": -97.7435033,
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "name": "Lanai",
+      "amenity": "bar"
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.7435033,
+     30.2670626
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Shiner's Saloon",
+    "categories": [
+     "catering",
+     "catering.bar"
+    ],
+    "formatted": "Shiner's Saloon, 422 Congress Avenue, Austin, TX 78701, United States of America",
+    "address_line1": "Shiner's Saloon",
+    "address_line2": "422 Congress Avenue, Austin, TX 78701, United States of America",
+    "website": "https://shinerssaloon.com/",
+    "distance": 48,
+    "place_id": "51ddb1d826956f58c059fe06921c55443e40f00103f901ee4551580000000092030f5368696e657227732053616c6f6f6e",
+    "lat": 30.2669237,
+    "lon": -97.7434785,
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "name": "Shiner's Saloon",
+      "amenity": "bar"
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.7434785,
+     30.2669237
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Sky Lounge",
+    "categories": [
+     "catering",
+     "catering.bar"
+    ],
+    "formatted": "Sky Lounge, West 5th Street, Austin, TX 78701, United States of America",
+    "address_line1": "Sky Lounge",
+    "address_line2": "West 5th Street, Austin, TX 78701, United States of America",
+    "distance": 53,
+    "place_id": "51ca822e86976f58c0597147ee9f5d443e40f00103f901f0fd72580000000092030a536b79204c6f756e6765",
+    "lat": 30.2670536,
+    "lon": -97.7436233,
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "name": "Sky Lounge",
+      "amenity": "bar"
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.7436233,
+     30.2670536
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Speakeasy",
+    "categories": [
+     "catering",
+     "catering.bar"
+    ],
+    "formatted": "Speakeasy, 412 Congress Avenue, Austin, TX 78701, United States of America",
+    "address_line1": "Speakeasy",
+    "address_line2": "412 Congress Avenue, Austin, TX 78701, United States of America",
+    "distance": 62,
+    "place_id": "511321bfc8956f58c0596e85b01a4b443e40f00103f901f297ed2601000000920309537065616b65617379",
+    "lat": 30.266771,
+    "lon": -97.7435171,
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "name": "Speakeasy",
+      "amenity": "bar"
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.7435171,
+     30.266771
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Basecamp",
+    "categories": [
+     "catering",
+     "catering.bar"
+    ],
+    "formatted": "Basecamp, West 5th Street, Austin, TX 78701, United States of America",
+    "address_line1": "Basecamp",
+    "address_line2": "West 5th Street, Austin, TX 78701, United States of America",
+    "distance": 89,
+    "place_id": "510f4b5ef89c6f58c059146690717b443e40f00103f901ed455158000000009203084261736563616d70",
+    "lat": 30.2675086,
+    "lon": -97.7439557,
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "name": "Basecamp",
+      "amenity": "bar"
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.7439557,
+     30.2675086
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Floppy Disk Repair Co.",
+    "categories": [
+     "catering",
+     "catering.bar"
+    ],
+    "formatted": "Floppy Disk Repair Co., 119 East 5th Street, Austin, TX 78701, United States of America",
+    "address_line1": "Floppy Disk Repair Co.",
+    "address_line2": "119 East 5th Street, Austin, TX 78701, United States of America",
+    "website": "http://www.floppydiskrepairco.com/",
+    "distance": 110,
+    "place_id": "51e31a9fc97e6f58c0590c00fa2246443e40f00103f901688a4a8701000000920316466c6f707079204469736b2052657061697220436f2e",
+    "lat": 30.2666952,
+    "lon": -97.7421135,
+    "facilities": {
+     "outdoor_seating": false
+    },
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "name": "Floppy Disk Repair Co.",
+      "amenity": "bar",
+      "outdoor_seating": "no"
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.7421135,
+     30.2666952
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "El Cockfight",
+    "categories": [
+     "catering",
+     "catering.bar"
+    ],
+    "formatted": "El Cockfight, 121 East 5th Street, Austin, TX 78701, United States of America",
+    "address_line1": "El Cockfight",
+    "address_line2": "121 East 5th Street, Austin, TX 78701, United States of America",
+    "opening_hours": "Mo-Fr 15:00-02:00; Sa,Su 14:00-02:00",
+    "distance": 118,
+    "place_id": "51d8440b757d6f58c059d1a5c9d644443e40f00103f901b0ec76e50000000092030c456c20436f636b6669676874",
+    "lat": 30.2666754,
+    "lon": -97.7420323,
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "name": "El Cockfight",
+      "amenity": "bar",
+      "min_age": 21,
+      "opening_hours": "Mo-Fr 15:00-02:00; Sa,Su 14:00-02:00"
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.7420323,
+     30.2666754
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Garage",
+    "categories": [
+     "catering",
+     "catering.bar"
+    ],
+    "formatted": "Garage, 503 Colorado Street, Austin, TX 78701, United States of America",
+    "address_line1": "Garage",
+    "address_line2": "503 Colorado Street, Austin, TX 78701, United States of America",
+    "website": "https://www.garagetx.com/",
+    "opening_hours": "Mo-We 17:00-12:00; Th-Sa 17:00-02:00; Su closed",
+    "distance": 124,
+    "place_id": "5125da441ca16f58c0594d41c8c38c443e40f00103f901bde98e2401000000920306476172616765",
+    "lat": 30.2677729,
+    "lon": -97.7442084,
+    "facilities": {
+     "air_conditioning": true
+    },
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "name": "Garage",
+      "amenity": "bar",
+      "min_age": 21,
+      "description": "Cocktail bar located in a converted parking garage",
+      "opening_hours": "Mo-We 17:00-12:00; Th-Sa 17:00-02:00; Su closed"
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.7442084,
+     30.2677729
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Highland Lounge",
+    "categories": [
+     "catering",
+     "catering.bar"
+    ],
+    "formatted": "Highland Lounge, 404 Colorado Street, Austin, TX 78701, United States of America",
+    "address_line1": "Highland Lounge",
+    "address_line2": "404 Colorado Street, Austin, TX 78701, United States of America",
+    "website": "https://highlandlounge.com/",
+    "distance": 170,
+    "place_id": "51ba015592ab6f58c059df292ed857443e40f00103f90192c1d0da0000000092030f486967686c616e64204c6f756e6765",
+    "lat": 30.2669654,
+    "lon": -97.7448469,
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "name": "Highland Lounge",
+      "amenity": "bar"
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.7448469,
+     30.2669654
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Parker Jazz Club",
+    "categories": [
+     "adult",
+     "adult.nightclub"
+    ],
+    "formatted": "Parker Jazz Club, 117 West 4th Street, Austin, TX 78701, United States of America",
+    "address_line1": "Parker Jazz Club",
+    "address_line2": "117 West 4th Street, Austin, TX 78701, United States of America",
+    "distance": 176,
+    "place_id": "5192600553a86f58c059dcb122b42f443e40f00103f9018ef7f360010000009203105061726b6572204a617a7a20436c7562",
+    "lat": 30.2663529,
+    "lon": -97.7446487,
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "name": "Parker Jazz Club",
+      "amenity": "nightclub"
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.7446487,
+     30.2663529
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Upstairs at Caroline",
+    "categories": [
+     "catering",
+     "catering.bar"
+    ],
+    "formatted": "Upstairs at Caroline, 621 Congress Avenue, Austin, TX 78701, United States of America",
+    "address_line1": "Upstairs at Caroline",
+    "address_line2": "621 Congress Avenue, Austin, TX 78701, United States of America",
+    "website": "https://www.carolinerestaurant.com/upstairs-at-caroline",
+    "opening_hours": "Mo-Th 16:00-24:00; Fr 12:00-24:00; Sa-Su 11:00-24:00",
+    "distance": 177,
+    "place_id": "51b19effc3826f58c059cadfbda3c6443e40f00103f901b9f876e5000000009203145570737461697273206174204361726f6c696e65",
+    "lat": 30.268656,
+    "lon": -97.7423563,
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "name": "Upstairs at Caroline",
+      "amenity": "bar",
+      "opening_hours": "Mo-Th 16:00-24:00; Fr 12:00-24:00; Sa-Su 11:00-24:00"
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.7423563,
+     30.268656
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "The Elephant Room",
+    "categories": [
+     "catering",
+     "catering.bar"
+    ],
+    "formatted": "The Elephant Room, 315 Congress Avenue, Austin, TX 78701, United States of America",
+    "address_line1": "The Elephant Room",
+    "address_line2": "315 Congress Avenue, Austin, TX 78701, United States of America",
+    "distance": 179,
+    "place_id": "513628507a956f58c059429369d9ff433e40f00103f9017a3210140000000092031154686520456c657068616e7420526f6f6d",
+    "lat": 30.2656227,
+    "lon": -97.7434984,
+    "facilities": {
+     "air_conditioning": true
+    },
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "name": "The Elephant Room",
+      "amenity": "bar",
+      "min_age": 21
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.7434984,
+     30.2656227
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Mort Subite",
+    "categories": [
+     "building",
+     "building.catering",
+     "catering",
+     "catering.bar"
+    ],
+    "formatted": "Mort Subite, 308 Congress Avenue, Austin, TX 78701, United States of America",
+    "address_line1": "Mort Subite",
+    "address_line2": "308 Congress Avenue, Austin, TX 78701, United States of America",
+    "opening_hours": "Mo-Th 12:00-23:00, Fr,Sa 12:00-24:00, Su 12:00-21:00",
+    "distance": 185,
+    "place_id": "51f2c68b6c9d6f58c0590299e02706443e40f00102f901459096130000000092030b4d6f727420537562697465",
+    "lat": 30.2657189,
+    "lon": -97.7439834,
+    "facilities": {
+     "air_conditioning": true
+    },
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "name": "Mort Subite",
+      "amenity": "bar",
+      "min_age": 21,
+      "opening_hours": "Mo-Th 12:00-23:00, Fr,Sa 12:00-24:00, Su 12:00-21:00"
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.74398339891539,
+     30.265718929608745
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Estelle's Social Lounge",
+    "categories": [
+     "building",
+     "building.catering",
+     "catering",
+     "catering.bar"
+    ],
+    "formatted": "Estelle's Social Lounge, 400 Colorado Street, Austin, TX 78701, United States of America",
+    "address_line1": "Estelle's Social Lounge",
+    "address_line2": "400 Colorado Street, Austin, TX 78701, United States of America",
+    "website": "https://www.estellesatx.com/",
+    "opening_hours": "Tu-We 16:00-24:00; Th-Fr 16:00-02:00; Sa 12:00-02:00; Su 12:00-24:00",
+    "distance": 189,
+    "place_id": "5197372e61ae6f58c059396b4cf24e443e40f00102f9010084961300000000920317457374656c6c65277320536f6369616c204c6f756e6765",
+    "lat": 30.2668297,
+    "lon": -97.7450183,
+    "facilities": {
+     "air_conditioning": true
+    },
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "name": "Estelle's Social Lounge",
+      "amenity": "bar",
+      "opening_hours": "Tu-We 16:00-24:00; Th-Fr 16:00-02:00; Sa 12:00-02:00; Su 12:00-24:00"
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.74501828683275,
+     30.266829627663558
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "B. D. Riley's Irish Pub & Restaurant",
+    "categories": [
+     "catering",
+     "catering.bar"
+    ],
+    "formatted": "B. D. Riley's Irish Pub & Restaurant, 204 East 6th Street, Austin, TX 78701, United States of America",
+    "address_line1": "B. D. Riley's Irish Pub & Restaurant",
+    "address_line2": "204 East 6th Street, Austin, TX 78701, United States of America",
+    "website": "https://bdrileys.com/",
+    "distance": 199,
+    "place_id": "51bcbec5796e6f58c059190c642c89443e40f00103f9015dee4f5800000000920324422e20442e2052696c657927732049726973682050756220262052657374617572616e74",
+    "lat": 30.2677181,
+    "lon": -97.7411179,
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "name": "B. D. Riley's Irish Pub & Restaurant",
+      "amenity": "bar"
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.7411179,
+     30.2677181
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Cedar Street Courtyard",
+    "categories": [
+     "building",
+     "building.catering",
+     "catering",
+     "catering.bar"
+    ],
+    "formatted": "Cedar Street Courtyard, 208 West 4th Street, Austin, TX 78701, United States of America",
+    "address_line1": "Cedar Street Courtyard",
+    "address_line2": "208 West 4th Street, Austin, TX 78701, United States of America",
+    "opening_hours": "Mo-Fr 17:00-02:00; PH closed",
+    "distance": 208,
+    "place_id": "511385f12eb26f58c059e3fad23659443e40f00102f9019adbae430000000092031643656461722053747265657420436f75727479617264",
+    "lat": 30.2669863,
+    "lon": -97.7452504,
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "name": "Cedar Street Courtyard",
+      "amenity": "bar",
+      "opening_hours": "Mo-Fr 17:00-02:00; PH closed"
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.74525045,
+     30.266986299999996
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Friends Bar",
+    "categories": [
+     "catering",
+     "catering.bar"
+    ],
+    "formatted": "Friends Bar, 208 East 6th Street, Austin, TX 78702, United States of America",
+    "address_line1": "Friends Bar",
+    "address_line2": "208 East 6th Street, Austin, TX 78702, United States of America",
+    "website": "https://friendsbar.com/",
+    "distance": 209,
+    "place_id": "51a50f02976c6f58c059d998d71187443e40f00103f90104f0e2c70000000092030b467269656e647320426172",
+    "lat": 30.267686,
+    "lon": -97.7410028,
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "name": "Friends Bar",
+      "amenity": "bar"
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.7410028,
+     30.267686
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Neon Grotto",
+    "categories": [
+     "adult",
+     "adult.nightclub",
+     "building",
+     "building.entertainment"
+    ],
+    "formatted": "Neon Grotto, 318 Colorado Street, Austin, TX 78701, United States of America",
+    "address_line1": "Neon Grotto",
+    "address_line2": "318 Colorado Street, Austin, TX 78701, United States of America",
+    "distance": 209,
+    "place_id": "51886eac7aaf6f58c059f09991e634443e40f00102f901d9a8c60d0000000092030b4e656f6e2047726f74746f",
+    "lat": 30.2664322,
+    "lon": -97.7450854,
+    "facilities": {
+     "air_conditioning": true
+    },
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "name": "Neon Grotto",
+      "amenity": "nightclub",
+      "min_age": 21
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.7450854,
+     30.266432199999997
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "DuMont's Down Low",
+    "categories": [
+     "building",
+     "building.catering",
+     "building.commercial",
+     "catering",
+     "catering.bar"
+    ],
+    "formatted": "DuMont's Down Low, 214 West 4th Street, Austin, TX 78701, United States of America",
+    "address_line1": "DuMont's Down Low",
+    "address_line2": "214 West 4th Street, Austin, TX 78701, United States of America",
+    "distance": 215,
+    "place_id": "5114c3e968b36f58c059b1d9d5945a443e40f00102f901ff8396130000000092031144754d6f6e74277320446f776e204c6f77",
+    "lat": 30.26697,
+    "lon": -97.7453392,
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "name": "DuMont's Down Low",
+      "amenity": "bar"
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.74532530620883,
+     30.267007162293968
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Bourbon Girl",
+    "categories": [
+     "catering",
+     "catering.bar"
+    ],
+    "formatted": "Bourbon Girl, 212 East 6th Street, Austin, TX 78702, United States of America",
+    "address_line1": "Bourbon Girl",
+    "address_line2": "212 East 6th Street, Austin, TX 78702, United States of America",
+    "website": "http://bourbongirlaustin.com/site/",
+    "distance": 218,
+    "place_id": "518e8e50d86a6f58c0595792e11d85443e40f00103f90103f0e2c70000000092030c426f7572626f6e204769726c",
+    "lat": 30.2676562,
+    "lon": -97.7408963,
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "name": "Bourbon Girl",
+      "amenity": "bar"
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.7408963,
+     30.2676562
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Firehouse Lounge & Hostel",
+    "categories": [
+     "accommodation",
+     "accommodation.hostel",
+     "building",
+     "building.accommodation",
+     "building.catering",
+     "catering",
+     "catering.bar"
+    ],
+    "formatted": "Firehouse Lounge & Hostel, 605 Brazos Street, Austin, TX 78701, United States of America",
+    "address_line1": "Firehouse Lounge & Hostel",
+    "address_line2": "605 Brazos Street, Austin, TX 78701, United States of America",
+    "distance": 223,
+    "place_id": "518dadf7956d6f58c05973fd2877a6443e40f00102f901a489ea050000000092031946697265686f757365204c6f756e6765202620486f7374656c",
+    "lat": 30.2681647,
+    "lon": -97.7410635,
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "name": "Firehouse Lounge & Hostel",
+      "amenity": "bar"
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.74106358706759,
+     30.26816506148084
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Coconut Club",
+    "categories": [
+     "adult",
+     "adult.nightclub",
+     "building",
+     "building.entertainment"
+    ],
+    "formatted": "Coconut Club, 310 Colorado Street, Austin, TX 78701, United States of America",
+    "address_line1": "Coconut Club",
+    "address_line2": "310 Colorado Street, Austin, TX 78701, United States of America",
+    "opening_hours": "We-Su 21:00-02:00",
+    "distance": 224,
+    "place_id": "513921563ab16f58c0591d174cd02d443e40f00102f901ade9da3c0000000092030c436f636f6e757420436c7562",
+    "lat": 30.2663242,
+    "lon": -97.7451921,
+    "facilities": {
+     "air_conditioning": true
+    },
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "name": "Coconut Club",
+      "amenity": "nightclub",
+      "opening_hours": "We-Su 21:00-02:00"
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.74519213114844,
+     30.266324060990076
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Soho",
+    "categories": [
+     "catering",
+     "catering.bar"
+    ],
+    "formatted": "Soho, 219 East 6th Street, Austin, TX 78701, United States of America",
+    "address_line1": "Soho",
+    "address_line2": "219 East 6th Street, Austin, TX 78701, United States of America",
+    "distance": 225,
+    "place_id": "51184d1d9a686f58c05935eac6606a443e40f00103f9014fee4f5800000000920304536f686f",
+    "lat": 30.2672482,
+    "lon": -97.7407594,
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "name": "Soho",
+      "amenity": "bar"
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.7407594,
+     30.2672482
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "The Pub",
+    "categories": [
+     "building",
+     "building.catering",
+     "building.commercial",
+     "catering",
+     "catering.pub"
+    ],
+    "formatted": "The Pub, 214 West 4th Street, Austin, TX 78701, United States of America",
+    "address_line1": "The Pub",
+    "address_line2": "214 West 4th Street, Austin, TX 78701, United States of America",
+    "opening_hours": "Su-Th 11:00-24:00; Fr-Sa 11:00-02:00",
+    "distance": 226,
+    "place_id": "5146191648b56f58c0590ea8925c59443e40f00102f901f98396130000000092030754686520507562",
+    "lat": 30.2669886,
+    "lon": -97.7454395,
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "name": "The Pub",
+      "amenity": "pub",
+      "opening_hours": "Su-Th 11:00-24:00; Fr-Sa 11:00-02:00"
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.74543954999999,
+     30.26698855
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Chuggin' Monkey",
+    "categories": [
+     "catering",
+     "catering.bar"
+    ],
+    "formatted": "Chuggin' Monkey, 221 East 6th Street, Austin, TX 78701, United States of America",
+    "address_line1": "Chuggin' Monkey",
+    "address_line2": "221 East 6th Street, Austin, TX 78701, United States of America",
+    "distance": 229,
+    "place_id": "51ad54ab0a686f58c059bf21f9ef66443e40f00103f90150ee4f580000000092030f4368756767696e27204d6f6e6b6579",
+    "lat": 30.2671957,
+    "lon": -97.7407252,
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "name": "Chuggin' Monkey",
+      "amenity": "bar"
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.7407252,
+     30.2671957
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Oilcan Harry's",
+    "categories": [
+     "adult",
+     "adult.nightclub",
+     "building",
+     "building.entertainment"
+    ],
+    "formatted": "Oilcan Harry's, 211 West 4th Street, Austin, TX 78701, United States of America",
+    "address_line1": "Oilcan Harry's",
+    "address_line2": "211 West 4th Street, Austin, TX 78701, United States of America",
+    "website": "https://www.oilcanharrys.com/",
+    "distance": 231,
+    "place_id": "51ffddc7feb36f58c05954a8b9c038443e40f00102f901d7a8c60d0000000092030e4f696c63616e2048617272792773",
+    "lat": 30.2664927,
+    "lon": -97.7453546,
+    "facilities": {
+     "air_conditioning": true
+    },
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "name": "Oilcan Harry's",
+      "amenity": "nightclub"
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.74536103742865,
+     30.26649097950606
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Darwin's",
+    "categories": [
+     "catering",
+     "catering.bar"
+    ],
+    "formatted": "Darwin's, San Jacinto Boulevard, Austin, TX 78767, United States of America",
+    "address_line1": "Darwin's",
+    "address_line2": "San Jacinto Boulevard, Austin, TX 78767, United States of America",
+    "distance": 241,
+    "place_id": "51de2637e5656f58c059e6400fb56d443e40f00103f9014dee4f580000000092030844617277696e2773",
+    "lat": 30.267299,
+    "lon": -97.7405942,
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "name": "Darwin's",
+      "amenity": "bar"
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.7405942,
+     30.267299
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Lavaca Street Bar",
+    "categories": [
+     "building",
+     "building.catering",
+     "catering",
+     "catering.bar"
+    ],
+    "formatted": "Lavaca Street Bar, 405 Lavaca Street, Austin, TX 78701, United States of America",
+    "address_line1": "Lavaca Street Bar",
+    "address_line2": "405 Lavaca Street, Austin, TX 78701, United States of America",
+    "website": "https://lavacastdowntown.com/",
+    "opening_hours": "Mo-Sa 11:00-02:00; Su 11:30-02:00",
+    "distance": 243,
+    "place_id": "5156f60537b86f58c0593a29a96e60443e40f00102f901e5d8d759000000009203114c61766163612053747265657420426172",
+    "lat": 30.2670848,
+    "lon": -97.7456228,
+    "facilities": {
+     "air_conditioning": true,
+     "outdoor_seating": true
+    },
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "name": "Lavaca Street Bar",
+      "amenity": "bar",
+      "min_age": 21,
+      "opening_hours": "Mo-Sa 11:00-02:00; Su 11:30-02:00",
+      "outdoor_seating": "yes"
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.74561858732463,
+     30.2670964396468
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Recess Arcade Bar",
+    "categories": [
+     "catering",
+     "catering.bar"
+    ],
+    "formatted": "Recess Arcade Bar, 222 East 6th Street, Austin, TX 78702, United States of America",
+    "address_line1": "Recess Arcade Bar",
+    "address_line2": "222 East 6th Street, Austin, TX 78702, United States of America",
+    "website": "https://recessarcadebar.com/",
+    "distance": 246,
+    "place_id": "5185ded1b5656f58c059126e8d637f443e40f00103f901fbf0e2c7000000009203115265636573732041726361646520426172",
+    "lat": 30.2675688,
+    "lon": -97.7405829,
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "name": "Recess Arcade Bar",
+      "amenity": "bar"
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.7405829,
+     30.2675688
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Llano Lounge",
+    "categories": [
+     "catering",
+     "catering.bar"
+    ],
+    "formatted": "Llano Lounge, 217 Congress Avenue, Austin, TX 78701, United States of America",
+    "address_line1": "Llano Lounge",
+    "address_line2": "217 Congress Avenue, Austin, TX 78701, United States of America",
+    "opening_hours": "Mo-Su 11:00-24:00",
+    "distance": 250,
+    "place_id": "515e3ccd13996f58c0591b457b61d7433e40f00103f9011f5c9cae0200000092030c4c6c616e6f204c6f756e6765",
+    "lat": 30.2650052,
+    "lon": -97.7437181,
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "name": "Llano Lounge",
+      "amenity": "bar",
+      "opening_hours": "Mo-Su 11:00-24:00"
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.7437181,
+     30.2650052
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Rain on 4th",
+    "categories": [
+     "building",
+     "building.catering",
+     "catering",
+     "catering.bar"
+    ],
+    "formatted": "Rain on 4th, 217 West 4th Street, Austin, TX 78701, United States of America",
+    "address_line1": "Rain on 4th",
+    "address_line2": "217 West 4th Street, Austin, TX 78701, United States of America",
+    "website": "https://www.rainon4th.com/",
+    "distance": 257,
+    "place_id": "51a46af6deb86f58c0599b8486d53b443e40f00102f901d3a8c60d0000000092030b5261696e206f6e20347468",
+    "lat": 30.266546,
+    "lon": -97.7456572,
+    "facilities": {
+     "air_conditioning": true
+    },
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "name": "Rain on 4th",
+      "amenity": "bar"
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.74565862716787,
+     30.266537995663935
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Powder Room",
+    "categories": [
+     "catering",
+     "catering.bar"
+    ],
+    "formatted": "Powder Room, 303 West 5th Street, Austin, TX 78701, United States of America",
+    "address_line1": "Powder Room",
+    "address_line2": "303 West 5th Street, Austin, TX 78701, United States of America",
+    "website": "https://www.loboshospitality.com/venues/powderroomatx",
+    "distance": 265,
+    "place_id": "51711bb226bb6f58c059cd8ef92587443e40f00103f90153bb20b80200000092030b506f7764657220526f6f6d",
+    "lat": 30.2676872,
+    "lon": -97.7457978,
+    "catering": {
+     "reservation": "recommended"
+    },
+    "facilities": {
+     "smoking": false,
+     "air_conditioning": true
+    },
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "name": "Powder Room",
+      "amenity": "bar",
+      "min_age": 21
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.7457978,
+     30.2676872
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "The Iron Bear",
+    "categories": [
+     "catering",
+     "catering.bar"
+    ],
+    "formatted": "The Iron Bear, 301 West 6th Street, Austin, TX 78701, United States of America",
+    "address_line1": "The Iron Bear",
+    "address_line2": "301 West 6th Street, Austin, TX 78701, United States of America",
+    "website": "https://www.theironbear.com/",
+    "opening_hours": "Mo-Su 11:00-02:00",
+    "distance": 274,
+    "place_id": "515690b0b9b46f58c059ee450fd7c5443e40f00103f9016bee4f580000000092030d5468652049726f6e2042656172",
+    "lat": 30.2686438,
+    "lon": -97.7454056,
+    "facilities": {
+     "smoking": false,
+     "air_conditioning": true,
+     "takeaway": true
+    },
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "name": "The Iron Bear",
+      "amenity": "bar",
+      "opening_hours": "Mo-Su 11:00-02:00"
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.7454056,
+     30.2686438
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "CU29 Cocktail Bar",
+    "categories": [
+     "catering",
+     "catering.bar"
+    ],
+    "formatted": "CU29 Cocktail Bar, Brazos Street, Austin, TX 78701, United States of America",
+    "address_line1": "CU29 Cocktail Bar",
+    "address_line2": "Brazos Street, Austin, TX 78701, United States of America",
+    "distance": 278,
+    "place_id": "51bb5f05f86e6f58c05904e44ba8e0443e40f00103f901f6be739f000000009203114355323920436f636b7461696c20426172",
+    "lat": 30.269053,
+    "lon": -97.741148,
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "name": "CU29 Cocktail Bar",
+      "amenity": "bar"
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.741148,
+     30.269053
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Amped Austin",
+    "categories": [
+     "adult",
+     "adult.nightclub"
+    ],
+    "formatted": "Amped Austin, 300 East 6th Street, Austin, TX 78701, United States of America",
+    "address_line1": "Amped Austin",
+    "address_line2": "300 East 6th Street, Austin, TX 78701, United States of America",
+    "website": "http://www.ampedaustin.com/",
+    "distance": 279,
+    "place_id": "51e75a0fba5f6f58c0593343f4b578443e40f00103f90145fdfec70000000092030c416d7065642041757374696e",
+    "lat": 30.2674669,
+    "lon": -97.7402177,
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "name": "Amped Austin",
+      "amenity": "nightclub"
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.7402177,
+     30.2674669
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "KRAVE",
+    "categories": [
+     "adult",
+     "adult.nightclub"
+    ],
+    "formatted": "KRAVE, East 6th Street, Austin, TX 78702, United States of America",
+    "address_line1": "KRAVE",
+    "address_line2": "East 6th Street, Austin, TX 78702, United States of America",
+    "website": "https://www.facebook.com/KRAVEaustin",
+    "distance": 288,
+    "place_id": "51c4cf7f0f5e6f58c059f9307bd976443e40f00103f90146fdfec7000000009203054b52415645",
+    "lat": 30.2674385,
+    "lon": -97.740116,
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "name": "KRAVE",
+      "amenity": "nightclub"
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.740116,
+     30.2674385
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Vice",
+    "categories": [
+     "catering",
+     "catering.bar"
+    ],
+    "formatted": "Vice, East 6th Street, Austin, TX 78702, United States of America",
+    "address_line1": "Vice",
+    "address_line2": "East 6th Street, Austin, TX 78702, United States of America",
+    "distance": 289,
+    "place_id": "5117b7d1005e6f58c0596a5cee8277443e40f00103f9013dee4f580000000092030456696365",
+    "lat": 30.2674486,
+    "lon": -97.7401125,
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "name": "Vice",
+      "amenity": "bar"
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.7401125,
+     30.2674486
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Antone's Nightclub",
+    "categories": [
+     "adult",
+     "adult.nightclub",
+     "building",
+     "building.entertainment"
+    ],
+    "formatted": "Antone's Nightclub, 305 East 5th Street, Austin, TX 78701, United States of America",
+    "address_line1": "Antone's Nightclub",
+    "address_line2": "305 East 5th Street, Austin, TX 78701, United States of America",
+    "distance": 289,
+    "place_id": "518f7bc5b4626f58c0595bf08e391c443e40f00102f901789f6c3700000000920312416e746f6e652773204e69676874636c7562",
+    "lat": 30.2660559,
+    "lon": -97.7403995,
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "name": "Antone's Nightclub",
+      "amenity": "nightclub"
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.74039954457679,
+     30.266055676839056
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": 311,
+    "categories": [
+     "catering",
+     "catering.bar"
+    ],
+    "formatted": "311, East 6th Street, Austin, TX 78702, United States of America",
+    "address_line1": "311",
+    "address_line2": "East 6th Street, Austin, TX 78702, United States of America",
+    "distance": 295,
+    "place_id": "51d66ebbd05c6f58c0598ee497665f443e40f00103f9013aee4f5800000000920303333131",
+    "lat": 30.2670807,
+    "lon": -97.74004,
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "name": 311,
+      "amenity": "bar"
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.74004,
+     30.2670807
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "The Dizzy Rooster",
+    "categories": [
+     "catering",
+     "catering.bar"
+    ],
+    "formatted": "The Dizzy Rooster, 306 East 6th Street, Austin, TX 78701, United States of America",
+    "address_line1": "The Dizzy Rooster",
+    "address_line2": "306 East 6th Street, Austin, TX 78701, United States of America",
+    "website": "http://www.dizzyrooster.com",
+    "distance": 298,
+    "place_id": "5177ae39515c6f58c059a0a932e774443e40f00103f90149fdfec7000000009203115468652044697a7a7920526f6f73746572",
+    "lat": 30.2674088,
+    "lon": -97.7400096,
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "name": "The Dizzy Rooster",
+      "amenity": "bar"
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.7400096,
+     30.2674088
+    ]
+   }
+  }
+ ]
+}

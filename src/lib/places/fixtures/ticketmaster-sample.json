@@ -1,0 +1,65 @@
+{
+  "_note": "Made-up sample in the documented Ticketmaster Discovery API v2 response shape, used only by tests. Not real events.",
+  "_embedded": {
+    "events": [
+      {
+        "name": "Sample Rock Night",
+        "type": "event",
+        "id": "vvG1aZ9sample1",
+        "url": "https://www.ticketmaster.com/sample-rock-night/event/0000000001",
+        "distance": 1.2,
+        "units": "MILES",
+        "images": [
+          { "ratio": "3_2", "url": "https://s1.ticketm.net/dam/a/000/sample_RETINA_PORTRAIT_3_2.jpg", "width": 640, "height": 427 },
+          { "ratio": "16_9", "url": "https://s1.ticketm.net/dam/a/000/sample_TABLET_LANDSCAPE_16_9.jpg", "width": 1024, "height": 576 },
+          { "ratio": "16_9", "url": "https://s1.ticketm.net/dam/a/000/sample_RECOMENDATION_16_9.jpg", "width": 640, "height": 360 },
+          { "ratio": "16_9", "url": "http://evil.example.com/x.jpg", "width": 640, "height": 360 }
+        ],
+        "dates": { "start": { "localDate": "2026-11-14", "localTime": "20:00:00", "dateTime": "2026-11-15T02:00:00Z" } },
+        "classifications": [
+          {
+            "primary": true,
+            "segment": { "id": "KZFzniwnSyZfZ7v7nJ", "name": "Music" },
+            "genre": { "id": "KnvZfZ7vAeA", "name": "Rock" },
+            "subGenre": { "id": "KZazBEonSMnZfZ7v6dt", "name": "Alternative Rock" }
+          }
+        ],
+        "ageRestrictions": { "legalAgeEnforced": true },
+        "_embedded": {
+          "venues": [
+            {
+              "name": "Sample Hall",
+              "address": { "line1": "100 Example St" },
+              "city": { "name": "Austin" },
+              "state": { "stateCode": "TX" },
+              "location": { "latitude": "30.2650", "longitude": "-97.7400" }
+            }
+          ]
+        }
+      },
+      {
+        "name": "Sample Comedy Hour",
+        "id": "vvG1aZ9sample2",
+        "url": "javascript:alert(1)",
+        "distance": 3.4,
+        "dates": { "start": { "localDate": "2026-11-14", "localTime": "19:30:00" } },
+        "classifications": [
+          { "primary": true, "segment": { "name": "Arts & Theatre" }, "genre": { "name": "Comedy" }, "subGenre": { "name": "Comedy" } }
+        ],
+        "_embedded": { "venues": [{ "name": "Sample Club" }] }
+      },
+      {
+        "name": "Sample Game",
+        "id": "vvG1aZ9sample3",
+        "url": "https://www.ticketmaster.com/sample-game/event/0000000003",
+        "distance": 6.0,
+        "dates": { "start": { "localDate": "2026-11-15", "localTime": "13:00:00" } },
+        "classifications": [
+          { "primary": true, "segment": { "name": "Sports" }, "genre": { "name": "Football" }, "subGenre": { "name": "Undefined" } }
+        ]
+      },
+      { "name": "Missing id and date" }
+    ]
+  },
+  "page": { "size": 100, "totalElements": 4, "totalPages": 1, "number": 0 }
+}

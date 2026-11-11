@@ -1,13 +1,27 @@
 "use client";
 
-import { BigSpinner, Checklist, Screen, Subtitle, Title } from "@/components/ui";
+import { BigSpinner, Checklist, Screen, Subtitle, Title, type CheckState } from "@/components/ui";
 import type { GameInfo } from "@/lib/lobby-types";
 import styles from "../../flow.module.css";
 import { gameLabel, roundLabel } from "./gameLabel";
 
-// Screen 10: everyone has picked. The real search arrives in milestone 4, so
-// for now this shows the picks are combined and waits there.
+const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? "" : "es"}`;
+
+// Screen 10: the search runs on the server; every phone shows its progress.
 export function SearchingScreen({ game, notice }: { game: GameInfo; notice?: React.ReactNode }) {
+  const search = game.search;
+  const searched = search?.matches != null;
+  const widening = search?.widenedTo != null;
+
+  const items: { label: string; state: CheckState }[] = [{ label: "Combined everyone's picks", state: "done" }];
+  items.push(
+    searched
+      ? { label: `Searched within ${search.radiusMi} mi: ${plural(search.matches ?? 0, "match")}`, state: "done" }
+      : { label: `Searching within ${game.radiusMi} mi…`, state: "active" },
+  );
+  if (widening) items.push({ label: `Widening to ${search.widenedTo} mi…`, state: "active" });
+  items.push({ label: "Preparing cards", state: searched && !widening ? "active" : "todo" });
+
   return (
     <Screen>
       {notice}
@@ -22,14 +36,8 @@ export function SearchingScreen({ game, notice }: { game: GameInfo; notice?: Rea
           <br />
           for the group
         </Title>
-        <Subtitle>Everyone&apos;s picks are in. The search itself arrives in milestone 4.</Subtitle>
-        <Checklist
-          items={[
-            { label: "Combined everyone's picks", state: "done" },
-            { label: `Searching within ${game.radiusMi} mi…`, state: "active" },
-            { label: "Preparing cards", state: "todo" },
-          ]}
-        />
+        <Subtitle>Usually takes a few seconds.</Subtitle>
+        <Checklist items={items} />
       </div>
     </Screen>
   );

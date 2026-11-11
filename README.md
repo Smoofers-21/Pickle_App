@@ -4,16 +4,16 @@ A mobile web app that helps a group of friends decide where to go — a restaura
 
 Built as a portfolio project to show full-stack work end to end: real-time multiplayer state, a locked-down database, third-party API integration on free tiers, a tested scoring algorithm and a mobile-first design system.
 
-**Current status:** lobbies, host setup, picks, demo friends and scoring are implemented through milestone 3. This PR prepares Geoapify and the local cuisine-image pipeline. Live provider search, credit enforcement and caching orchestration are milestone 4; cards and voting follow later. No stock photos have been added yet, so the image helper currently returns a placeholder.
+**Current status:** lobbies, host setup, picks, demo friends and the live search (Geoapify for restaurants and bars, Ticketmaster for events, with widening, a shared daily credit cap and the nothing-found screen) are built through milestone 4. Option cards and voting follow in milestones 5 and 6. No stock photos have been added yet, so cards will show a placeholder until they are.
 
 ## What it demonstrates
 
 | Area | How |
 |---|---|
 | Real-time multiplayer | Supabase Realtime pings and Presence keep every phone's lobby in sync within about a second |
-| Database design and security | Postgres with row-level security on every table and no browser access at all; all game rules live in SQL functions only the server can call; 78 SQL checks run in CI |
-| API integration (milestone 4) | Planned: Geoapify Places (OpenStreetMap data) for restaurants and bars, Ticketmaster for events, behind a swappable provider interface; all keys server-side |
-| Algorithms | Cancel-out rule for conflicting picks, primary/secondary tag matching, distance scoring, chain de-duplication, radius widening (unit tested) |
+| Database design and security | Postgres with row-level security on every table and no browser access at all; all game rules live in SQL functions only the server can call; 116 SQL checks run in CI |
+| API integration | Geoapify Places (OpenStreetMap data) for restaurants and bars and Ticketmaster for events, behind a swappable provider interface; all keys server-side; a shared daily credit budget reserved atomically in Postgres before every call |
+| Algorithms | Cancel-out rule for conflicting picks, primary/secondary tag matching, distance scoring, chain de-duplication, radius widening, an OpenStreetMap opening-hours parser (unit tested on real data) |
 | Security | HTTP-only device cookies (only their hash is stored), rate limits, request size limits, security headers, a pre-commit secret check, and a CI check that no key reaches the browser bundle |
 | Frontend | Next.js 16 App Router PWA, a small black-and-white design kit, screens built to a design spec |
 

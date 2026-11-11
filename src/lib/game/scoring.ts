@@ -82,6 +82,28 @@ export type Candidate = {
   openNow?: boolean | null;
   /** Events: local date, YYYY-MM-DD. */
   eventDate?: string | null;
+  /** What the option card shows (milestone 5). Never used for scoring. */
+  card?: OptionCard;
+};
+
+/** Display details saved with each option for its card. */
+export type OptionCard = {
+  /** "Italian", "Bar", "Rock · Music"… */
+  kind: string;
+  address?: string | null;
+  /** The place's own website or the event's ticket page (http/https only). */
+  link?: string | null;
+  /** Events: the Ticketmaster image URL. Places use a local cuisine image instead. */
+  imageUrl?: string | null;
+  /** Places: the OSM categories used to pick the local cuisine image. */
+  imageKeys?: string[];
+  /** Places: raw OSM opening_hours, so "open now" can be checked again later. */
+  hours?: string | null;
+  /** Events: venue name and local start time (HH:MM). */
+  venue?: string | null;
+  startTime?: string | null;
+  lat?: number | null;
+  lng?: number | null;
 };
 
 export type GameSettings = {
@@ -187,7 +209,10 @@ function matchPrepared(entry: PoolEntry, { primary, secondary, text }: ReturnTyp
     const cats = lower(entry.tag.categories);
     if (cats.some((cat) => primary.includes(cat))) return "primary";
     if (cats.some((cat) => secondary.includes(cat))) return "secondary";
-    if (entry.tag.keywords?.some((k) => containsWord(text, normalizeText(k)))) return "secondary";
+    // A tag word in the name or description also counts, as secondary: much
+    // OpenStreetMap data has no cuisine ("Little Italy Pizza").
+    const words = [...entry.tag.categories, ...(entry.tag.keywords ?? [])];
+    if (words.some((k) => containsWord(text, normalizeText(k)))) return "secondary";
     return null;
   }
   if (entry.other) {

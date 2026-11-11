@@ -35,6 +35,7 @@ This file sets the order to build Pickle in. It follows the 9 milestones in [bui
 
 - **Nov 10, 2026:** Google cost rules (Pro fields only, open now, one shared photo). Replaced the next day.
 - **Nov 11, 2026: Geoapify instead of Google Places.** The project runs entirely on free tiers for a portfolio and public demos: Geoapify Places (OpenStreetMap data) for restaurants and bars, Ticketmaster for events, and a local library of illustrative cuisine photos instead of place photos. No ratings are used. See "Places data provider" and "Cuisine images" in the build plan.
+- **Nov 11, 2026: milestone 4 checked against the live APIs.** Geoapify charges 1 credit per 20 places, so one search for the nearest 100 places costs 5 credits; widening fetches the next 100. Results may be cached ("Cache/store results with no limits"), and the free plan requires both Geoapify and OpenStreetMap attribution. The key is sent in a header, never in a URL. "Open now" uses the host's phone time zone. The host's location is also deleted after a failed search (changing the criteria sends a fresh one). The score threshold stays at 60 after real searches in Austin and New York.
 
 ## How each milestone runs
 

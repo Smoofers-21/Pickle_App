@@ -61,7 +61,7 @@ A server route fills each round, calling the APIs only when saved results can't,
 
 5.  **Score.** Start every option at 50, then apply the adjustments below.
 
-6.  **Pick 6.** Keep options at or above the threshold (about 60), highest first. Fewer than 6: widen the radius by 5 mi once and search again; places already found are recognized by their source ID and skipped, never fetched or scored twice. Still fewer: use what was found. None: tell the host.
+6.  **Pick 6.** Keep options at or above the threshold (60, kept after real searches in Austin and New York), highest first. Fewer than 6: widen the radius by 5 mi once and search again; places already found are recognized by their source ID and skipped, never scored twice. Geoapify returns the nearest places first, so when the first search came back full (100 places) the widened search fetches the next 100 instead of the same ones. Still fewer: use what was found. None: tell the host.
 
 7.  **No separate details calls.** The search itself returns everything a card needs (name, address, location, categories, cuisine, opening hours and website when OpenStreetMap has them). Each place gets a local cuisine image (see Cuisine images); no image is fetched from any API. Every result from every search is saved to the options table, so later rounds draw from it before calling the APIs again.
 
@@ -85,9 +85,11 @@ Primary and secondary tags come from each source's own categories: for places, t
 *(Decided Nov 11, 2026: Geoapify replaces Google Places so the project runs free, for a portfolio and public demos.)*
 
 - **Geoapify Places API** returns real nearby restaurants and bars from OpenStreetMap: name, address, coordinates, categories, cuisine, and, when mapped, opening hours, website and outdoor seating. No ratings, reviews or photos.
-- **Free-plan target:** 3,000 credits a day, subject to the project's current plan ([Geoapify pricing](https://geoapify.com/pricing)). Do not assume one HTTP request equals one credit: verify billing for the selected endpoint, result limit, pagination and retries before implementing the limiter in milestone 4. The category names, response fields and attribution/caching terms also require confirmation against official documentation and live fixtures.
+- **Free plan:** 3,000 credits a day. A Places request costs **1 credit per 20 places returned** (Places API docs, checked Nov 11, 2026), so Pickle's search for the nearest 100 places costs 5 credits, and a widened search another 5. There are no retries, so a failed request is never paid twice.
+- **Checked against the live API (Nov 11, 2026):** categories are `catering.restaurant` for food and `catering.bar`, `catering.pub`, `catering.biergarten`, `catering.taproom` and `adult.nightclub` for bars. Each result has Geoapify categories (like `catering.restaurant.italian`) and the raw OpenStreetMap tags in `datasource.raw` (`cuisine`, `opening_hours`, `outdoor_seating`, `min_age`, `diet:*`, `live_music`, `sport`), plus the distance in meters from the search center. In samples from Austin and New York about 60% of restaurants had a cuisine and about 40% had opening hours; bars rarely have more than their type. The key is sent in the `x-api-key` header, so it never appears in a URL or log.
+- **Caching:** Geoapify's docs say Places results may be cached and stored with no limits; the game cache keeps them only for the game.
 - **Swappable provider.** All provider code sits behind one interface (`PlacesProvider`: search(center, radius, category) → list of `Candidate`s). Scoring, picks, voting and results only ever see `Candidate`s, so changing provider later means writing one new adapter, not touching the game.
-- **Attribution:** every screen showing place data shows "Powered by Geoapify" and "© OpenStreetMap contributors", with links, as Geoapify and the OpenStreetMap license (ODbL) require. Confirm the exact wording against Geoapify's terms in milestone 4.
+- **Attribution:** every screen showing place data shows "Powered by Geoapify" and "© OpenStreetMap contributors", with links. Geoapify's terms (checked Nov 11, 2026): OpenStreetMap attribution is always required, and Geoapify attribution is required on the free plan.
 
 ### Cuisine images
 
@@ -110,7 +112,7 @@ Everything runs on free tiers: Geoapify's free plan (3,000 credits a day) and Ti
 
 5.  **Ticketmaster in one batch.** A default key is free, limited to 5,000 calls a day and 5 a second. ([Ticketmaster docs](https://developer.ticketmaster.com/products-and-docs/apis/getting-started/)) One call fetches a large batch of events for the whole game.
 
-6.  **Hard limits and logging (milestone 4, not implemented yet).** At most 2 places searches per round, plus a shared daily credit budget targeting 2,500 credits (below the currently expected free-plan allowance). Reserve the verified worst-case request cost atomically before each outbound request, including pagination and retries; a process-local request counter is insufficient across Vercel instances. When the budget is unavailable, stop searching and show the nothing-found screen with a "try again later" note. Keep the existing per-device and per-IP limits. Log only safe counts/credit usage, never request URLs containing API keys, raw provider error bodies, or host locations.
+6.  **Hard limits and logging (built in milestone 4).** At most 2 searches per round. A shared daily budget in Postgres (`api_usage`, one row per day and provider) is reserved atomically before every request: 2,500 Geoapify credits and 4,500 Ticketmaster calls a day, below the free plans, across every Vercel instance. When the budget is used up, the search stops and the host sees the nothing-found screen with a "try again later" note. The same table is the call log: credits, calls and refused calls per day, with no locations, keys or URLs. Only one server runs a round's search (claimed in the database), so phones refreshing during the search never cause extra calls. Changing the criteria (which starts a new search) is rate limited to 10 an hour per device. Errors are logged as a short label only, never a request URL, a provider's error body or a location.
 
 OpenStreetMap data is open (ODbL): it may be stored with attribution, so the game cache keeps it for the length of the game. It is still deleted with the game, as the privacy rules require.
 
@@ -150,7 +152,7 @@ Secret keys live only on the server, every database table is locked down by defa
 
 - Members never see each other's IP addresses: every update travels through Supabase, never directly between phones.
 
-- The host's location is used only to center the search, is stored rounded to about 100 m, is never shown to other members (they see distances only), and is deleted as soon as the game's last search is done: after round 1's search in a 1-round game, after the last round's search otherwise, and at the latest when the game ends (built in milestone 4, decided Nov 10, 2026).
+- The host's location is used only to center the search, is stored rounded to about 100 m, is never shown to other members (they see distances only), and is deleted as soon as the game's last search is done: after round 1's search in a 1-round game, after the last round's search otherwise, after any search that found nothing (changing the criteria sends a fresh one), and at the latest when the game ends (built in milestone 4, decided Nov 10–11, 2026). Ending the game deletes the game and everything in it. The host's phone also sends its time zone, used only to tell whether places are open now.
 
 - A daily cleanup job deletes lobbies, members, picks, votes and saved places more than 24 hours old.
 

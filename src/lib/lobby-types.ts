@@ -22,6 +22,37 @@ export type GameInfo = {
   indoorOutdoor: "either" | "indoor" | "outdoor";
   roundsTotal: number;
   currentRound: number;
+  /** The current round's search (screens 10 and 11). Never the host's location. */
+  search: SearchInfo | null;
+};
+
+export type SearchInfo = {
+  status: "running" | "done" | "nothing_found" | "unavailable";
+  radiusMi: number;
+  /** Options at or above the threshold after the first search. */
+  matches: number | null;
+  /** The wider radius, once the search widened. */
+  widenedTo: number | null;
+  /** Why it was unavailable: the daily free-plan limit, or the data source failed. */
+  reason: "budget" | "error" | "no_location" | null;
+};
+
+/** One option shown this round. Never its score. */
+export type OptionView = {
+  id: string;
+  name: string;
+  kind: string;
+  distanceMi: number;
+  address: string | null;
+  link: string | null;
+  /** Food and bars: true / false from OpenStreetMap hours, null when unknown. */
+  openNow: boolean | null;
+  /** A local illustrative cuisine image, or the event's Ticketmaster image. */
+  image: { src: string; illustrative: boolean } | null;
+  /** Events: venue and local start time. */
+  venue: string | null;
+  startTime: string | null;
+  source: "geoapify" | "ticketmaster";
 };
 
 /** One side of a pick: a preset tag key, or "other" with typed text. */
@@ -44,6 +75,8 @@ export type LobbyState =
       myPicks: { no: PickSide; yes: PickSide | null; ready: boolean } | null;
       /** Demo friends are still about to pick: check back soon. */
       demoPending: boolean;
+      /** The options shown in the current round (from milestone 4). */
+      options: OptionView[];
     }
   | { status: "removed"; code: string }
   | { status: "not_member" }
