@@ -570,6 +570,13 @@ button.memberChip {
   border-style: dashed;
 }
 
+/* Selected Yes / No pills on the picks screen use Pickle green. */
+.chip.pickle[aria-pressed="true"] {
+  border-color: var(--pickle);
+  background: var(--pickle);
+  color: var(--paper);
+}
+
 /* ---------- Select (outlined pill with a chevron) ---------- */
 
 .selectWrap {

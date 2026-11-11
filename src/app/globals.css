@@ -7,6 +7,9 @@
   --fill: #f2f2f2; /* light fills */
   --fill-2: #ededed; /* disabled fills */
   --paper: #ffffff;
+  /* The one accent: the logo wordmark's green. Only for selected Yes / No
+     pills (screen 08) and the outline of the ranking being ordered (13, 15). */
+  --pickle: #2f5e36;
 
   --font: "Outfit Variable", system-ui, -apple-system, "Segoe UI", sans-serif;
 

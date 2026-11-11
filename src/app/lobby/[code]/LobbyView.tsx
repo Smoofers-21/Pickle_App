@@ -26,8 +26,8 @@ import { cleanCodeInput } from "@/lib/lobby-rules";
 import type { LobbyMember } from "@/lib/lobby-types";
 import { post } from "@/lib/client-api";
 import styles from "../../flow.module.css";
+import { CardsScreen } from "./CardsScreen";
 import { NothingFoundScreen } from "./NothingFoundScreen";
-import { OptionsListScreen } from "./OptionsListScreen";
 import { PicksScreen } from "./PicksScreen";
 import { SearchingScreen } from "./SearchingScreen";
 import { SetupScreen } from "./SetupScreen";
@@ -36,7 +36,7 @@ import { WaitingScreen } from "./WaitingScreen";
 
 // Screens 05 (host), 06 (member), 07 (setup), 08 (picks), 09 (waiting for
 // picks), 10 (searching), 11 (nothing found), 18 (host left notice) and 19
-// (removed). After the search, a plain list of the options until milestone 5.
+// (removed). After the search, the option cards (12).
 export function LobbyView() {
   const params = useParams<{ code: string }>();
   const code = cleanCodeInput(params.code ?? "");
@@ -144,7 +144,7 @@ export function LobbyView() {
       }
       return <SearchingScreen game={game} notice={noticeBar} />;
     }
-    return <OptionsListScreen game={game} options={state.options} notice={noticeBar} demo={lobby.isDemo} />;
+    return <CardsScreen game={game} options={state.options} notice={noticeBar} demo={lobby.isDemo} />;
   }
 
   if (me.isHost && settingUp && lobby.status === "open") {

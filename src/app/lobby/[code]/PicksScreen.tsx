@@ -44,6 +44,7 @@ function TagPicker({
         {tags.map((t) => (
           <Chip
             large
+            tone="pickle"
             key={t.key}
             selected={choice.tag === t.key}
             disabled={blockedTag === t.key}
@@ -52,7 +53,7 @@ function TagPicker({
             {t.label}
           </Chip>
         ))}
-        <OtherChip selected={choice.tag === "other"} onClick={() => onChange({ tag: choice.tag === "other" ? null : "other", other: choice.other })} />
+        <OtherChip tone="pickle" selected={choice.tag === "other"} onClick={() => onChange({ tag: choice.tag === "other" ? null : "other", other: choice.other })} />
       </ChipRow>
       {choice.tag === "other" && (
         <div className={styles.otherField}>

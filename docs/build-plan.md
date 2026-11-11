@@ -219,6 +219,8 @@ Each milestone ends with something you can try on your phone. Search uses sample
 
     - Card with the cuisine image (labelled "Illustrative photo") or the event's Ticketmaster image, name, cuisine or type, distance, address, "Open now" when known, and a link (the place's website or a map link; the ticket page for events); arrows and swiping; Go vote unlocks after every card is seen. Cards with place data show "Powered by Geoapify · © OpenStreetMap contributors". The cuisine image library and its credits file are added here.
 
+    - Built Nov 11, 2026: each phone remembers which cards it has seen this round (browser storage, so a reload keeps progress). Places without a website get a map search link built from their public name and address. Until milestone 6, Go vote opens a "Ranking is next" placeholder with Go to choices.
+
     - Test: try to vote before seeing all cards.
     - **Pickle green** (decided Nov 11, 2026): change the selected Yes and No pills on the picks screen (08) from black to the logo's green, \#2F5E36, as a `--pickle` color in the design kit. White text on it passes contrast (about 8:1). The cards themselves stay black and white.
 

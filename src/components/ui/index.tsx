@@ -110,9 +110,25 @@ export function BackButton({ href, onClick }: { href?: string; onClick?: () => v
   );
 }
 
-/** A selectable pill, for tags and options. Selected = solid black. */
-export function Chip({ selected, large, className, ...props }: ButtonProps & { selected?: boolean; large?: boolean }) {
-  return <button type="button" aria-pressed={!!selected} className={cx(styles.chip, large && styles.large, className)} {...props} />;
+/** Chip colors: selected is solid black, or Pickle green for Yes / No picks. */
+export type ChipTone = "ink" | "pickle";
+
+/** A selectable pill, for tags and options. Selected = solid black (or green with `tone="pickle"`). */
+export function Chip({
+  selected,
+  large,
+  tone = "ink",
+  className,
+  ...props
+}: ButtonProps & { selected?: boolean; large?: boolean; tone?: ChipTone }) {
+  return (
+    <button
+      type="button"
+      aria-pressed={!!selected}
+      className={cx(styles.chip, large && styles.large, tone === "pickle" && styles.pickle, className)}
+      {...props}
+    />
+  );
 }
 
 /** A pill that only shows a word, like the Food / Bars / Events on the home screen. */
@@ -231,9 +247,14 @@ export function Divider() {
 }
 
 /** The dashed "+ Other" chip. */
-export function OtherChip({ selected, ...props }: ButtonProps & { selected?: boolean }) {
+export function OtherChip({ selected, tone = "ink", ...props }: ButtonProps & { selected?: boolean; tone?: ChipTone }) {
   return (
-    <button type="button" aria-pressed={!!selected} className={cx(styles.chip, styles.large, styles.otherChip)} {...props}>
+    <button
+      type="button"
+      aria-pressed={!!selected}
+      className={cx(styles.chip, styles.large, styles.otherChip, tone === "pickle" && styles.pickle)}
+      {...props}
+    >
       + Other
     </button>
   );
