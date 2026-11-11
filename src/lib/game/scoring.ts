@@ -1,6 +1,7 @@
 // Search and scoring rules (see "Search and scoring" in docs/build-plan.md).
 // Plain functions with no API calls, so they can be tested on sample data.
-// Milestone 4 feeds them real Google Places and Ticketmaster results.
+// Milestone 4 feeds them real results from the places provider (Geoapify,
+// OpenStreetMap data) and Ticketmaster.
 
 import { findTag, type Category, type TagDef } from "./tags";
 
@@ -63,22 +64,22 @@ export function combinePicks(category: Category, picks: MemberPicks[]): Pool {
 
 /** A place or event, in the same shape whichever source it came from. */
 export type Candidate = {
-  source: "google" | "ticketmaster";
+  /** Where it came from. Places providers are swappable (see PlacesProvider in milestone 4). */
+  source: "geoapify" | "ticketmaster";
   sourceId: string;
   name: string;
-  /** Google primary type, or Ticketmaster segment + genre. */
+  /** Places: main OSM cuisine(s) or bar type. Events: Ticketmaster segment + genre. */
   primary: string[];
-  /** Other Google types, or the Ticketmaster subgenre. */
+  /** Places: other categories (extra cuisines, diet tags, Geoapify categories). Events: the subgenre. */
   secondary: string[];
   /** Extra text to match keywords against (description, venue name). */
   text?: string;
   distanceMi: number;
-  rating?: number | null;
   indoorOutdoor?: "indoor" | "outdoor" | null;
   /** True when only 21+ may attend. Null when unknown. */
   adultsOnly?: boolean | null;
-  /** Food and bars: open at some point today. Null when unknown. */
-  openToday?: boolean | null;
+  /** Food and bars: open right now per OpenStreetMap hours. Null when unknown (kept). */
+  openNow?: boolean | null;
   /** Events: local date, YYYY-MM-DD. */
   eventDate?: string | null;
 };
@@ -111,7 +112,7 @@ export function normalizeText(text: string): string {
 }
 
 /**
- * Step 3, filter: places open today, events on the chosen date, 21+ venues
+ * Step 3, filter: places not listed as closed now, events on the chosen date, 21+ venues
  * only when the host allowed them, within the radius, and nothing already
  * shown earlier in this game.
  */
@@ -127,7 +128,7 @@ export function filterCandidates(
     if (settings.age === "all" && c.adultsOnly === true) return false;
     if (settings.category === "events") {
       if (settings.eventDate && c.eventDate !== settings.eventDate) return false;
-    } else if (c.openToday === false) {
+    } else if (c.openNow === false) {
       return false;
     }
     return true;
@@ -149,7 +150,11 @@ export function dedupe(candidates: Candidate[]): Candidate[] {
 // Score
 // ---------------------------------------------------------------------------
 
-/** Starting adjustments from the build plan (to be tuned with real searches). */
+/**
+ * Starting adjustments from the build plan (to be tuned with real searches).
+ * No ratings: the places data (OpenStreetMap) has none, so distance is worth
+ * up to 20 points instead.
+ */
 export const WEIGHTS = {
   start: 50,
   yesPrimary: 15,
@@ -157,13 +162,8 @@ export const WEIGHTS = {
   noPrimary: -40,
   noSecondary: -10,
   indoorOutdoor: 5,
-  ratingMax: 10,
-  distanceMax: 10,
+  distanceMax: 20,
 };
-
-/** Rating at or above this earns full points; at or below `ratingFloor`, none. */
-const ratingFull = 4.5;
-const ratingFloor = 3.0;
 
 export type Match = "primary" | "secondary" | null;
 
@@ -201,14 +201,6 @@ function containsWord(haystack: string, needle: string): boolean {
   return needle.length > 0 && ` ${haystack} `.includes(` ${needle} `);
 }
 
-/** Rating points: unknown ratings (most events) get half, so they aren't punished. */
-export function ratingPoints(rating: number | null | undefined): number {
-  if (rating == null) return WEIGHTS.ratingMax / 2;
-  if (rating >= ratingFull) return WEIGHTS.ratingMax;
-  if (rating <= ratingFloor) return 0;
-  return (WEIGHTS.ratingMax * (rating - ratingFloor)) / (ratingFull - ratingFloor);
-}
-
 /** Distance points: full at 0 mi, none at the edge of the radius. */
 export function distancePoints(distanceMi: number, radiusMi: number): number {
   if (radiusMi <= 0) return 0;
@@ -232,7 +224,6 @@ export function score(c: Candidate, pool: Pool, settings: GameSettings, radiusMi
   if (settings.indoorOutdoor !== "either" && c.indoorOutdoor === settings.indoorOutdoor) {
     s += WEIGHTS.indoorOutdoor;
   }
-  s += ratingPoints(c.rating);
   s += distancePoints(c.distanceMi, radiusMi);
   return Math.round(Math.max(0, Math.min(100, s)));
 }

@@ -31,7 +31,7 @@ const patterns = [
   ["GitHub token", /\b(gh[pousr]_[A-Za-z0-9]{36,}|github_pat_[A-Za-z0-9_]{40,})\b/],
   [
     "Secret setting with a value",
-    /\b(SUPABASE_SECRET_KEY|SUPABASE_SERVICE_ROLE_KEY|GOOGLE_PLACES_API_KEY|TICKETMASTER_API_KEY)\s*[=:]\s*["']?[A-Za-z0-9_-]{12,}/,
+    /\b(SUPABASE_SECRET_KEY|SUPABASE_SERVICE_ROLE_KEY|GEOAPIFY_API_KEY|GOOGLE_PLACES_API_KEY|TICKETMASTER_API_KEY)\s*[=:]\s*["']?[A-Za-z0-9_-]{12,}/,
   ],
 ];
 

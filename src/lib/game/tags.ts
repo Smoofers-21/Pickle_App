@@ -1,13 +1,16 @@
 // The Yes / No tags for each category (final lists in docs/product-spec.md).
 //
-// Each tag lists the categories the data sources use for it. An option
-// matches a tag as "primary" when one of these is its main category (a
-// Google place's primary type, a Ticketmaster event's segment or genre) and
-// as "secondary" when it is one of its other categories (other Google types,
-// the Ticketmaster subgenre). Tags with `keywords` also match by name or
-// description, which counts as secondary.
+// Each tag lists the categories the data sources use for it. Restaurants and
+// bars come from OpenStreetMap through Geoapify: an option matches a tag as
+// "primary" when one of these is its main category (its OSM cuisine, like
+// "italian", or its bar type, like "pub") and as "secondary" when it is one
+// of its other categories (other cuisines, diet tags, Geoapify categories).
+// Events come from Ticketmaster: primary is the segment or genre, secondary
+// the subgenre. Tags with `keywords` also match by name or description, which
+// counts as secondary; tags with only keywords are best effort.
 //
-// The exact Google type names are checked against the API in milestone 4.
+// The exact OpenStreetMap / Geoapify values are checked against live data in
+// milestone 4.
 
 export type Category = "food" | "bars" | "events";
 
@@ -27,40 +30,31 @@ const t = (key: string, label: string, categories: string[], keywords?: string[]
 
 export const TAGS: Record<Category, TagDef[]> = {
   food: [
-    t("italian", "Italian", ["italian_restaurant"]),
-    t("mexican", "Mexican", ["mexican_restaurant", "tex_mex_restaurant"]),
-    t("asian", "Asian", [
-      "chinese_restaurant",
-      "japanese_restaurant",
-      "thai_restaurant",
-      "korean_restaurant",
-      "vietnamese_restaurant",
-      "asian_restaurant",
-      "ramen_restaurant",
-      "sushi_restaurant",
-    ]),
-    t("indian", "Indian", ["indian_restaurant"]),
-    t("mediterranean", "Mediterranean", ["mediterranean_restaurant", "greek_restaurant", "middle_eastern_restaurant"]),
-    t("american", "American", ["american_restaurant", "diner"]),
-    t("burgers", "Burgers", ["hamburger_restaurant"]),
-    t("seafood", "Seafood", ["seafood_restaurant"]),
+    t("italian", "Italian", ["italian", "pizza"]),
+    t("mexican", "Mexican", ["mexican", "tex-mex"]),
+    t("asian", "Asian", ["chinese", "japanese", "thai", "korean", "vietnamese", "asian", "ramen", "noodle", "sushi"]),
+    t("indian", "Indian", ["indian"]),
+    t("mediterranean", "Mediterranean", ["mediterranean", "greek", "lebanese", "turkish", "middle_eastern"]),
+    t("american", "American", ["american", "diner"]),
+    t("burgers", "Burgers", ["burger"]),
+    t("seafood", "Seafood", ["seafood", "fish"]),
     t("steakhouse", "Steakhouse", ["steak_house"]),
-    t("bbq", "BBQ", ["barbecue_restaurant"]),
-    t("vegetarian", "Vegetarian", ["vegetarian_restaurant", "vegan_restaurant"]),
-    t("fine_dining", "Fine dining", ["fine_dining_restaurant"]),
-    t("breakfast", "Breakfast", ["breakfast_restaurant"]),
-    t("brunch", "Brunch", ["brunch_restaurant"]),
+    t("bbq", "BBQ", ["barbecue", "bbq"]),
+    t("vegetarian", "Vegetarian", ["vegetarian", "vegan", "diet:vegetarian", "diet:vegan"]),
+    t("fine_dining", "Fine dining", [], ["fine dining", "tasting menu"]),
+    t("breakfast", "Breakfast", ["breakfast"]),
+    t("brunch", "Brunch", ["brunch"]),
   ],
   bars: [
-    t("sports_bar", "Sports bar", ["sports_bar"]),
-    t("cocktail_bar", "Cocktail bar", ["cocktail_bar", "lounge_bar"]),
-    t("brewery", "Brewery", ["brewery", "brewpub", "beer_garden"]),
-    t("wine_bar", "Wine bar", ["wine_bar"]),
-    t("pub", "Pub", ["pub", "irish_pub"]),
-    t("club", "Club", ["night_club"]),
-    t("karaoke", "Karaoke", ["karaoke"]),
-    t("live_music", "Live music", ["live_music_venue"]),
-    t("lounge", "Lounge", ["lounge_bar"]),
+    t("sports_bar", "Sports bar", ["sports_bar"], ["sports bar", "sports pub"]),
+    t("cocktail_bar", "Cocktail bar", ["cocktail_bar", "cocktails"], ["cocktail", "cocktails"]),
+    t("brewery", "Brewery", ["biergarten", "brewery", "microbrewery"], ["brewery", "brewing", "taproom", "beer garden"]),
+    t("wine_bar", "Wine bar", ["wine_bar"], ["wine bar", "wine"]),
+    t("pub", "Pub", ["pub"]),
+    t("club", "Club", ["nightclub"]),
+    t("karaoke", "Karaoke", ["karaoke", "karaoke_box"], ["karaoke"]),
+    t("live_music", "Live music", ["live_music"], ["live music"]),
+    t("lounge", "Lounge", ["lounge"], ["lounge"]),
     t("rooftop", "Rooftop", [], ["rooftop", "roof top", "sky bar", "skybar"]),
   ],
   events: [

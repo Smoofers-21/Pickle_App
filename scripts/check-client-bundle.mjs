@@ -1,22 +1,24 @@
 // After `npm run build`: fails if anything that should stay on the server
 // ended up in the JavaScript sent to phones. The real key values never
-// exist in CI, so this checks for the names and the Google endpoint, which
+// exist in CI, so this checks for the names and the API endpoints, which
 // would only be there if server code leaked into the browser bundle.
 
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 
 const FORBIDDEN = [
+  "GEOAPIFY_API_KEY",
   "GOOGLE_PLACES_API_KEY",
   "TICKETMASTER_API_KEY",
   "SUPABASE_SECRET_KEY",
+  "api.geoapify.com",
   "places.googleapis.com",
   "app.ticketmaster.com",
   "X-Goog-Api-Key",
 ];
 
 // Values of secrets present in this environment (only on Vercel or locally).
-for (const name of ["GOOGLE_PLACES_API_KEY", "TICKETMASTER_API_KEY", "SUPABASE_SECRET_KEY"]) {
+for (const name of ["GEOAPIFY_API_KEY", "TICKETMASTER_API_KEY", "SUPABASE_SECRET_KEY"]) {
   const value = process.env[name];
   if (value && value.length >= 12) FORBIDDEN.push(value);
 }

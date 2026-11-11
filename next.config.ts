@@ -8,7 +8,7 @@ const isDev = process.env.NODE_ENV === "development";
 const leakedSecrets = Object.keys(process.env).filter(
   (name) =>
     name.startsWith("NEXT_PUBLIC_") &&
-    /SECRET|SERVICE_ROLE|PRIVATE|GOOGLE|PLACES|TICKETMASTER/.test(name),
+    /SECRET|SERVICE_ROLE|PRIVATE|GEOAPIFY|GOOGLE|PLACES|TICKETMASTER/.test(name),
 );
 if (leakedSecrets.length > 0) {
   throw new Error(

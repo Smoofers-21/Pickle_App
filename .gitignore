@@ -153,3 +153,6 @@ vite.config.ts.timestamp-*
 *.pem
 .vercel
 next-env.d.ts
+
+# Full-size cuisine photos (only the processed copies in public/ are committed)
+/assets/restaurant-originals/
