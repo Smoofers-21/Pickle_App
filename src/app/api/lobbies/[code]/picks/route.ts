@@ -1,9 +1,13 @@
+import { after } from "next/server";
 import { cleanOther, findTag, type Category } from "@/lib/game/tags";
 import { isValidCode } from "@/lib/lobby-rules";
 import { fail, ok, route, tooMany } from "@/lib/server/api";
 import { findActiveMember, findGame } from "@/lib/server/lobby";
 import { allow, LIMITS } from "@/lib/server/rate-limit";
+import { runSearchIfNeeded } from "@/lib/server/search";
 import { db } from "@/lib/server/supabase";
+
+export const maxDuration = 30;
 
 type Side = { tag: string; other: string | null };
 
@@ -47,6 +51,8 @@ export const POST = route(async ({ request, body, device, params }) => {
   if (error) throw error;
   if (data.status === "wrong_stage") return fail(409, "wrong_stage", "Picks are closed: the search has started.");
   if (data.status !== "ok") return fail(404, "not_found", "There's no game to pick for.");
+  // The last pick starts the search right away (phones also check on their next refresh).
+  if (data.stage === "searching") after(() => runSearchIfNeeded(game.id));
   return ok({ status: "ok", stage: data.stage });
 });
 

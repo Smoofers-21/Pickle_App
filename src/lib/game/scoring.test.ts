@@ -98,6 +98,12 @@ describe("matchStrength", () => {
     expect(matchStrength(country, event("Pop Star", "Pop", { secondary: ["Country"] }))).toBe("secondary");
   });
 
+  it("matches a place with no cuisine by a tag word in its name, as secondary", () => {
+    const [italian] = pool([{ no: { tag: "bbq" }, yes: { tag: "italian" } }]).yes;
+    expect(matchStrength(italian, place("Little Italy Pizza", "restaurant", { primary: [], secondary: [] }))).toBe("secondary");
+    expect(matchStrength(italian, place("Pizzeria Uno", "restaurant", { primary: [], secondary: [] }))).toBeNull();
+  });
+
   it("matches Rooftop by keyword", () => {
     const [rooftop] = pool([{ no: { tag: "pub" }, yes: { tag: "rooftop" } }], "bars").yes;
     expect(matchStrength(rooftop, place("The Rooftop at 5th", "bar"))).toBe("secondary");

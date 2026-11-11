@@ -14,6 +14,7 @@ import {
   Title,
 } from "@/components/ui";
 import { post } from "@/lib/client-api";
+import type { GameInfo } from "@/lib/lobby-types";
 import { dateLabel, DEFAULT_SETUP, shortDate, EVENT_DAYS_AHEAD, localDate, RADIUS_OPTIONS, ROUND_OPTIONS, type Setup } from "@/lib/game/setup";
 import { CATEGORY_LABELS, type Category } from "@/lib/game/tags";
 import styles from "../../flow.module.css";
@@ -35,10 +36,31 @@ function getLocation(): Promise<{ lat: number; lng: number }> {
   });
 }
 
-// Screen 07: the host sets up the game.
-export function SetupScreen({ code, onBack }: { code: string; onBack: () => void }) {
+/** The phone's time zone (for "open now"), if the browser knows it. */
+function timeZone(): string | null {
+  try {
+    return Intl.DateTimeFormat().resolvedOptions().timeZone || null;
+  } catch {
+    return null;
+  }
+}
+
+// Screen 07: the host sets up the game. With `change`, the host is changing
+// the criteria after nothing was found (screen 11), starting from the game's.
+export function SetupScreen({ code, onBack, change }: { code: string; onBack: () => void; change?: GameInfo }) {
   const today = localDate();
-  const [setup, setSetup] = useState<Setup>({ ...DEFAULT_SETUP, eventDate: today });
+  const [setup, setSetup] = useState<Setup>(
+    change
+      ? {
+          category: change.category,
+          eventDate: change.eventDate ?? today,
+          radiusMi: change.radiusMi,
+          age: change.age,
+          indoorOutdoor: change.indoorOutdoor,
+          rounds: change.roundsTotal,
+        }
+      : { ...DEFAULT_SETUP, eventDate: today },
+  );
   const [busy, setBusy] = useState(false);
   const [problem, setProblem] = useState<{ title: string; body: string } | null>(null);
   const set = <K extends keyof Setup>(key: K, value: Setup[K]) => setSetup((s) => ({ ...s, [key]: value }));
@@ -61,7 +83,7 @@ export function SetupScreen({ code, onBack }: { code: string; onBack: () => void
       setBusy(false);
       return;
     }
-    const res = await post(`/api/lobbies/${code}/start`, {
+    const res = await post(`/api/lobbies/${code}/${change ? "criteria" : "start"}`, {
       category: setup.category,
       eventDate: setup.category === "events" ? setup.eventDate : null,
       radiusMi: setup.radiusMi,
@@ -69,26 +91,29 @@ export function SetupScreen({ code, onBack }: { code: string; onBack: () => void
       indoorOutdoor: setup.indoorOutdoor,
       rounds: setup.rounds,
       ...location,
+      timeZone: timeZone(),
     });
     if (!res.ok) {
-      setProblem({ title: "Couldn't start the game", body: res.message });
+      setProblem({ title: change ? "Couldn't change the criteria" : "Couldn't start the game", body: res.message });
       setBusy(false);
+      return;
     }
-    // On success the lobby moves to the picks screen by itself.
+    // On success the lobby moves on by itself (picks, or the search again).
+    if (change) onBack();
   }
 
   return (
     <Screen
       footer={
         <MainButton arrow onClick={start} disabled={!setup.category || busy} disabledReason={busy ? undefined : "Pick a category to start"}>
-          {busy ? "Starting…" : "Start game"}
+          {busy ? (change ? "Searching…" : "Starting…") : change ? "Search again" : "Start game"}
         </MainButton>
       }
     >
       <div className={styles.topBar}>
         <BackButton onClick={onBack} />
       </div>
-      <Title>Set up the game</Title>
+      <Title>{change ? "Change criteria" : "Set up the game"}</Title>
 
       <div className={styles.setupGroups}>
         <div className={styles.group}>
@@ -161,6 +186,9 @@ export function SetupScreen({ code, onBack }: { code: string; onBack: () => void
             ))}
           </ChipRow>
           <Hint>With 2 or 3 rounds, each round&apos;s top 2 go to a final vote.</Hint>
+          {change && setup.category !== change.category && (
+            <Hint>A new category means everyone picks their Yes and No again.</Hint>
+          )}
         </div>
 
         {problem && <ErrorCard title={problem.title}>{problem.body}</ErrorCard>}

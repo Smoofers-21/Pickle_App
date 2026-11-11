@@ -18,6 +18,8 @@ export const LIMITS = {
   join: { name: "join", perDevice: 20, perIp: 60, windowSeconds: 10 * 60 },
   state: { name: "state", perDevice: 400, perIp: 2000, windowSeconds: 10 * 60 },
   change: { name: "change", perDevice: 40, perIp: 200, windowSeconds: 10 * 60 },
+  // Anything that can start a new search (changing the criteria): it spends API credits.
+  search: { name: "search", perDevice: 10, perIp: 30, windowSeconds: 60 * 60 },
 } satisfies Record<string, Limit>;
 
 const memory = new Map<string, { hits: number; resetAt: number }>();

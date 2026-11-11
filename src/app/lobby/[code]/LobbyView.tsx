@@ -26,6 +26,8 @@ import { cleanCodeInput } from "@/lib/lobby-rules";
 import type { LobbyMember } from "@/lib/lobby-types";
 import { post } from "@/lib/client-api";
 import styles from "../../flow.module.css";
+import { NothingFoundScreen } from "./NothingFoundScreen";
+import { OptionsListScreen } from "./OptionsListScreen";
 import { PicksScreen } from "./PicksScreen";
 import { SearchingScreen } from "./SearchingScreen";
 import { SetupScreen } from "./SetupScreen";
@@ -33,7 +35,8 @@ import { useLobby } from "./useLobby";
 import { WaitingScreen } from "./WaitingScreen";
 
 // Screens 05 (host), 06 (member), 07 (setup), 08 (picks), 09 (waiting for
-// picks), 10 (searching), 18 (host left notice) and 19 (removed).
+// picks), 10 (searching), 11 (nothing found), 18 (host left notice) and 19
+// (removed). After the search, a plain list of the options until milestone 5.
 export function LobbyView() {
   const params = useParams<{ code: string }>();
   const code = cleanCodeInput(params.code ?? "");
@@ -44,6 +47,7 @@ export function LobbyView() {
   const [settingUp, setSettingUp] = useState(false);
   const [changingPicks, setChangingPicks] = useState(false);
   const [addingDemo, setAddingDemo] = useState(false);
+  const [changingCriteria, setChangingCriteria] = useState(false);
 
   // Close any open confirm box when leaving this page (Next.js keeps it alive, hidden).
   useLayoutEffect(() => {
@@ -51,6 +55,7 @@ export function LobbyView() {
       setConfirmLeave(false);
       setToRemove(null);
       setSettingUp(false);
+      setChangingCriteria(false);
     };
   }, []);
 
@@ -120,7 +125,26 @@ export function LobbyView() {
         />
       );
     }
-    return <SearchingScreen game={game} notice={noticeBar} />;
+    if (game.stage === "searching") {
+      const failed = game.search?.status === "nothing_found" || game.search?.status === "unavailable";
+      if (failed && me.isHost && changingCriteria) {
+        return <SetupScreen code={code} change={game} onBack={() => setChangingCriteria(false)} />;
+      }
+      if (failed) {
+        return (
+          <NothingFoundScreen
+            code={code}
+            game={game}
+            isHost={me.isHost}
+            hostName={host?.name ?? "the host"}
+            onChangeCriteria={() => setChangingCriteria(true)}
+            notice={noticeBar}
+          />
+        );
+      }
+      return <SearchingScreen game={game} notice={noticeBar} />;
+    }
+    return <OptionsListScreen game={game} options={state.options} notice={noticeBar} demo={lobby.isDemo} />;
   }
 
   if (me.isHost && settingUp && lobby.status === "open") {

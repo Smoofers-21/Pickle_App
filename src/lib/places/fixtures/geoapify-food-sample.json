@@ -1,0 +1,1633 @@
+{
+ "_note": "Trimmed sample of a real Geoapify Places response (Austin, TX, Nov 2026), used only by tests. Data (c) OpenStreetMap contributors, ODbL; via Geoapify.",
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Modern Market Eatery",
+    "categories": [
+     "catering",
+     "catering.restaurant"
+    ],
+    "formatted": "Modern Market Eatery, 401 Congress Avenue, Austin, TX 78701, United States of America",
+    "address_line1": "Modern Market Eatery",
+    "address_line2": "401 Congress Avenue, Austin, TX 78701, United States of America",
+    "distance": 65,
+    "place_id": "51429633d58e6f58c059adb381e440443e40f00102f9016361db59000000009203144d6f6465726e204d61726b657420456174657279",
+    "lat": 30.2666144,
+    "lon": -97.7430927,
+    "facilities": {
+     "air_conditioning": true,
+     "outdoor_seating": true
+    },
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "name": "Modern Market Eatery",
+      "amenity": "restaurant",
+      "outdoor_seating": "yes"
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.74309282338893,
+     30.266615182557576
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Punch Bowl Social",
+    "categories": [
+     "catering",
+     "catering.restaurant",
+     "catering.restaurant.american"
+    ],
+    "formatted": "Punch Bowl Social, 522 Congress Avenue, Austin, TX 78701, United States of America",
+    "address_line1": "Punch Bowl Social",
+    "address_line2": "522 Congress Avenue, Austin, TX 78701, United States of America",
+    "distance": 69,
+    "place_id": "5152d1968e936f58c059f5b4e2bf8c443e40f00102f901207cd73c0000000092031150756e636820426f776c20536f6369616c",
+    "lat": 30.267772,
+    "lon": -97.743381,
+    "catering": {
+     "cuisine": "american"
+    },
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "name": "Punch Bowl Social",
+      "amenity": "restaurant",
+      "cuisine": "american"
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.74338116386687,
+     30.267772667740207
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "CAVA",
+    "categories": [
+     "catering",
+     "catering.restaurant",
+     "catering.restaurant.mediterranean"
+    ],
+    "formatted": "CAVA, 515 Congress Avenue, Austin, TX 78701, United States of America",
+    "address_line1": "CAVA",
+    "address_line2": "515 Congress Avenue, Austin, TX 78701, United States of America",
+    "website": "http://cava.com/",
+    "opening_hours": "Mo-Su 10:45-22:00",
+    "distance": 83,
+    "place_id": "5138a11001876f58c0597b15191d90443e40f00103f90136bd1f9e0200000092030443415641",
+    "lat": 30.267824,
+    "lon": -97.742615,
+    "catering": {
+     "cuisine": "mediterranean"
+    },
+    "brand": "CAVA",
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "name": "CAVA",
+      "brand": "CAVA",
+      "amenity": "restaurant",
+      "cuisine": "mediterranean",
+      "opening_hours": "Mo-Su 10:45-22:00"
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.742615,
+     30.267824
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Velvet Taco",
+    "categories": [
+     "catering",
+     "catering.restaurant"
+    ],
+    "formatted": "Velvet Taco, 522 Congress Avenue, Austin, TX 78701, United States of America",
+    "address_line1": "Velvet Taco",
+    "address_line2": "522 Congress Avenue, Austin, TX 78701, United States of America",
+    "website": "https://www.velvettaco.com/location/6th-congress/",
+    "opening_hours": "Su-We 11:00-24:00, Th 11:00-01:00, Fr,Sa 11:00-04:00",
+    "distance": 88,
+    "place_id": "5163edef6c8f6f58c059166d8e739b443e40f00103f9012dc493200200000092030b56656c766574205461636f",
+    "lat": 30.267997,
+    "lon": -97.743129,
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "name": "Velvet Taco",
+      "amenity": "restaurant",
+      "opening_hours": "Su-We 11:00-24:00, Th 11:00-01:00, Fr,Sa 11:00-04:00"
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.743129,
+     30.267997
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Ruth's Chris Steak House",
+    "categories": [
+     "catering",
+     "catering.restaurant",
+     "catering.restaurant.steak_house"
+    ],
+    "formatted": "Ruth's Chris Steak House, West 6th Street, Austin, TX 78701, United States of America",
+    "address_line1": "Ruth's Chris Steak House",
+    "address_line2": "West 6th Street, Austin, TX 78701, United States of America",
+    "distance": 93,
+    "place_id": "5161c43e01946f58c0590a63b0879b443e40f00103f901ea97ed260100000092031852757468277320436872697320537465616b20486f757365",
+    "lat": 30.2679982,
+    "lon": -97.7434085,
+    "catering": {
+     "cuisine": "american;steak_house"
+    },
+    "brand": "Ruth's Chris Steak House",
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "name": "Ruth's Chris Steak House",
+      "brand": "Ruth's Chris Steak House",
+      "amenity": "restaurant",
+      "cuisine": "american;steak_house"
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.7434085,
+     30.2679982
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Lonesome Dove Bistro",
+    "categories": [
+     "catering",
+     "catering.restaurant",
+     "catering.restaurant.western"
+    ],
+    "formatted": "Lonesome Dove Bistro, 123 West 6th Street, Austin, TX 78701, United States of America",
+    "address_line1": "Lonesome Dove Bistro",
+    "address_line2": "123 West 6th Street, Austin, TX 78701, United States of America",
+    "website": "https://lonesomedoveaustin.com/",
+    "distance": 149,
+    "place_id": "514489963c9e6f58c05936902e36ad443e40f00103f901f497ed26010000009203144c6f6e65736f6d6520446f76652042697374726f",
+    "lat": 30.268268,
+    "lon": -97.744033,
+    "catering": {
+     "cuisine": "western"
+    },
+    "facilities": {
+     "air_conditioning": true
+    },
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "name": "Lonesome Dove Bistro",
+      "amenity": "restaurant",
+      "cuisine": "western"
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.744033,
+     30.268268
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Wee's Cozy Kitchen",
+    "categories": [
+     "catering",
+     "catering.restaurant"
+    ],
+    "formatted": "Wee's Cozy Kitchen, 609 Congress Avenue, Austin, TX 78701, United States of America",
+    "address_line1": "Wee's Cozy Kitchen",
+    "address_line2": "609 Congress Avenue, Austin, TX 78701, United States of America",
+    "distance": 150,
+    "place_id": "51dbaa7f6b826f58c05998512cb7b4443e40f00103f9018fc0acc302000000920312576565277320436f7a79204b69746368656e",
+    "lat": 30.2683825,
+    "lon": -97.7423352,
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "name": "Wee's Cozy Kitchen",
+      "amenity": "restaurant"
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.7423352,
+     30.2683825
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Gina's on Congress",
+    "categories": [
+     "building",
+     "building.catering",
+     "catering",
+     "catering.restaurant",
+     "catering.restaurant.french"
+    ],
+    "formatted": "Gina's on Congress, 314 Congress Avenue, Austin, TX 78701, United States of America",
+    "address_line1": "Gina's on Congress",
+    "address_line2": "314 Congress Avenue, Austin, TX 78701, United States of America",
+    "website": "https://www.ginasoncongress.com/",
+    "opening_hours": "Mo-Su 11:00-22:00",
+    "distance": 165,
+    "place_id": "51f3c637d49c6f58c059f356164712443e40f00102f901c4c5dd3c0000000092031247696e612773206f6e20436f6e6772657373",
+    "lat": 30.2659038,
+    "lon": -97.7439468,
+    "catering": {
+     "cuisine": "french;italian"
+    },
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "name": "Gina's on Congress",
+      "amenity": "restaurant",
+      "cuisine": "french;italian",
+      "opening_hours": "Mo-Su 11:00-22:00"
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.74394708106028,
+     30.265903895334258
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Swift's Attic",
+    "categories": [
+     "catering",
+     "catering.restaurant"
+    ],
+    "formatted": "Swift's Attic, 315 Congress Avenue, Austin, TX 78701, United States of America",
+    "address_line1": "Swift's Attic",
+    "address_line2": "315 Congress Avenue, Austin, TX 78701, United States of America",
+    "website": "https://swiftsattic.com/",
+    "distance": 175,
+    "place_id": "51dddfea4a956f58c059ace1c73d02443e40f00103f90126bd01680100000092030d53776966742773204174746963",
+    "lat": 30.2656592,
+    "lon": -97.7434871,
+    "catering": {
+     "cuisine": "fine_dining"
+    },
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "name": "Swift's Attic",
+      "amenity": "restaurant",
+      "cuisine": "fine_dining"
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.7434871,
+     30.2656592
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Sushi Junai Omakase",
+    "categories": [
+     "catering",
+     "catering.restaurant",
+     "catering.restaurant.sushi"
+    ],
+    "formatted": "Sushi Junai Omakase, 315 Congress Avenue, Austin, TX 78701, United States of America",
+    "address_line1": "Sushi Junai Omakase",
+    "address_line2": "315 Congress Avenue, Austin, TX 78701, United States of America",
+    "website": "http://sushijunaiomakase.com/",
+    "opening_hours": "Mo-Sa 11:30-14:30,17:00-22:00",
+    "distance": 177,
+    "place_id": "519c35785f956f58c0590b7a6f0c01443e40f00103f901d85e4837020000009203135375736869204a756e6169204f6d616b617365",
+    "lat": 30.265641,
+    "lon": -97.743492,
+    "catering": {
+     "cuisine": "sushi"
+    },
+    "facilities": {
+     "air_conditioning": true
+    },
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "name": "Sushi Junai Omakase",
+      "amenity": "restaurant",
+      "cuisine": "sushi",
+      "opening_hours": "Mo-Sa 11:30-14:30,17:00-22:00"
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.743492,
+     30.265641
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Caroline",
+    "categories": [
+     "catering",
+     "catering.restaurant",
+     "catering.restaurant.american",
+     "wheelchair",
+     "wheelchair.yes"
+    ],
+    "formatted": "Caroline, 621 Congress Avenue, Austin, TX 78701, United States of America",
+    "address_line1": "Caroline",
+    "address_line2": "621 Congress Avenue, Austin, TX 78701, United States of America",
+    "website": "https://www.carolinerestaurant.com/caroline",
+    "opening_hours": "Su 07:00-22:00, Fr,Sa 07:00-24:00, Mo-Th 07:00-23:00",
+    "distance": 185,
+    "place_id": "512e92d15c826f58c059038aa251cb443e40f00103f9014890ce64020000009203084361726f6c696e65",
+    "lat": 30.2687274,
+    "lon": -97.7423317,
+    "catering": {
+     "cuisine": "american",
+     "reservation": "required"
+    },
+    "facilities": {
+     "wheelchair": true,
+     "air_conditioning": true,
+     "outdoor_seating": true,
+     "takeaway": true
+    },
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "bar": "yes",
+      "name": "Caroline",
+      "amenity": "restaurant",
+      "cuisine": "american",
+      "opening_hours": "Su 07:00-22:00, Fr,Sa 07:00-24:00, Mo-Th 07:00-23:00",
+      "outdoor_seating": "yes"
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.7423317,
+     30.2687274
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Eureka",
+    "categories": [
+     "catering",
+     "catering.restaurant"
+    ],
+    "formatted": "Eureka, East 6th Street, Austin, TX 78702, United States of America",
+    "address_line1": "Eureka",
+    "address_line2": "East 6th Street, Austin, TX 78702, United States of America",
+    "website": "http://eurekarestaurantgroup.com/blog/locations/austin/",
+    "opening_hours": "Mo-Sa 11:00-24:00, Su 11:00-23:00",
+    "distance": 188,
+    "place_id": "51af7d01bd706f58c0596b4606b98b443e40f00103f90160ee4f5800000000920306457572656b61",
+    "lat": 30.267757,
+    "lon": -97.741256,
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "name": "Eureka",
+      "amenity": "restaurant",
+      "opening_hours": "Mo-Sa 11:00-24:00, Su 11:00-23:00"
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.741256,
+     30.267757
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Wax Myrtle's Club & Pool",
+    "categories": [
+     "catering",
+     "catering.restaurant"
+    ],
+    "formatted": "Wax Myrtle's Club & Pool, 506 San Jacinto Boulevard, Austin, TX 78701, United States of America",
+    "address_line1": "Wax Myrtle's Club & Pool",
+    "address_line2": "506 San Jacinto Boulevard, Austin, TX 78701, United States of America",
+    "website": "https://www.waxmyrtles.com/",
+    "distance": 197,
+    "place_id": "51d81869406e6f58c0595867aeb84c443e40f00102f9012045db3c00000000920318576178204d7972746c65277320436c7562202620506f6f6c",
+    "lat": 30.2668114,
+    "lon": -97.7413932,
+    "facilities": {
+     "air_conditioning": true
+    },
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "bar": "yes",
+      "name": "Wax Myrtle's Club & Pool",
+      "amenity": "restaurant",
+      "description": "Restaurant on Level 4 of the Thompson and tommie hotel buildings"
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.74110422385581,
+     30.26679567582991
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Péché",
+    "categories": [
+     "building",
+     "building.catering",
+     "catering",
+     "catering.restaurant",
+     "catering.restaurant.french"
+    ],
+    "formatted": "Péché, 208 West 4th Street, Austin, TX 78701, United States of America",
+    "address_line1": "Péché",
+    "address_line2": "208 West 4th Street, Austin, TX 78701, United States of America",
+    "website": "https://www.pecheaustin.com/",
+    "distance": 201,
+    "place_id": "51e23dacdcb06f58c059443756bd57443e40f00102f901ec8396130000000092030750c3a96368c3a9",
+    "lat": 30.2669638,
+    "lon": -97.7451698,
+    "catering": {
+     "cuisine": "french"
+    },
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "name": "Péché",
+      "amenity": "restaurant",
+      "cuisine": "french"
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.74516980000001,
+     30.2669638
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Marisco Grill",
+    "categories": [
+     "catering",
+     "catering.restaurant"
+    ],
+    "formatted": "Marisco Grill, 213 East 6th Street, Austin, TX 78701, United States of America",
+    "address_line1": "Marisco Grill",
+    "address_line2": "213 East 6th Street, Austin, TX 78701, United States of America",
+    "distance": 204,
+    "place_id": "51e06f6a566c6f58c059fdc45cad6e443e40f00103f90152ee4f580000000092030d4d61726973636f204772696c6c",
+    "lat": 30.2673138,
+    "lon": -97.7409874,
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "name": "Marisco Grill",
+      "amenity": "restaurant"
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.7409874,
+     30.2673138
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Tacodeli",
+    "categories": [
+     "catering",
+     "catering.restaurant"
+    ],
+    "formatted": "Tacodeli, 301 Congress Avenue, Austin, TX 78701, United States of America",
+    "address_line1": "Tacodeli",
+    "address_line2": "301 Congress Avenue, Austin, TX 78701, United States of America",
+    "website": "https://locations.tacodeli.com/tacodeli-5346fd3548f4",
+    "opening_hours": "Mo-Su 06:30-21:00",
+    "distance": 212,
+    "place_id": "51d705723f966f58c059f21f77b6ec433e40f00103f901f27be387020000009203085461636f64656c69",
+    "lat": 30.2653307,
+    "lon": -97.7435454,
+    "catering": {
+     "cuisine": "tacqueria"
+    },
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "name": "Tacodeli",
+      "amenity": "restaurant",
+      "cuisine": "tacqueria",
+      "opening_hours": "Mo-Su 06:30-21:00"
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.7435454,
+     30.2653307
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "ZIKI",
+    "categories": [
+     "catering",
+     "catering.restaurant"
+    ],
+    "formatted": "ZIKI, 102 West 3rd Street, Austin, TX 78767, United States of America",
+    "address_line1": "ZIKI",
+    "address_line2": "102 West 3rd Street, Austin, TX 78767, United States of America",
+    "website": "https://ziki.kitchen/",
+    "opening_hours": "Mo-Su 10:00-03:00",
+    "distance": 215,
+    "place_id": "511e488380a16f58c0593f4a3668f9433e40f00103f9012436d08d020000009203045a494b49",
+    "lat": 30.2655244,
+    "lon": -97.7442323,
+    "catering": {
+     "cuisine": "greek;mexican"
+    },
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "name": "ZIKI",
+      "amenity": "restaurant",
+      "cuisine": "greek;mexican",
+      "description": "Greek with a hint of Mexican",
+      "opening_hours": "Mo-Su 10:00-03:00"
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.7442323,
+     30.2655244
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Roaring Fork",
+    "categories": [
+     "catering",
+     "catering.restaurant",
+     "catering.restaurant.steak_house",
+     "wheelchair",
+     "wheelchair.yes"
+    ],
+    "formatted": "Roaring Fork, 701 East 7th Street, Austin, TX 78701, United States of America",
+    "address_line1": "Roaring Fork",
+    "address_line2": "701 East 7th Street, Austin, TX 78701, United States of America",
+    "opening_hours": "Mo-Fr 11:00-22:00; Sa 16:00-22:00; Su 16:00-21:00",
+    "distance": 224,
+    "place_id": "514d277e31806f58c059c80d1a55e1443e40f00103f901ebfd72580000000092030c526f6172696e6720466f726b",
+    "lat": 30.2690633,
+    "lon": -97.7421993,
+    "catering": {
+     "cuisine": "steak_house"
+    },
+    "facilities": {
+     "wheelchair": true
+    },
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "name": "Roaring Fork",
+      "amenity": "restaurant",
+      "cuisine": "steak_house",
+      "opening_hours": "Mo-Fr 11:00-22:00; Sa 16:00-22:00; Su 16:00-21:00"
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.7421993,
+     30.2690633
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Red Ash",
+    "categories": [
+     "catering",
+     "catering.restaurant",
+     "catering.restaurant.italian"
+    ],
+    "formatted": "Red Ash, 303 Colorado Street, Austin, TX 78701, United States of America",
+    "address_line1": "Red Ash",
+    "address_line2": "303 Colorado Street, Austin, TX 78701, United States of America",
+    "website": "https://www.redashgrill.com/",
+    "distance": 226,
+    "place_id": "51ac510fd1a86f58c0594b0169ff03443e40f00102f9017e75d73c0000000092030752656420417368",
+    "lat": 30.265686,
+    "lon": -97.7446787,
+    "catering": {
+     "cuisine": "italian"
+    },
+    "facilities": {
+     "air_conditioning": true,
+     "outdoor_seating": false,
+     "takeaway": true
+    },
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "name": "Red Ash",
+      "amenity": "restaurant",
+      "cuisine": "italian",
+      "outdoor_seating": "no"
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.74467874999999,
+     30.265686
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Happy Chicks",
+    "categories": [
+     "catering",
+     "catering.restaurant",
+     "catering.restaurant.chicken"
+    ],
+    "formatted": "Happy Chicks, 214 East 6th Street, Austin, TX 78701, United States of America",
+    "address_line1": "Happy Chicks",
+    "address_line2": "214 East 6th Street, Austin, TX 78701, United States of America",
+    "distance": 229,
+    "place_id": "517dcd72d9686f58c059ffae74e382443e40f00103f90151ee4f580000000092030c486170707920436869636b73",
+    "lat": 30.2676222,
+    "lon": -97.7407745,
+    "catering": {
+     "cuisine": "chicken"
+    },
+    "brand": "Happy Chicks",
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "name": "Happy Chicks",
+      "brand": "Happy Chicks",
+      "amenity": "restaurant",
+      "cuisine": "chicken"
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.7407745,
+     30.2676222
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "TraphouseATX",
+    "categories": [
+     "catering",
+     "catering.restaurant",
+     "catering.restaurant.caribbean"
+    ],
+    "formatted": "TraphouseATX, 310 Colorado Street, Austin, TX 78701, United States of America",
+    "address_line1": "TraphouseATX",
+    "address_line2": "310 Colorado Street, Austin, TX 78701, United States of America",
+    "distance": 232,
+    "place_id": "51ed478ac8b06f58c0597ee02a4f20443e40f00103f90140f076e50000000092030c54726170686f757365415458",
+    "lat": 30.266118,
+    "lon": -97.745165,
+    "catering": {
+     "cuisine": "caribbean"
+    },
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "name": "TraphouseATX",
+      "amenity": "restaurant",
+      "cuisine": "caribbean"
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.745165,
+     30.266118
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Bikinis Sports Bar & Grill",
+    "categories": [
+     "catering",
+     "catering.restaurant"
+    ],
+    "formatted": "Bikinis Sports Bar & Grill, 218 East 6th Street, Austin, TX 78702, United States of America",
+    "address_line1": "Bikinis Sports Bar & Grill",
+    "address_line2": "218 East 6th Street, Austin, TX 78702, United States of America",
+    "website": "https://www.bikinissportsbarandgrill.com/Locations/austin-tx-6th-st/",
+    "distance": 239,
+    "place_id": "5196a24bee666f58c059eebf84c080443e40f00103f90140ee4f580000000092031a42696b696e69732053706f727473204261722026204772696c6c",
+    "lat": 30.2675896,
+    "lon": -97.7406574,
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "name": "Bikinis Sports Bar & Grill",
+      "amenity": "restaurant"
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.7406574,
+     30.2675896
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Turf n'Surf Po'Boy",
+    "categories": [
+     "building",
+     "building.catering",
+     "catering",
+     "catering.restaurant"
+    ],
+    "formatted": "Turf n'Surf Po'Boy, 407 Lavaca Street, Austin, TX 78701, United States of America",
+    "address_line1": "Turf n'Surf Po'Boy",
+    "address_line2": "407 Lavaca Street, Austin, TX 78701, United States of America",
+    "website": "https://www.turfnsurfpoboy.com/",
+    "opening_hours": "Su-Th 11:00-22:00; Fr-Sa 11:00-23:00",
+    "distance": 239,
+    "place_id": "51ea0de3a6b76f58c059d15ba18767443e40f00102f901e6d8d7590000000092031254757266206e275375726620506f27426f79",
+    "lat": 30.2671942,
+    "lon": -97.7455821,
+    "catering": {
+     "cuisine": "seafood;cajun"
+    },
+    "facilities": {
+     "air_conditioning": true,
+     "outdoor_seating": true
+    },
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "name": "Turf n'Surf Po'Boy",
+      "amenity": "restaurant",
+      "cuisine": "seafood;cajun",
+      "opening_hours": "Su-Th 11:00-22:00; Fr-Sa 11:00-23:00",
+      "outdoor_seating": "yes"
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.74558422253872,
+     30.267204739469722
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Congress Avenue Grocery",
+    "categories": [
+     "catering",
+     "catering.restaurant"
+    ],
+    "formatted": "Congress Avenue Grocery, 227 Congress Avenue, Austin, TX 78701, United States of America",
+    "address_line1": "Congress Avenue Grocery",
+    "address_line2": "227 Congress Avenue, Austin, TX 78701, United States of America",
+    "distance": 246,
+    "place_id": "51173147ea986f58c059eaa001abd9433e40f00103f9011bfe725800000000920317436f6e6772657373204176656e75652047726f63657279",
+    "lat": 30.2650401,
+    "lon": -97.7437082,
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "name": "Congress Avenue Grocery",
+      "amenity": "restaurant"
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.7437082,
+     30.2650401
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Perry's Steakhouse",
+    "categories": [
+     "catering",
+     "catering.restaurant"
+    ],
+    "formatted": "Perry's Steakhouse, 705 Colorado Street, Austin, TX 78701, United States of America",
+    "address_line1": "Perry's Steakhouse",
+    "address_line2": "705 Colorado Street, Austin, TX 78701, United States of America",
+    "distance": 254,
+    "place_id": "518a82cfc5956f58c05973e1f6bafb443e40f00103f901c1fd7258000000009203125065727279277320537465616b686f757365",
+    "lat": 30.2694661,
+    "lon": -97.7435164,
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "name": "Perry's Steakhouse",
+      "amenity": "restaurant"
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.7435164,
+     30.2694661
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Cooper's Old Time Pit Bar-B-Que",
+    "categories": [
+     "building",
+     "building.catering",
+     "catering",
+     "catering.restaurant",
+     "catering.restaurant.barbecue"
+    ],
+    "formatted": "Cooper's Old Time Pit Bar-B-Que, 217 Congress Avenue, Austin, TX 78701, United States of America",
+    "address_line1": "Cooper's Old Time Pit Bar-B-Que",
+    "address_line2": "217 Congress Avenue, Austin, TX 78701, United States of America",
+    "website": "https://coopersbbqaustin.com/",
+    "opening_hours": "Mo-Su 11:00-24:00",
+    "distance": 256,
+    "place_id": "51df92439f976f58c059916068d7d2433e40f00102f90162cde7490000000092031f436f6f7065722773204f6c642054696d6520506974204261722d422d517565",
+    "lat": 30.2649476,
+    "lon": -97.7436252,
+    "catering": {
+     "cuisine": "barbecue"
+    },
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "name": "Cooper's Old Time Pit Bar-B-Que",
+      "amenity": "restaurant",
+      "cuisine": "barbecue",
+      "opening_hours": "Mo-Su 11:00-24:00"
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.74362928008075,
+     30.264935935003965
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Manny's",
+    "categories": [
+     "catering",
+     "catering.restaurant",
+     "wheelchair",
+     "wheelchair.yes"
+    ],
+    "formatted": "Manny's, 303 West 5th Street, Austin, TX 78701, United States of America",
+    "address_line1": "Manny's",
+    "address_line2": "303 West 5th Street, Austin, TX 78701, United States of America",
+    "website": "https://www.loboshospitality.com/venues/mannysaustin",
+    "distance": 265,
+    "place_id": "519a6c4d04bb6f58c0595b43a9bd88443e40f00103f90152bb20b8020000009203074d616e6e792773",
+    "lat": 30.2677115,
+    "lon": -97.7457896,
+    "facilities": {
+     "wheelchair": true,
+     "air_conditioning": true,
+     "outdoor_seating": true,
+     "takeaway": true
+    },
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "bar": "yes",
+      "name": "Manny's",
+      "amenity": "restaurant",
+      "outdoor_seating": "yes"
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.7457896,
+     30.2677115
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Truluck's",
+    "categories": [
+     "catering",
+     "catering.restaurant",
+     "catering.restaurant.seafood"
+    ],
+    "formatted": "Truluck's, 300 Colorado Street, Austin, TX 78701, United States of America",
+    "address_line1": "Truluck's",
+    "address_line2": "300 Colorado Street, Austin, TX 78701, United States of America",
+    "website": "https://trulucks.com/locations/downtown-austin-texas/",
+    "opening_hours": "Mo-Su 16:30-22:00",
+    "distance": 266,
+    "place_id": "51c81d801eb46f58c05905a6d3ba0d443e40f00103f9019223eb93020000009203095472756c75636b2773",
+    "lat": 30.2658345,
+    "lon": -97.7453686,
+    "catering": {
+     "cuisine": "seafood"
+    },
+    "facilities": {
+     "air_conditioning": true
+    },
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "bar": "yes",
+      "name": "Truluck's",
+      "amenity": "restaurant",
+      "cuisine": "seafood",
+      "opening_hours": "Mo-Su 16:30-22:00"
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.7453686,
+     30.2658345
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Eddie V's",
+    "categories": [
+     "catering",
+     "catering.restaurant"
+    ],
+    "formatted": "Eddie V's, East 5th Street, Austin, TX 78701, United States of America",
+    "address_line1": "Eddie V's",
+    "address_line2": "East 5th Street, Austin, TX 78701, United States of America",
+    "distance": 269,
+    "place_id": "51f66ba11a656f58c05945f7072527443e40f00103f901f445515800000000920309456464696520562773",
+    "lat": 30.2662223,
+    "lon": -97.7405459,
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "name": "Eddie V's",
+      "amenity": "restaurant"
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.7405459,
+     30.2662223
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "categories": [
+     "building",
+     "building.catering",
+     "catering",
+     "catering.restaurant"
+    ],
+    "formatted": "San Jacinto Boulevard, Austin, TX 78767, United States of America",
+    "address_line1": "San Jacinto Boulevard",
+    "address_line2": "Austin, TX 78767, United States of America",
+    "distance": 269,
+    "place_id": "51da6e12f9656f58c05956d9980520443e40f00102f90118cdae3900000000",
+    "lat": 30.2661188,
+    "lon": -97.7405992,
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "amenity": "restaurant"
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.74059893417453,
+     30.266113614861148
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "parkside",
+    "categories": [
+     "catering",
+     "catering.restaurant",
+     "catering.restaurant.american"
+    ],
+    "formatted": "parkside, 301 East 6th Street, Austin, TX 78701, United States of America",
+    "address_line1": "parkside",
+    "address_line2": "301 East 6th Street, Austin, TX 78701, United States of America",
+    "distance": 270,
+    "place_id": "51bc900e0f616f58c059016dab5967443e40f00103f901970e098b000000009203087061726b73696465",
+    "lat": 30.267202,
+    "lon": -97.740299,
+    "catering": {
+     "cuisine": "american"
+    },
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "name": "parkside",
+      "amenity": "restaurant",
+      "cuisine": "american"
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.740299,
+     30.267202
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Belmont",
+    "categories": [
+     "catering",
+     "catering.restaurant"
+    ],
+    "formatted": "Belmont, West 6th Street, Austin, TX 78701, United States of America",
+    "address_line1": "Belmont",
+    "address_line2": "West 6th Street, Austin, TX 78701, United States of America",
+    "distance": 282,
+    "place_id": "51d8f5662fb66f58c05917354ef9c6443e40f00103f9016dee4f580000000092030742656c6d6f6e74",
+    "lat": 30.2686611,
+    "lon": -97.7454947,
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "name": "Belmont",
+      "amenity": "restaurant"
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.7454947,
+     30.2686611
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "DeSano Pizzeria Napoletana",
+    "categories": [
+     "building",
+     "building.catering",
+     "catering",
+     "catering.restaurant",
+     "catering.restaurant.pizza"
+    ],
+    "formatted": "DeSano Pizzeria Napoletana, 301 Lavaca Street, Austin, TX 78701, United States of America",
+    "address_line1": "DeSano Pizzeria Napoletana",
+    "address_line2": "301 Lavaca Street, Austin, TX 78701, United States of America",
+    "opening_hours": "Su-Th 11:30-22:00, Fr,Sa 11:30-11:00",
+    "distance": 285,
+    "place_id": "5143b35225bc6f58c05920ae5f1e29443e40f00102f9017c75d73c0000000092031a446553616e6f2050697a7a65726961204e61706f6c6574616e61",
+    "lat": 30.2662483,
+    "lon": -97.7458602,
+    "catering": {
+     "cuisine": "pizza"
+    },
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "name": "DeSano Pizzeria Napoletana",
+      "amenity": "restaurant",
+      "cuisine": "pizza",
+      "opening_hours": "Su-Th 11:30-22:00, Fr,Sa 11:30-11:00"
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.74585850788303,
+     30.266252420768183
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Red Farm",
+    "categories": [
+     "catering",
+     "catering.restaurant",
+     "catering.restaurant.chinese",
+     "wheelchair",
+     "wheelchair.yes"
+    ],
+    "formatted": "Red Farm, 201 West 3rd Street, Austin, TX 78701, United States of America",
+    "address_line1": "Red Farm",
+    "address_line2": "201 West 3rd Street, Austin, TX 78701, United States of America",
+    "website": "https://www.redfarmnyc.com/location/Austin/",
+    "distance": 287,
+    "place_id": "5186cf317bb46f58c059f1c05b7bfa433e40f00103f901d1ec76e500000000920308526564204661726d",
+    "lat": 30.2655408,
+    "lon": -97.7453907,
+    "catering": {
+     "cuisine": "chinese",
+     "reservation": "required"
+    },
+    "facilities": {
+     "wheelchair": true,
+     "toilets": true,
+     "air_conditioning": true
+    },
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "name": "Red Farm",
+      "amenity": "restaurant",
+      "cuisine": "chinese"
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.7453907,
+     30.2655408
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Burger Bar",
+    "categories": [
+     "catering",
+     "catering.restaurant",
+     "catering.restaurant.burger"
+    ],
+    "formatted": "Burger Bar, 110 East 2nd Street, Austin, TX 78701, United States of America",
+    "address_line1": "Burger Bar",
+    "address_line2": "110 East 2nd Street, Austin, TX 78701, United States of America",
+    "website": "https://www.burgerbaraustin.com/",
+    "opening_hours": "Su-Th 11:00-01:00; Fr,Sa 11:00-02:00",
+    "distance": 288,
+    "place_id": "51761c3f549a6f58c059af20729fc1433e40f00103f901294293000100000092030a42757267657220426172",
+    "lat": 30.2646732,
+    "lon": -97.7437945,
+    "catering": {
+     "cuisine": "burger"
+    },
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "name": "Burger Bar",
+      "amenity": "restaurant",
+      "cuisine": "burger",
+      "opening_hours": "Su-Th 11:00-01:00; Fr,Sa 11:00-02:00"
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.7437945,
+     30.2646732
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Jupiter Supper Club",
+    "categories": [
+     "catering",
+     "catering.restaurant",
+     "catering.restaurant.american",
+     "vegan",
+     "vegetarian"
+    ],
+    "formatted": "Jupiter Supper Club, 718 Congress Avenue, Austin, TX 78701, United States of America",
+    "address_line1": "Jupiter Supper Club",
+    "address_line2": "718 Congress Avenue, Austin, TX 78701, United States of America",
+    "website": "https://www.jupitersupperclub.com/",
+    "distance": 290,
+    "place_id": "511c38b1d1836f58c059c9fdb38b0e453e40f00103f901038db5d9020000009203134a7570697465722053757070657220436c7562",
+    "lat": 30.2697532,
+    "lon": -97.7424206,
+    "catering": {
+     "cuisine": "american",
+     "diet": {
+      "vegan": true,
+      "vegetarian": true
+     }
+    },
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "name": "Jupiter Supper Club",
+      "amenity": "restaurant",
+      "cuisine": "american",
+      "diet:vegan": "yes",
+      "diet:vegetarian": "yes"
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.7424206,
+     30.2697532
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Bob's Steak & Chop House",
+    "categories": [
+     "building",
+     "building.catering",
+     "building.commercial",
+     "catering",
+     "catering.restaurant"
+    ],
+    "formatted": "Bob's Steak & Chop House, 301 Lavaca Street, Austin, TX 78701, United States of America",
+    "address_line1": "Bob's Steak & Chop House",
+    "address_line2": "301 Lavaca Street, Austin, TX 78701, United States of America",
+    "opening_hours": "Mo,Tu 16:30-22:00; We,Th 16:30-23:00; Fr,Sa 16:30-24:00",
+    "distance": 298,
+    "place_id": "51870b1f2cbd6f58c059e088689d1e443e40f00102f901bdfe080800000000920318426f62277320537465616b20262043686f7020486f757365",
+    "lat": 30.2660914,
+    "lon": -97.7459212,
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "name": "Bob's Steak & Chop House",
+      "amenity": "restaurant",
+      "opening_hours": "Mo,Tu 16:30-22:00; We,Th 16:30-23:00; Fr,Sa 16:30-24:00"
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.74592116386167,
+     30.26609214593998
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Bill's Oyster",
+    "categories": [
+     "catering",
+     "catering.restaurant",
+     "catering.restaurant.seafood"
+    ],
+    "formatted": "Bill's Oyster, 205 West 3rd Street, Austin, TX 78701, United States of America",
+    "address_line1": "Bill's Oyster",
+    "address_line2": "205 West 3rd Street, Austin, TX 78701, United States of America",
+    "website": "https://www.billsoyster.com/",
+    "distance": 300,
+    "place_id": "5154539275b86f58c0599535a094ff433e40f00103f901a3996bc10000000092030d42696c6c2773204f7973746572",
+    "lat": 30.2656186,
+    "lon": -97.7456335,
+    "catering": {
+     "cuisine": "seafood"
+    },
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "name": "Bill's Oyster",
+      "amenity": "restaurant",
+      "cuisine": "seafood"
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.7456335,
+     30.2656186
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "La Sangucheria",
+    "categories": [
+     "catering",
+     "catering.restaurant",
+     "catering.restaurant.peruvian"
+    ],
+    "formatted": "La Sangucheria, 318 East 5th Street, Austin, TX 78701, United States of America",
+    "address_line1": "La Sangucheria",
+    "address_line2": "318 East 5th Street, Austin, TX 78701, United States of America",
+    "website": "https://lasangucheria.us/",
+    "opening_hours": "Mo-We 11:00-22:00; Sa 09:00-00:00; Su 09:00-22:00; Th-Fr 11:00-00:00",
+    "distance": 301,
+    "place_id": "51d6e1e82a5d6f58c059cf7c73243c443e40f00103f9019afc2f420300000092030e4c612053616e6775636865726961",
+    "lat": 30.2665427,
+    "lon": -97.7400615,
+    "catering": {
+     "cuisine": "peruvian"
+    },
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "name": "La Sangucheria",
+      "amenity": "restaurant",
+      "cuisine": "peruvian",
+      "opening_hours": "Mo-We 11:00-22:00; Sa 09:00-00:00; Su 09:00-22:00; Th-Fr 11:00-00:00"
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.7400615,
+     30.2665427
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "categories": [
+     "catering",
+     "catering.restaurant"
+    ],
+    "formatted": "301 Brazos Street, Austin, TX 78701, United States of America",
+    "address_line1": "301 Brazos Street",
+    "address_line2": "Austin, TX 78701, United States of America",
+    "distance": 304,
+    "place_id": "511d210379766f58c059f3107cc2c8433e40f00103f901c3d70d8f00000000",
+    "lat": 30.2647821,
+    "lon": -97.741606,
+    "datasource": {
+     "sourcename": "openstreetmap",
+     "attribution": "© OpenStreetMap contributors",
+     "license": "Open Database License",
+     "url": "https://www.openstreetmap.org/copyright",
+     "raw": {
+      "amenity": "restaurant"
+     }
+    }
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.741606,
+     30.2647821
+    ]
+   }
+  }
+ ]
+}

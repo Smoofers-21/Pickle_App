@@ -6,6 +6,13 @@ export const RADIUS_OPTIONS = [1, 5, 10, 25, 50] as const;
 export const ROUND_OPTIONS = [1, 2, 3] as const;
 export const EVENT_DAYS_AHEAD = 14;
 
+/** A real calendar date, without Date.parse's invalid-day rollover. */
+export function isCalendarDate(value: unknown): value is string {
+  if (typeof value !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+  const date = new Date(`${value}T00:00:00Z`);
+  return Number.isFinite(date.getTime()) && date.toISOString().slice(0, 10) === value;
+}
+
 export type Setup = {
   category: Category | null;
   eventDate: string; // YYYY-MM-DD, events only

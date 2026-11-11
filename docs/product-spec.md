@@ -77,30 +77,30 @@ Each member picks one guaranteed No and, optionally, one guaranteed Yes. Picks c
 
 **Tags** (final, decided Nov 9, 2026)
 
-Each tag maps to categories the data sources return, so picks change the scores. A tag is a **primary** match when it matches a place's main type or an event's genre, and a **secondary** match when it matches another type or the subgenre (see rule 2). Places tags match OpenStreetMap data, which Geoapify returns: the `cuisine` value (like `italian`, shown by Geoapify as the category `catering.restaurant.italian`) or the bar type. The exact names are checked against Geoapify's live data in milestone 4. Tags marked *best effort* have no dedicated OpenStreetMap category and match by keyword or optional tag, so they'll miss some places.
+Each tag maps to categories the data sources return, so picks change the scores. A tag is a **primary** match when it matches a place's main type or an event's genre, and a **secondary** match when it matches another type or the subgenre (see rule 2). Places tags match OpenStreetMap data, which Geoapify returns: the `cuisine` value (like `italian`, shown by Geoapify as the category `catering.restaurant.italian`) or the bar type. Checked against Geoapify's live data on Nov 11, 2026 (milestone 4). A tag's words in a place's name or description also count as a secondary match, because much OpenStreetMap data has no cuisine ("Little Italy Pizza" counts for Italian). Tags marked *best effort* have no dedicated OpenStreetMap category and match by keyword or optional tag, so they'll miss some places.
 
 | Category | Tag | Matches |
 |---|---|---|
 | Food | Italian | OSM cuisine: italian, pizza |
-| Food | Mexican | OSM cuisine: mexican, tex-mex |
-| Food | Asian | OSM cuisine: chinese, japanese, thai, korean, vietnamese, asian, ramen, noodle, sushi |
+| Food | Mexican | OSM cuisine: mexican, tex-mex, tacos |
+| Food | Asian | OSM cuisine: chinese, japanese, thai, korean, vietnamese, asian, ramen, noodle, sushi, dumpling, taiwanese, filipino, indonesian, malaysian |
 | Food | Indian | OSM cuisine: indian |
-| Food | Mediterranean | OSM cuisine: mediterranean, greek, lebanese, turkish, middle_eastern |
-| Food | American | OSM cuisine: american, diner |
+| Food | Mediterranean | OSM cuisine: mediterranean, greek, lebanese, turkish, middle_eastern, arab, persian, moroccan, syrian |
+| Food | American | OSM cuisine: american, diner, texan, cajun, southern |
 | Food | Burgers | OSM cuisine: burger |
-| Food | Seafood | OSM cuisine: seafood, fish |
+| Food | Seafood | OSM cuisine: seafood, fish, fish_and_chips |
 | Food | Steakhouse | OSM cuisine: steak_house |
 | Food | BBQ | OSM cuisine: barbecue, bbq |
-| Food | Vegetarian | OSM cuisine: vegetarian, vegan; also places tagged vegetarian- or vegan-friendly (secondary) |
-| Food | Fine dining | No OSM category: keyword ("fine dining", "tasting menu"), best effort |
+| Food | Vegetarian | OSM cuisine: vegetarian, vegan; also places tagged `diet:vegetarian` or `diet:vegan` = yes/only (secondary; "no" never matches) |
+| Food | Fine dining | OSM cuisine: fine_dining (seen in live data), or keyword ("fine dining", "tasting menu"), best effort |
 | Food | Breakfast | OSM cuisine: breakfast |
 | Food | Brunch | OSM cuisine: brunch |
 | Bars | Sports bar | Bars with an OSM `sport` tag, or keyword "sports", best effort |
-| Bars | Cocktail bar | Keyword "cocktail" or OSM cocktail tags, best effort |
-| Bars | Brewery | OSM beer garden (biergarten), microbrewery, or keyword "brewery"/"brewing" |
+| Bars | Cocktail bar | Keyword ("cocktail", "speakeasy", "mixology") in the name or description, best effort |
+| Bars | Brewery | OSM beer garden (biergarten), taproom, microbrewery, or keyword "brewery"/"brewing"/"taproom" |
 | Bars | Wine bar | Keyword "wine" or OSM wine tags, best effort |
 | Bars | Pub | OSM pub |
-| Bars | Club | OSM nightclub |
+| Bars | Club | OSM nightclub (Geoapify category `adult.nightclub`) |
 | Bars | Karaoke | OSM karaoke venue or karaoke tag, best effort |
 | Bars | Live music | OSM live-music tag, or keyword "live music", best effort |
 | Bars | Lounge | Keyword "lounge", best effort |
@@ -224,7 +224,7 @@ The app uses a black-and-white "2F" style: pill-shaped chips and secondary butto
 
 | Element           | Decision                                                                                                                                                                                                        |
 |-------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Colors            | Black \#111111 on white; grey \#555555 for secondary text; light grey \#EDEDED / \#F2F2F2 for fills and disabled states. No accent color in the interface; the logo is the only color and keeps its own greens. |
+| Colors            | Black \#111111 on white; grey \#555555 for secondary text; light grey \#EDEDED / \#F2F2F2 for fills and disabled states. One accent: **Pickle green \#2F5E36**, the green of the logo's "Pickle" wordmark, used only for the selected Yes / No pills (screen 08) and the outline of the ranking you're ordering (screens 13 and 15). Everything else stays black and white; the logo keeps its own greens. |
 | Logo              | The owner's Pickle logo file, used exactly as supplied (see Logo below)                                                                                                                                         |
 | Font              | Outfit (Google Fonts): 700 for headings, 600 for buttons and names, 400 for body                                                                                                                                |
 | Main button       | Black, 22px corners, soft shadow, one per screen, pinned near the bottom                                                                                                                                        |
