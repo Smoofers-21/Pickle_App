@@ -2,6 +2,9 @@
 
 Requested follow-up: PR #14 (GitHub assigns the actual number on creation).
 Branch: `security/pr-13-review`, based on PR #13 at `767604b`.
+Implementation commit: `5ed3b16`. The branch is pushed. The API-based creation
+attempt was denied by the environment proxy, so no PR #14 was created by this
+session. GitHub will assign a number when creation succeeds.
 
 - Bound provider response bodies by streamed bytes and enforce body-read deadlines.
 - Fence search workers with private claim tokens, including credit reservation, cache writes, progress and completion.
