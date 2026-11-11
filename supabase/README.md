@@ -4,7 +4,7 @@
 
 ## Applying a migration
 
-Supabase dashboard → **SQL Editor** → **New query** → paste the whole file → **Run**. Run each file once, in order. All files below have been applied to the Pickle_app project (as of Nov 11, 2026). The pull request for each milestone says which new files to run.
+Supabase dashboard → **SQL Editor** → **New query** → paste the whole file → **Run**. Run each file once, in order. Migrations through `20261111000002_search.sql` were reported applied to the Pickle_app project in PR #13. The worker-fencing migration below has been tested locally; this review has not inspected or changed the hosted database.
 
 | File | Milestone | What it does |
 |---|---|---|
@@ -16,6 +16,21 @@ Supabase dashboard → **SQL Editor** → **New query** → paste the whole file
 | `20261110000005_no_rejoin_by_name.sql` | 3 | A name never reclaims someone's spot: only the phone that owns it can (security review) |
 | `20261111000001_geoapify_option_source.sql` | 4 preparation | Lets saved options come from Geoapify; keeps the old Google value for existing rows (security review, Codex) |
 | `20261111000002_search.sql` | 4 | Search: time zone and progress on games, card details on options, the daily API budget and call log (`api_usage`), and the functions to claim, save and finish a search, change the criteria and end a game |
+| `20261111000003_fence_search_workers.sql` | 4 security review | Token-based search ownership, guarded credit reservation and consistent lobby/game lock order; not applied to hosted Supabase by this review |
+
+Apply `20261111000003_fence_search_workers.sql` before deploying this branch.
+It replaces the search worker RPC signatures and reloads PostgREST's schema
+cache. Old workers without a valid token are rejected. Deploy the matching
+application code immediately afterward; in-flight searches may wait for their
+45-second stale-claim timeout before recovery. Do not roll back just the
+application to an unfenced worker implementation.
+
+For a **read-only** deployed-schema/security check after migration, run
+`supabase/security-audit.sql` in the SQL editor, or use
+`psql -v ON_ERROR_STOP=1 -f supabase/security-audit.sql` with an appropriately
+authorized database connection. It checks catalogs and grants without reading
+member data or locations. A local pass does not establish deployed readiness.
+Never run `tests/local-stubs.sql` on hosted Supabase.
 
 ## Testing locally
 

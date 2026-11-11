@@ -31,28 +31,54 @@ export class ProviderError extends Error {
 }
 
 async function getJson(url: URL, headers: Record<string, string> = {}): Promise<unknown> {
+  const signal = AbortSignal.timeout(TIMEOUT_MS);
   let res: Response;
   try {
     res = await fetch(url, {
       headers: { accept: "application/json", ...headers },
-      signal: AbortSignal.timeout(TIMEOUT_MS),
+      signal,
       cache: "no-store",
       redirect: "error",
     });
   } catch (err) {
-    throw new ProviderError((err as Error)?.name === "TimeoutError" ? "timeout" : "network");
+    throw new ProviderError(signal.aborted || (err as Error)?.name === "TimeoutError" ? "timeout" : "network");
   }
   if (!res.ok) {
-    await res.body?.cancel();
+    void res.body?.cancel().catch(() => {});
     throw new ProviderError("http", res.status);
   }
   const length = Number(res.headers.get("content-length"));
   if (length > MAX_BYTES) {
-    await res.body?.cancel();
+    void res.body?.cancel().catch(() => {});
     throw new ProviderError("too_large");
   }
-  const text = await res.text();
-  if (text.length > MAX_BYTES) throw new ProviderError("too_large");
+  if (!res.body) throw new ProviderError("bad_response");
+  const reader = res.body.getReader();
+  const decoder = new TextDecoder();
+  let bytes = 0;
+  let text = "";
+  let abort: () => void = () => {};
+  const aborted = new Promise<never>((_, reject) => {
+    abort = () => reject(new ProviderError("timeout"));
+    signal.addEventListener("abort", abort, { once: true });
+  });
+  try {
+    while (true) {
+      if (signal.aborted) throw new ProviderError("timeout");
+      const { done, value } = await Promise.race([reader.read(), aborted]);
+      if (done) { text += decoder.decode(); break; }
+      bytes += value.byteLength;
+      if (bytes > MAX_BYTES) throw new ProviderError("too_large");
+      text += decoder.decode(value, { stream: true });
+    }
+  } catch (err) {
+    void reader.cancel().catch(() => {});
+    if (err instanceof ProviderError) throw err;
+    throw new ProviderError(signal.aborted ? "timeout" : "network");
+  } finally {
+    signal.removeEventListener("abort", abort);
+    reader.releaseLock();
+  }
   try {
     return JSON.parse(text);
   } catch {
@@ -87,7 +113,7 @@ export const geoapify: PlacesProvider = {
       throw new ProviderError("bad_response");
     }
     const count = Array.isArray((body as { features?: unknown[] }).features) ? (body as { features: unknown[] }).features.length : 0;
-    return { candidates, more: count >= this.pageSize };
+    return { candidates, more: count >= this.pageSize, consumed: count };
   },
 };
 
@@ -110,7 +136,9 @@ export async function searchEvents(area: SearchArea, date: string): Promise<Plac
     const { candidates } = parseTicketmaster(body);
     const page = (body as { page?: { totalPages?: unknown; number?: unknown } }).page;
     const more = Number(page?.number ?? 0) + 1 < Number(page?.totalPages ?? 0);
-    return { candidates, more };
+    const consumed = Array.isArray((body as { _embedded?: { events?: unknown[] } })._embedded?.events)
+      ? (body as { _embedded: { events: unknown[] } })._embedded.events.length : 0;
+    return { candidates, more, consumed };
   } catch {
     throw new ProviderError("bad_response");
   }

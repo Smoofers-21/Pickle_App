@@ -146,6 +146,8 @@ export function filterCandidates(
 ): Candidate[] {
   return candidates.filter((c) => {
     if (alreadyShown.has(`${c.source}:${c.sourceId}`)) return false;
+    if (alreadyShown.has(`name:${normalizeName(c.name)}`)) return false;
+    if (!Number.isFinite(c.distanceMi) || c.distanceMi < 0) return false;
     if (c.distanceMi > radiusMi) return false;
     if (settings.age === "all" && c.adultsOnly === true) return false;
     if (settings.category === "events") {

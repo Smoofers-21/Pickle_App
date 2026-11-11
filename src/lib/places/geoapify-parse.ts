@@ -9,7 +9,7 @@
 
 import type { Candidate } from "@/lib/game/scoring";
 import { isOpenNow } from "./opening-hours";
-import { cleanText, distanceMi, METERS_PER_MILE, safeLink, type PlacesCategory, type SearchContext } from "./provider";
+import { cleanText, distanceMi, finiteNumber, METERS_PER_MILE, safeLink, type PlacesCategory, type SearchContext } from "./provider";
 
 /** Geoapify categories searched for each Pickle category. */
 export const GEOAPIFY_CATEGORIES: Record<PlacesCategory, string[]> = {
@@ -71,7 +71,7 @@ const isYes = (value: unknown) => typeof value === "string" && YES.has(value.toL
 
 export function kindLabel(token: string | undefined, category: PlacesCategory): string {
   if (!token) return category === "bars" ? "Bar" : "Restaurant";
-  return KIND_LABELS[token] ?? token.replace(/_/g, " ").replace(/^\w/, (c) => c.toUpperCase());
+  return Object.hasOwn(KIND_LABELS, token) ? KIND_LABELS[token] : token.replace(/_/g, " ").replace(/^\w/, (c) => c.toUpperCase());
 }
 
 /** One Geoapify feature → a Candidate, or null if it has no name or position. */
@@ -85,9 +85,9 @@ export function geoapifyCandidate(
   if (!p || typeof p !== "object") return null;
   const name = cleanText(p.name, 80);
   const placeId = typeof p.place_id === "string" && /^[0-9a-f]{8,200}$/i.test(p.place_id) ? p.place_id : null;
-  const lat = Number(p.lat);
-  const lng = Number(p.lon);
-  if (!name || !placeId || !Number.isFinite(lat) || !Number.isFinite(lng)) return null;
+  const lat = finiteNumber(p.lat);
+  const lng = finiteNumber(p.lon);
+  if (!name || !placeId || lat === null || lng === null || Math.abs(lat) > 90 || Math.abs(lng) > 180) return null;
 
   const raw: Raw = p.datasource?.raw && typeof p.datasource.raw === "object" ? p.datasource.raw : {};
   const categories = Array.isArray(p.categories) ? p.categories.filter((c): c is string => typeof c === "string") : [];
@@ -125,10 +125,10 @@ export function geoapifyCandidate(
 
   const outdoor = isYes(raw.outdoor_seating) || p.facilities?.outdoor_seating === true || primary[0] === "biergarten";
   const indoorOnly = !outdoor && isYes(raw.indoor_seating) && raw.outdoor_seating === "no";
-  const minAge = Number(raw.min_age);
+  const minAge = finiteNumber(raw.min_age);
 
-  const meters = Number(p.distance);
-  const miles = Number.isFinite(meters) && meters >= 0 ? meters / METERS_PER_MILE : distanceMi(center.lat, center.lng, lat, lng);
+  const meters = finiteNumber(p.distance);
+  const miles = meters !== null && meters >= 0 ? meters / METERS_PER_MILE : distanceMi(center.lat, center.lng, lat, lng);
   const hours = cleanText(p.opening_hours ?? raw.opening_hours, 300);
 
   return {
@@ -140,7 +140,7 @@ export function geoapifyCandidate(
     text: [cleanText(raw.description, 200), cleanText(raw.brand, 60)].filter(Boolean).join(" ") || undefined,
     distanceMi: Math.round(miles * 100) / 100,
     indoorOutdoor: outdoor ? "outdoor" : indoorOnly ? "indoor" : null,
-    adultsOnly: Number.isFinite(minAge) && minAge >= 21 ? true : null,
+    adultsOnly: minAge !== null && minAge >= 21 ? true : null,
     openNow: isOpenNow(hours, context.now, context.timeZone),
     card: {
       kind: kindLabel(primary[0], category),

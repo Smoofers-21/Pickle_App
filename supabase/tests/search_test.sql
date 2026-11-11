@@ -17,6 +17,7 @@ declare
   v_lobby uuid; v_host uuid; v_a uuid; v_game uuid;
   v_opt1 uuid; v_opt2 uuid;
   v_pings int;
+  v_token uuid;
 begin
   -- Budget: atomic, capped, counts only
   perform pg_temp.check(public.reserve_api_units('geoapify', 5, 12), 'first request fits the budget');
@@ -47,9 +48,11 @@ begin
   update public.games set search_claimed_at = now() - interval '2 minutes' where id = v_game;
   perform pg_temp.check(public.claim_search(v_game)->>'status' = 'ok', 'a stale claim (crashed run) can be taken over');
 
+  select search_claim_token into v_token from public.games where id = v_game;
+
   -- Progress pings, never the location
   select count(*) into v_pings from realtime.sent;
-  perform public.search_progress(v_game, '{"radius_mi": 5, "matches": 4, "widened_to": 10}');
+  perform public.search_progress(v_game, '{"radius_mi": 5, "matches": 4, "widened_to": 10}', v_token);
   perform pg_temp.check((select search->>'widened_to' from public.games where id = v_game) = '10', 'progress is saved');
   perform pg_temp.check((select count(*) from realtime.sent) > v_pings, 'progress pings the lobby');
   perform pg_temp.check((select search::text from public.games where id = v_game) not like '%30.267%', 'progress never holds the location');
@@ -57,15 +60,15 @@ begin
   -- Saving the cache
   perform public.save_options(v_game, '[
     {"source":"geoapify","source_id":"p1","name":"Trattoria","normalized_name":"trattoria","distance_mi":0.5,"tags":["italian"],"details":{"kind":"Italian"}},
-    {"source":"geoapify","source_id":"p2","name":"Taqueria","normalized_name":"taqueria","distance_mi":1.2,"link":"https://example.com"}]');
-  perform public.save_options(v_game, '[{"source":"geoapify","source_id":"p1","name":"Changed"}]');
+    {"source":"geoapify","source_id":"p2","name":"Taqueria","normalized_name":"taqueria","distance_mi":1.2,"link":"https://example.com"}]', v_token);
+  perform public.save_options(v_game, '[{"source":"geoapify","source_id":"p1","name":"Changed"}]', v_token);
   perform pg_temp.check((select count(*) from public.options where game_id = v_game) = 2, 'saving the same place twice keeps one row');
   perform pg_temp.check((select name from public.options where game_id = v_game and source_id = 'p1') = 'Trattoria', 'saved places are not overwritten');
   select id into v_opt1 from public.options where game_id = v_game and source_id = 'p1';
   select id into v_opt2 from public.options where game_id = v_game and source_id = 'p2';
 
   -- Finishing
-  r := public.finish_search(v_game, 'done', '{"radius_mi":5,"matches":1}', jsonb_build_array(jsonb_build_object('id', v_opt1, 'score', 83)));
+  r := public.finish_search(v_game, 'done', '{"radius_mi":5,"matches":1}', jsonb_build_array(jsonb_build_object('id', v_opt1, 'score', 83)), v_token);
   perform pg_temp.check(r->>'status' = 'ok', 'search finishes');
   perform pg_temp.check((select stage from public.games where id = v_game) = 'cards_and_voting', 'done moves everyone to the cards');
   perform pg_temp.check((select shown_in_round from public.options where id = v_opt1) = 1
@@ -73,7 +76,7 @@ begin
   perform pg_temp.check((select shown_in_round from public.options where id = v_opt2) is null, 'unchosen options stay in the cache');
   perform pg_temp.check((select center_lat is null and center_lng is null from public.games where id = v_game),
                         'location is deleted after the last search of a 1-round game');
-  perform pg_temp.check(public.finish_search(v_game, 'done', '{}', jsonb_build_array(jsonb_build_object('id', v_opt2, 'score', 70)))->>'status' = 'stale',
+  perform pg_temp.check(public.finish_search(v_game, 'done', '{}', jsonb_build_array(jsonb_build_object('id', v_opt2, 'score', 70)), v_token)->>'status' = 'stale',
                         'a late second finish is ignored');
 
   -- Nothing found, then the host changes the criteria
@@ -83,9 +86,10 @@ begin
   v_game := (public.start_game(v_lobby, v_host, 'bars', null, 1, '21_plus', 'either', 2::smallint, 30.2, -97.7, null)->>'game_id')::uuid;
   perform public.submit_picks(v_game, v_host, 'pub', null, null, null);
   perform public.submit_picks(v_game, v_a, 'club', null, null, null);
-  perform public.claim_search(v_game);
-  perform public.save_options(v_game, '[{"source":"geoapify","source_id":"x1","name":"Far Bar"}]');
-  perform public.finish_search(v_game, 'nothing_found', '{"radius_mi":1,"widened_to":6,"matches":0}');
+  r := public.claim_search(v_game);
+  v_token := (r->>'claim_token')::uuid;
+  perform public.save_options(v_game, '[{"source":"geoapify","source_id":"x1","name":"Far Bar"}]', v_token);
+  perform public.finish_search(v_game, 'nothing_found', '{"radius_mi":1,"widened_to":6,"matches":0}', '[]', v_token);
   perform pg_temp.check((select stage from public.games where id = v_game) = 'searching'
                         and (select search->>'status' from public.games where id = v_game) = 'nothing_found', 'nothing found waits for the host');
   perform pg_temp.check((select center_lat from public.games where id = v_game) is null, 'location is deleted after the last search even when nothing was found');
@@ -103,8 +107,9 @@ begin
   perform pg_temp.check(public.change_criteria(v_game, v_host, 'food', null, 5, 'all', 'either', 1::smallint, 30.2, -97.7, null)->>'status' = 'wrong_stage',
                         'criteria change only after a failed search');
 
-  perform public.claim_search(v_game);
-  perform public.finish_search(v_game, 'unavailable', '{"reason":"budget"}');
+  r := public.claim_search(v_game);
+  v_token := (r->>'claim_token')::uuid;
+  perform public.finish_search(v_game, 'unavailable', '{"reason":"budget"}', '[]', v_token);
   r := public.change_criteria(v_game, v_host, 'food', null, 5, 'all', 'either', 1::smallint, 30.2, -97.7, null);
   perform pg_temp.check((select stage from public.games where id = v_game) = 'picks'
                         and (select count(*) from public.picks where game_id = v_game) = 0, 'new category: everyone picks again');

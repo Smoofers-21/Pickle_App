@@ -5,7 +5,7 @@ import food from "./fixtures/geoapify-food-sample.json";
 import bars from "./fixtures/geoapify-bars-sample.json";
 import tm from "./fixtures/ticketmaster-sample.json";
 import { geoapifyCandidate, parseGeoapify } from "./geoapify-parse";
-import { geohash, parseTicketmaster } from "./ticketmaster-parse";
+import { geohash, parseTicketmaster, ticketmasterCandidate } from "./ticketmaster-parse";
 import { safeLink } from "./provider";
 
 const center = { lat: 30.2672, lng: -97.7431 };
@@ -118,6 +118,24 @@ describe("Ticketmaster (documented shape)", () => {
 });
 
 describe("helpers", () => {
+  it("rejects missing or out-of-range place coordinates and does not treat null distance as zero", () => {
+    const props = { name: "Test place", place_id: "abc123def456", lat: 30.28, lon: -97.74, distance: null };
+    for (const lat of [null, "", true, 91]) {
+      expect(geoapifyCandidate({ properties: { ...props, lat } }, "food", center, context)).toBeNull();
+    }
+    expect(geoapifyCandidate({ properties: props }, "food", center, context)?.distanceMi).toBeGreaterThan(0);
+  });
+
+  it("skips invalid event distances and tolerates malformed per-event classifications", () => {
+    const event = tm._embedded.events[0];
+    for (const distance of [null, "", true, -1]) expect(ticketmasterCandidate({ ...event, distance })).toBeNull();
+    expect(ticketmasterCandidate({ ...event, classifications: {} })?.name).toBe(event.name);
+    expect(ticketmasterCandidate({ ...event, dates: { start: { localDate: "2026-02-30" } } })).toBeNull();
+  });
+
+  it("rejects credential-bearing links", () => {
+    expect(safeLink("https://trusted.example:password@evil.example/")).toBeNull();
+  });
   it("geohash matches a known value", () => {
     expect(geohash(57.64911, 10.40744, 11)).toBe("u4pruydqqvj");
   });

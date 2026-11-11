@@ -18,7 +18,7 @@ function meta(o: OptionView): string {
 
 // What the search found, until the option cards and voting arrive in
 // milestones 5 and 6. Place data carries the Geoapify / OpenStreetMap credit.
-export function OptionsListScreen({ game, options, notice }: { game: GameInfo; options: OptionView[]; notice?: React.ReactNode }) {
+export function OptionsListScreen({ game, options, notice, demo = false }: { game: GameInfo; options: OptionView[]; notice?: React.ReactNode; demo?: boolean }) {
   const places = options.some((o) => o.source === "geoapify");
   return (
     <Screen>
@@ -29,7 +29,7 @@ export function OptionsListScreen({ game, options, notice }: { game: GameInfo; o
       </p>
       <div className={styles.memberHeader}>
         <Title>The group&apos;s {options.length === 1 ? "option" : `${options.length} options`}</Title>
-        <Subtitle>Best match first. Option cards and voting arrive in the next milestones.</Subtitle>
+        <Subtitle>{demo ? "Demo: saved sample options, not a live search near you. " : "Best match first. "}Option cards and voting arrive in the next milestones.</Subtitle>
       </div>
       <ul className={styles.optionList}>
         {options.map((o) => (

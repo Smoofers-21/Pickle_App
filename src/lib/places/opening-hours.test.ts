@@ -28,9 +28,9 @@ describe("isOpenNow", () => {
     expect(isOpenNow(hours, at("2026-11-15T12:00:00"), TZ)).toBe(false); // Sunday not listed
   });
 
-  it("understands 24/7 and ignores public-holiday rules", () => {
+  it("understands 24/7 and treats holiday exceptions as unknown", () => {
     expect(isOpenNow("24/7", at("2026-11-11T03:00:00"), TZ)).toBe(true);
-    expect(isOpenNow("Mo-Su 11:00-21:00; PH off", at("2026-11-11T12:00:00"), TZ)).toBe(true);
+    expect(isOpenNow("Mo-Su 11:00-21:00; PH off", at("2026-11-11T12:00:00"), TZ)).toBeNull();
   });
 
   it("returns null (unknown) for anything it can't read", () => {
@@ -49,6 +49,9 @@ describe("isOpenNow", () => {
 });
 
 describe("parseOpeningHours", () => {
+  it.each(["Mo 10:99-18:00", "Mo 24:30-26:00", "Mo 10:00-25:99"])("treats invalid clock components as unknown: %s", (hours) => {
+    expect(parseOpeningHours(hours)).toBeNull();
+  });
   it("wraps day ranges across the week", () => {
     const week = parseOpeningHours("Fr-Mo 18:00-23:00")!;
     expect(week.map((d) => d.length)).toEqual([1, 0, 0, 0, 1, 1, 1]);

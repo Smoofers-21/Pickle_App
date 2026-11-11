@@ -144,7 +144,7 @@ export function LobbyView() {
       }
       return <SearchingScreen game={game} notice={noticeBar} />;
     }
-    return <OptionsListScreen game={game} options={state.options} notice={noticeBar} />;
+    return <OptionsListScreen game={game} options={state.options} notice={noticeBar} demo={lobby.isDemo} />;
   }
 
   if (me.isHost && settingUp && lobby.status === "open") {

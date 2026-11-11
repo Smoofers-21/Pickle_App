@@ -22,12 +22,12 @@ const h = vi.hoisted(() => {
     switch (name) {
       case "claim_search":
         return { data: state.claim ?? { status: "busy" }, error: null };
-      case "reserve_api_units":
+      case "reserve_search_units":
         if (state.budget) state.reserved += args.p_units as number;
-        return { data: state.budget, error: null };
+        return { data: state.budget ? "ok" : "budget", error: null };
       case "search_progress":
         state.progress.push(args.p_search);
-        return { data: null, error: null };
+        return { data: true, error: null };
       case "save_options":
         for (const o of args.p_options as { source: string; source_id: string; details: unknown }[]) {
           if (!state.options.some((x) => x.source === o.source && x.source_id === o.source_id)) {
@@ -74,6 +74,9 @@ const place = (name: string, cuisine: string, distanceMi: number): Candidate => 
 
 const claim = {
   status: "ok",
+  is_demo: false,
+  claim_token: "claim-token",
+  active_member_ids: ["seafood", "bbq", "country"],
   round: 1,
   rounds_total: 1,
   category: "food",
@@ -96,6 +99,7 @@ const pick = (no: string, yes: string | null = null) => ({
 });
 
 beforeEach(() => {
+  h.rpc.mockClear();
   Object.assign(h.state, { claim, picks: [pick("seafood", "italian"), pick("bbq")], options: [], budget: true, progress: [], finished: null, reserved: 0 });
   h.geoSearch.mockReset();
   h.eventSearch.mockReset();
@@ -107,6 +111,43 @@ const six = ["Roma", "Napoli", "Milano", "Taco A", "Taco B", "Thai C"].map((n, i
 );
 
 describe("runSearchIfNeeded", () => {
+  it("stops a stale worker before spending budget or calling a provider", async () => {
+    h.rpc.mockResolvedValueOnce({ data: claim, error: null }).mockResolvedValueOnce({ data: "stale", error: null });
+    await runSearchIfNeeded("g1");
+    expect(h.geoSearch).not.toHaveBeenCalled();
+    expect(h.state.finished).toBeNull();
+  });
+  it("uses saved demo samples without network calls or budget reservations", async () => {
+    h.state.claim = { ...claim, is_demo: true };
+    await runSearchIfNeeded("g1");
+    expect(h.geoSearch).not.toHaveBeenCalled();
+    expect(h.eventSearch).not.toHaveBeenCalled();
+    expect(h.state.reserved).toBe(0);
+    expect(h.state.finished?.status).toBe("done");
+    expect(h.state.finished?.chosen).toHaveLength(6);
+  });
+  it("ignores ready picks from removed or departed members", async () => {
+    h.state.picks.push({ ...pick("italian"), member_id: "departed" });
+    h.geoSearch.mockResolvedValue({ candidates: six, more: false, consumed: 100 });
+    await runSearchIfNeeded("g1");
+    expect(h.state.finished?.chosen).toHaveLength(6);
+    expect(h.state.finished!.chosen.slice(0,3).map((c) => h.state.options.find((o) => o.id === c.id)!.source_id).sort()).toEqual(["milano", "napoli", "roma"]);
+  });
+
+  it("does not repeat an already-shown chain under a different provider ID", async () => {
+    h.state.options = [{ id: "shown", source: "geoapify", source_id: "old-branch", shown_in_round: 1, details: place("Roma - Main St", "italian", 1) }];
+    h.geoSearch.mockResolvedValue({ candidates: six, more: false, consumed: 100 });
+    await runSearchIfNeeded("g1");
+    expect(h.state.finished?.chosen.map((c) => h.state.options.find((o) => o.id === c.id)!.source_id)).not.toContain("roma");
+  });
+
+  it("passes the ownership token with every search mutation", async () => {
+    h.geoSearch.mockResolvedValue({ candidates: six, more: false, consumed: 100 });
+    await runSearchIfNeeded("g1");
+    for (const [name, args] of h.rpc.mock.calls) {
+      if (["reserve_search_units", "search_progress", "save_options", "finish_search"].includes(name)) expect(args.p_claim_token).toBe("claim-token");
+    }
+  });
   it("does nothing when another server holds the search", async () => {
     h.state.claim = null;
     await runSearchIfNeeded("g1");
@@ -115,7 +156,7 @@ describe("runSearchIfNeeded", () => {
   });
 
   it("searches once, reserves its credits first, and shows the best 6", async () => {
-    h.geoSearch.mockResolvedValue({ candidates: [...six, place("Fish Shack", "seafood", 0.1)], more: false });
+    h.geoSearch.mockResolvedValue({ candidates: [...six, place("Fish Shack", "seafood", 0.1)], more: false, consumed: 100 });
     await runSearchIfNeeded("g1");
     expect(h.geoSearch).toHaveBeenCalledOnce();
     expect(h.geoSearch.mock.calls[0][0]).toMatchObject({ lat: 30.267, lng: -97.743, radiusMi: 5 });
@@ -132,18 +173,18 @@ describe("runSearchIfNeeded", () => {
 
   it("widens by 5 mi once, fetching the next page when the first was full", async () => {
     h.geoSearch
-      .mockResolvedValueOnce({ candidates: six.slice(0, 2), more: true })
-      .mockResolvedValueOnce({ candidates: six.slice(2), more: false });
+      .mockResolvedValueOnce({ candidates: six.slice(0, 2), more: true, consumed: 100 })
+      .mockResolvedValueOnce({ candidates: six.slice(2), more: false, consumed: 100 });
     await runSearchIfNeeded("g1");
     expect(h.geoSearch).toHaveBeenCalledTimes(2);
-    expect(h.geoSearch.mock.calls[1][0]).toMatchObject({ radiusMi: 10, offset: 2 });
+    expect(h.geoSearch.mock.calls[1][0]).toMatchObject({ radiusMi: 10, offset: 100 });
     expect(h.state.finished?.status).toBe("done");
     expect(h.state.finished?.search).toMatchObject({ radius_mi: 5, widened_to: 10, matches: 6 });
     expect(h.state.reserved).toBe(10);
   });
 
   it("never searches more than twice in a round, and uses what it found", async () => {
-    h.geoSearch.mockResolvedValue({ candidates: [six[0]], more: false });
+    h.geoSearch.mockResolvedValue({ candidates: [six[0]], more: false, consumed: 100 });
     await runSearchIfNeeded("g1");
     expect(h.geoSearch).toHaveBeenCalledTimes(2);
     expect(h.geoSearch.mock.calls[1][0].offset).toBe(0); // first page wasn't full: same start, wider circle
@@ -160,7 +201,7 @@ describe("runSearchIfNeeded", () => {
   });
 
   it("reports nothing found when no place qualifies", async () => {
-    h.geoSearch.mockResolvedValue({ candidates: [place("Fish Shack", "seafood", 0.1)], more: false });
+    h.geoSearch.mockResolvedValue({ candidates: [place("Fish Shack", "seafood", 0.1)], more: false, consumed: 100 });
     await runSearchIfNeeded("g1");
     expect(h.state.finished?.status).toBe("nothing_found");
     expect(h.state.finished?.search.reason).toBeUndefined();
@@ -186,7 +227,7 @@ describe("runSearchIfNeeded", () => {
   it("searches Ticketmaster for events on the chosen date", async () => {
     h.state.claim = { ...claim, category: "events", event_date: "2026-11-14", radius_mi: 10 };
     h.state.picks = [pick("country", "rock")];
-    h.eventSearch.mockResolvedValue({ candidates: [], more: false });
+    h.eventSearch.mockResolvedValue({ candidates: [], more: false, consumed: 100 });
     await runSearchIfNeeded("g1");
     expect(h.eventSearch).toHaveBeenCalledTimes(2);
     expect(h.eventSearch.mock.calls[0]).toEqual([{ lat: 30.267, lng: -97.743, radiusMi: 10 }, "2026-11-14"]);

@@ -22,6 +22,8 @@ export type SearchContext = {
 
 export type PlacesPage = {
   candidates: Candidate[];
+  /** Raw results consumed, including records the parser dropped. */
+  consumed: number;
   /** True when the page was full, so more results exist beyond it. */
   more: boolean;
 };
@@ -37,6 +39,13 @@ export interface PlacesProvider {
 
 export const METERS_PER_MILE = 1609.344;
 
+/** Numeric API strings are allowed; null, booleans and blank strings are not zero. */
+export function finiteNumber(value: unknown): number | null {
+  if (typeof value !== "number" && (typeof value !== "string" || value.trim() === "")) return null;
+  const number = Number(value);
+  return Number.isFinite(number) ? number : null;
+}
+
 /** Great-circle distance in miles. */
 export function distanceMi(aLat: number, aLng: number, bLat: number, bLng: number): number {
   const rad = Math.PI / 180;
@@ -51,7 +60,7 @@ export function safeLink(value: unknown): string | null {
   if (typeof value !== "string" || value.length > 500) return null;
   try {
     const url = new URL(value.trim());
-    return url.protocol === "https:" || url.protocol === "http:" ? url.toString() : null;
+    return (url.protocol === "https:" || url.protocol === "http:") && !url.username && !url.password ? url.toString() : null;
   } catch {
     return null;
   }

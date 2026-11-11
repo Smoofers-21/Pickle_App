@@ -4,7 +4,8 @@
 // Primary = segment and genre ("Music", "Rock"), secondary = subgenre.
 
 import type { Candidate } from "@/lib/game/scoring";
-import { cleanText, safeLink } from "./provider";
+import { isCalendarDate } from "@/lib/game/setup";
+import { cleanText, finiteNumber, safeLink } from "./provider";
 
 type Classification = {
   primary?: boolean;
@@ -62,13 +63,14 @@ export function ticketmasterCandidate(event: unknown): Candidate | null {
   if (!e || typeof e !== "object") return null;
   const id = typeof e.id === "string" && /^[A-Za-z0-9_-]{1,64}$/.test(e.id) ? e.id : null;
   const name = cleanText(e.name, 100);
-  const date = typeof e.dates?.start?.localDate === "string" && /^\d{4}-\d{2}-\d{2}$/.test(e.dates.start.localDate)
+  const date = isCalendarDate(e.dates?.start?.localDate)
     ? e.dates.start.localDate
     : null;
-  const distance = Number(e.distance);
-  if (!id || !name || !date || !Number.isFinite(distance)) return null;
+  const distance = finiteNumber(e.distance);
+  if (!id || !name || !date || distance === null || distance < 0) return null;
 
-  const cls = e.classifications?.find((c) => c?.primary) ?? e.classifications?.[0];
+  const classifications = Array.isArray(e.classifications) ? e.classifications : [];
+  const cls = classifications.find((c) => c?.primary) ?? classifications[0];
   const segment = genreName(cls?.segment?.name);
   const genre = genreName(cls?.genre?.name);
   const subGenre = genreName(cls?.subGenre?.name);
@@ -79,8 +81,8 @@ export function ticketmasterCandidate(event: unknown): Candidate | null {
   const address = [cleanText(venue?.address?.line1, 80), cleanText(venue?.city?.name, 40), cleanText(venue?.state?.stateCode, 10)]
     .filter(Boolean)
     .join(", ");
-  const lat = Number(venue?.location?.latitude);
-  const lng = Number(venue?.location?.longitude);
+  const lat = finiteNumber(venue?.location?.latitude);
+  const lng = finiteNumber(venue?.location?.longitude);
 
   return {
     source: "ticketmaster",
@@ -100,15 +102,17 @@ export function ticketmasterCandidate(event: unknown): Candidate | null {
       imageUrl: pickImage(e.images),
       venue: cleanText(venue?.name, 80),
       startTime: time,
-      lat: Number.isFinite(lat) ? lat : null,
-      lng: Number.isFinite(lng) ? lng : null,
+      lat: lat !== null && Math.abs(lat) <= 90 ? lat : null,
+      lng: lng !== null && Math.abs(lng) <= 180 ? lng : null,
     },
   };
 }
 
 export function parseTicketmaster(body: unknown): { candidates: Candidate[]; total: number } {
   const b = body as { _embedded?: { events?: unknown[] }; page?: { totalElements?: unknown } } | null;
-  if (!b || typeof b !== "object") throw new Error("Unexpected events response");
+  if (!b || typeof b !== "object" || Array.isArray(b) || !("page" in b) || !b.page ||
+      !Number.isInteger(finiteNumber(b.page.totalElements)) || Number(b.page.totalElements) < 0 ||
+      (b._embedded !== undefined && !Array.isArray(b._embedded?.events))) throw new Error("Unexpected events response");
   const events = Array.isArray(b._embedded?.events) ? b._embedded.events : []; // no _embedded = no events
   const candidates: Candidate[] = [];
   for (const e of events) {

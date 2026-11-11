@@ -11,7 +11,7 @@ Built as a portfolio project to show full-stack work end to end: real-time multi
 | Area | How |
 |---|---|
 | Real-time multiplayer | Supabase Realtime pings and Presence keep every phone's lobby in sync within about a second |
-| Database design and security | Postgres with row-level security on every table and no browser access at all; all game rules live in SQL functions only the server can call; 116 SQL checks run in CI |
+| Database design and security | Postgres with row-level security on every table and no browser access at all; all game rules live in SQL functions only the server can call; 132 SQL checks run in CI |
 | API integration | Geoapify Places (OpenStreetMap data) for restaurants and bars and Ticketmaster for events, behind a swappable provider interface; all keys server-side; a shared daily credit budget reserved atomically in Postgres before every call |
 | Algorithms | Cancel-out rule for conflicting picks, primary/secondary tag matching, distance scoring, chain de-duplication, radius widening, an OpenStreetMap opening-hours parser (unit tested on real data) |
 | Security | HTTP-only device cookies (only their hash is stored), rate limits, request size limits, security headers, a pre-commit secret check, and a CI check that no key reaches the browser bundle |

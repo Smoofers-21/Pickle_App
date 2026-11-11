@@ -11,6 +11,9 @@ type Interval = [start: number, end: number]; // minutes from the day's midnight
 export function parseOpeningHours(value: string): Interval[][] | null {
   const text = value.trim();
   if (!text || text.length > 300) return null;
+  // A holiday calendar is unavailable. Do not claim weekday hours also
+  // apply on a possible holiday; retain the place as unknown instead.
+  if (/\b(?:PH|SH)\b/.test(text)) return null;
   const week: Interval[][] = DAYS.map(() => []);
   if (text === "24/7") return week.map(() => [[0, 1440]]);
 
@@ -74,7 +77,7 @@ function parseTimes(part: string): Interval[] | null {
     if (!m) return null;
     const start = Number(m[1]) * 60 + Number(m[2]);
     let end = Number(m[3]) * 60 + Number(m[4]);
-    if (start > 1440 || end > 48 * 60) return null;
+    if (Number(m[1]) > 23 || Number(m[2]) > 59 || Number(m[4]) > 59 || end > 48 * 60) return null;
     if (end <= start) end += 1440; // closes after midnight
     out.push([start, end]);
   }

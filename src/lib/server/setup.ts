@@ -1,5 +1,5 @@
 import "server-only";
-import { EVENT_DAYS_AHEAD, RADIUS_OPTIONS, ROUND_OPTIONS } from "@/lib/game/setup";
+import { EVENT_DAYS_AHEAD, isCalendarDate, RADIUS_OPTIONS, ROUND_OPTIONS } from "@/lib/game/setup";
 import { isCategory, type Category } from "@/lib/game/tags";
 import { isValidTimeZone } from "@/lib/places/opening-hours";
 
@@ -10,7 +10,7 @@ const DAY_MS = 86_400_000;
 
 /** A YYYY-MM-DD date from yesterday (time zones) to two weeks ahead. */
 function validEventDate(value: unknown): value is string {
-  if (typeof value !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+  if (!isCalendarDate(value)) return false;
   const t = Date.parse(`${value}T00:00:00Z`);
   if (Number.isNaN(t)) return false;
   const today = Date.parse(new Date().toISOString().slice(0, 10) + "T00:00:00Z");

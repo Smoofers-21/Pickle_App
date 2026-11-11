@@ -102,13 +102,13 @@ Primary and secondary tags come from each source's own categories: for places, t
 
 Everything runs on free tiers: Geoapify's free plan (3,000 credits a day) and Ticketmaster's free key (5,000 calls a day). The goal is about one places search per game and no repeated work. These rules are built into milestones 4 and 5 from the start.
 
-1.  **One places search per game where possible.** One Geoapify request returns many places at once (the page size is set in milestone 4, around 50). All are scored, and the rest are saved for later rounds, so a multi-round game usually runs on one search. A second search happens only when a round comes up short (the 5 mi widening).
+1.  **One places search per game where possible.** One Geoapify request returns up to 100 raw places. All valid candidates are scored, and the rest are saved for later rounds, so a multi-round game usually runs on one search. A second search happens only when a round comes up short (the 5 mi widening); its offset counts raw results, including records skipped by the parser.
 
 2.  **No image requests.** Cards use the local cuisine images, so showing cards costs nothing (see Cuisine images).
 
 3.  **Never repeat work within a game.** Saved results are used first, and a wider search skips places already found (see Search and scoring).
 
-4.  **Saved data for demos and testing.** Demo mode and development run on a saved sample search, which costs nothing and keeps demos reliable.
+4.  **Saved data for demos and testing.** Explicit demo lobbies and automated tests use saved samples without spending provider credits. Demo results are labeled as samples, not live nearby recommendations. Non-demo development sessions still use the configured providers.
 
 5.  **Ticketmaster in one batch.** A default key is free, limited to 5,000 calls a day and 5 a second. ([Ticketmaster docs](https://developer.ticketmaster.com/products-and-docs/apis/getting-started/)) One call fetches a large batch of events for the whole game.
 
