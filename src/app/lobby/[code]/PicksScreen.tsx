@@ -71,7 +71,7 @@ function TagPicker({
   );
 }
 
-// Screen 08: one guaranteed No and an optional guaranteed Yes.
+// Screen 08: one required No preference and an optional Yes preference.
 export function PicksScreen({
   code,
   game,
@@ -114,7 +114,7 @@ export function PicksScreen({
           arrow
           onClick={submit}
           disabled={!noValid || !yesValid || busy}
-          disabledReason={busy ? undefined : !noValid ? "Pick a guaranteed No" : !yesValid ? "Type your Yes, or unselect Other" : undefined}
+          disabledReason={busy ? undefined : !noValid ? "Pick a No preference" : !yesValid ? "Type your Yes, or unselect Other" : undefined}
         >
           {busy ? "Sending…" : initial ? "Update picks" : "Submit picks"}
         </MainButton>
@@ -130,12 +130,12 @@ export function PicksScreen({
         </Subtitle>
       </div>
 
-      <SectionTitle aside="Required">Guaranteed No</SectionTitle>
+      <SectionTitle aside="Required">No preference</SectionTitle>
       <TagPicker id="no-other" choice={no} onChange={setNo} blockedTag={blockForNo} tags={tags} />
 
       <Divider />
 
-      <SectionTitle aside="Optional">Guaranteed Yes</SectionTitle>
+      <SectionTitle aside="Optional">Yes preference</SectionTitle>
       <TagPicker id="yes-other" choice={yes} onChange={setYes} blockedTag={blockForYes} tags={tags} />
 
       {error && (

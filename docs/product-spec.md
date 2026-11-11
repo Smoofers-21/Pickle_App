@@ -4,7 +4,7 @@ Nov 4, 2026 · @Santiago Perez Alferez
 
 ## Overview
 
-Pickle helps a group of up to 10 friends agree on a plan (a restaurant, bar or event) in a few minutes. Members join a lobby with a code, each submits one guaranteed No and an optional guaranteed Yes, then everyone browses up to 6 matched options and ranks them.
+Pickle helps a group of up to 10 friends agree on a plan (a restaurant, bar or event) in a few minutes. Members join a lobby with a code, each submits one required No preference and an optional Yes preference, then everyone browses up to 6 matched options and ranks them. No preferences lower scores rather than vetoing an option; Yes preferences boost scores rather than guaranteeing a match. Conflicting Yes and No preferences cancel out as described below.
 
 - **Platform:** mobile-first website (PWA), no install. Can be wrapped as a native app later.
 
@@ -61,7 +61,7 @@ Food and bars skip places that OpenStreetMap lists as closed right now; places w
 
 ## Yes / No picks
 
-Each member picks one guaranteed No and, optionally, one guaranteed Yes. Picks come from preset tags for the chosen category, with an optional "other" field. Picks are anonymous; the group only sees the combined pool.
+Each member must pick one No preference and may also pick one Yes preference. "Required" describes submitting a No, not a guarantee that matching options will be excluded. Picks come from preset tags for the chosen category, with an optional "other" field. Picks are anonymous; the group only sees the combined pool.
 
 **Rules**
 

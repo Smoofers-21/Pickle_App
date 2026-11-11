@@ -1,6 +1,6 @@
 # Pickle
 
-A mobile web app that helps a group of friends decide where to go — a restaurant, a bar or an event — in a few minutes. Everyone joins a lobby with a code, picks one guaranteed **No** and an optional **Yes**, and Pickle finds real places nearby, scores them against the group's picks, and runs a quick ranked vote to a top 3.
+A mobile web app that helps a group of friends decide where to go — a restaurant, a bar or an event — in a few minutes. Everyone joins a lobby with a code, picks one required **No preference** and an optional **Yes preference**, and Pickle finds real places nearby, scores them against the group's picks, and runs a quick ranked vote to a top 3. A No lowers a matching option's score rather than vetoing it; a Yes boosts it rather than guaranteeing a match. When the same preference appears on both sides, it cancels out.
 
 Built as a portfolio project to show full-stack work end to end: real-time multiplayer state, a locked-down database, third-party API integration on free tiers, a tested scoring algorithm and a mobile-first design system.
 
