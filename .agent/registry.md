@@ -15,7 +15,7 @@ Coordinator: **claude-coordinator-0169tw**
 
 | Task | Goal | Owner | Status | Branch | Owned paths | Depends on |
 |---|---|---|---|---|---|---|
-| T-m4-search | Milestone 4: search with real data (PR #13) | claude-coordinator-0169tw | claimed | claude/lucid-turing-tzka4n | src/lib/places, src/lib/server, src/app/api, src/app/lobby, supabase |  |
+| T-m4-search | Milestone 4: search with real data (PR #13) | claude-coordinator-0169tw | review | claude/lucid-turing-tzka4n | src/lib/places, src/lib/server, src/app/api, src/app/lobby, supabase |  |
 
 ## Data (machine-readable)
 
@@ -45,7 +45,7 @@ Coordinator: **claude-coordinator-0169tw**
       "goal": "Milestone 4: search with real data (PR #13)",
       "owner": "claude-coordinator-0169tw",
       "lead": null,
-      "status": "claimed",
+      "status": "review",
       "contextRevision": 1,
       "checkout": null,
       "branch": "claude/lucid-turing-tzka4n",
@@ -59,7 +59,7 @@ Coordinator: **claude-coordinator-0169tw**
       ],
       "contracts": [],
       "dependsOn": [],
-      "updated": "2026-11-11T06:51:33Z"
+      "updated": "2026-11-11T06:51:35Z"
     }
   }
 }
