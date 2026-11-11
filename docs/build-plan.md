@@ -85,7 +85,7 @@ Primary and secondary tags come from each source's own categories: for places, t
 *(Decided Nov 11, 2026: Geoapify replaces Google Places so the project runs free, for a portfolio and public demos.)*
 
 - **Geoapify Places API** returns real nearby restaurants and bars from OpenStreetMap: name, address, coordinates, categories, cuisine, and, when mapped, opening hours, website and outdoor seating. No ratings, reviews or photos.
-- **Free plan:** 3,000 credits a day, no credit card; a simple Places request costs about 1 credit ([Geoapify pricing](https://geoapify.com/pricing)). The exact category names, request limits and credit rules are confirmed against the live API in milestone 4.
+- **Free-plan target:** 3,000 credits a day, subject to the project's current plan ([Geoapify pricing](https://geoapify.com/pricing)). Do not assume one HTTP request equals one credit: verify billing for the selected endpoint, result limit, pagination and retries before implementing the limiter in milestone 4. The category names, response fields and attribution/caching terms also require confirmation against official documentation and live fixtures.
 - **Swappable provider.** All provider code sits behind one interface (`PlacesProvider`: search(center, radius, category) → list of `Candidate`s). Scoring, picks, voting and results only ever see `Candidate`s, so changing provider later means writing one new adapter, not touching the game.
 - **Attribution:** every screen showing place data shows "Powered by Geoapify" and "© OpenStreetMap contributors", with links, as Geoapify and the OpenStreetMap license (ODbL) require. Confirm the exact wording against Geoapify's terms in milestone 4.
 
@@ -110,7 +110,7 @@ Everything runs on free tiers: Geoapify's free plan (3,000 credits a day) and Ti
 
 5.  **Ticketmaster in one batch.** A default key is free, limited to 5,000 calls a day and 5 a second. ([Ticketmaster docs](https://developer.ticketmaster.com/products-and-docs/apis/getting-started/)) One call fetches a large batch of events for the whole game.
 
-6.  **Hard limits and logging.** A server limit of at most 2 places searches per round, a daily cap on our own side (stop searching at about 2,500 Geoapify credits a day and show the nothing-found screen with a "try again later" note, so the free plan is never exceeded), the existing per-device and per-IP rate limits on every route, and a log of every API call (count only, no keys or locations).
+6.  **Hard limits and logging (milestone 4, not implemented yet).** At most 2 places searches per round, plus a shared daily credit budget targeting 2,500 credits (below the currently expected free-plan allowance). Reserve the verified worst-case request cost atomically before each outbound request, including pagination and retries; a process-local request counter is insufficient across Vercel instances. When the budget is unavailable, stop searching and show the nothing-found screen with a "try again later" note. Keep the existing per-device and per-IP limits. Log only safe counts/credit usage, never request URLs containing API keys, raw provider error bodies, or host locations.
 
 OpenStreetMap data is open (ODbL): it may be stored with attribution, so the game cache keeps it for the length of the game. It is still deleted with the game, as the privacy rules require.
 

@@ -18,6 +18,13 @@ ever requested from a places API.
 4. Add a row to `CREDITS.md`: file, Unsplash or Pexels, the photographer's
    name, the license name and the photo's page link.
 
+Use simple names containing letters, numbers and single hyphens, as listed
+below. Names are made lowercase; keep only one original per output name
+(for example, do not keep both `Italian.png` and `italian.jpg`). The script
+rejects collisions, symlinked images and unsafe output names before writing.
+Only a missing originals directory is treated as an empty library; other
+filesystem errors stop the run. Encoded JPEGs omit original EXIF/GPS metadata.
+
 Originals in `assets/restaurant-originals/` are not committed (they're large);
 only the processed files here are.
 
