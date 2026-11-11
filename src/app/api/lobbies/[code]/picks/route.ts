@@ -33,7 +33,7 @@ export const POST = route(async ({ request, body, device, params }) => {
   if (!game) return fail(404, "not_found", "There's no game to pick for.");
 
   const no = readSide(body.no, game.category);
-  if (!no) return fail(400, "bad_picks", "Pick one guaranteed No.");
+  if (!no) return fail(400, "bad_picks", "Pick one No preference.");
   const yes = body.yes == null ? null : readSide(body.yes, game.category);
   if (body.yes != null && !yes) return fail(400, "bad_picks", "That Yes isn't one of the options.");
   if (yes && yes.tag !== "other" && yes.tag === no.tag) {

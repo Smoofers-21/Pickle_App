@@ -12,16 +12,16 @@ Phones only show screens and send actions; server routes on Vercel do the work, 
 
 architecture · 6 parts
 
-Geoapify Places (restaurants and bars, from OpenStreetMap data) and Ticketmaster (events) are called only by the server, so API keys and request limits stay under control. *(The diagram still shows Google Places, which Geoapify replaced on Nov 11, 2026; see Places data provider below.)*
+Geoapify Places (restaurants and bars, from OpenStreetMap data) and Ticketmaster (events) are called only by the server, so API keys and request limits stay under control.
 
 ## Data model
 
-Eight tables in Supabase (Postgres) hold everything. No user accounts: a member is identified by a random token saved in their browser, plus the name they typed. The database stores only a hash of the token (members.device_token_hash), plus members.left_at for members who left on their own and a rate_limits table keyed by device.
+Ten public tables in Supabase (Postgres) hold the current data model: eight core gameplay tables and two operational tables. The core tables are listed below. No user accounts: a member is identified by a random token saved in their browser, plus the name they typed. The database stores only a hash of the token (`members.device_token_hash`), plus `members.left_at` for members who left on their own.
 
 | Table         | What it holds                                                                                                                                              | Key fields                                                                                                                                                                                                  |
 |---------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | lobbies       | One row per lobby code (plus current_game_id, the game in progress)                                                                                                                                     | code (6 characters), status (open, locked, ended), host_member_id, is_demo, next_lobby_id, expires_at (24 hours)                                                                                            |
-| members       | People in a lobby                                                                                                                                          | lobby_id, name (with number suffix for duplicates), device_token, joined_at (sets host order), is_demo, removed_at, last_seen_at                                                                            |
+| members       | People in a lobby                                                                                                                                          | lobby_id, name (with number suffix for duplicates), device_token_hash, joined_at (sets host order), is_demo, removed_at, left_at, last_seen_at                                                                            |
 | games         | One game inside a lobby                                                                                                                                    | lobby_id, category, event_date, radius_mi, age, indoor_outdoor, rounds_total, current_round, stage, center_lat, center_lng                                                                                  |
 | picks         | Each member's Yes and No                                                                                                                                   | game_id, member_id, no_tag, no_other, yes_tag (optional), yes_other: a tag key, or "other" plus the typed text                                                                                                                                                  |
 | options       | Every place or event found during the game, shown or not (the game's search cache), deleted with the game. | game_id, shown_in_round (empty until shown), source (geoapify or ticketmaster), source_id, name, normalized_name, address, tags, image (a local cuisine image key, or the event's Ticketmaster image), start time (events), distance_mi, link, score (never shown) |
@@ -29,7 +29,14 @@ Eight tables in Supabase (Postgres) hold everything. No user accounts: a member 
 | votes         | One ranking per member per round                                                                                                                           | game_id, round_no (0 = final), member_id, ranking (ordered option ids), submitted_at                                                                                                                        |
 | round_results | Points and who advanced                                                                                                                                    | game_id, round_no, option_id, points, first_place_votes, place, advanced                                                                                                                                    |
 
-The game's **stage** drives every screen: picks → searching → cards_and_voting → round_complete → final_vote → results. Each phone shows the screen for the current stage; within cards_and_voting, each member moves from cards to voting at their own pace.
+The two operational tables support abuse prevention and provider budgets:
+
+| Table | What it holds | Key fields |
+|---|---|---|
+| rate_limits | Device-keyed rate-limit counters, created with the core schema in milestone 2; no IP addresses are stored here. | bucket, hits, reset_at |
+| api_usage | Daily provider usage counters, added with live search in milestone 4; no locations, keys or request URLs are stored here. | day, provider, units, calls, refused |
+
+All ten tables have row-level security enabled and forced, with no browser-role table grants. The game's **stage** drives every screen: picks → searching → cards_and_voting → round_complete → final_vote → results. Each phone shows the screen for the current stage; within cards_and_voting, each member moves from cards to voting at their own pace.
 
 ## Real-time lobby
 
