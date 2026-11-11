@@ -10,7 +10,7 @@ Coordinator: **claude-coordinator-0169tw**
 | Actor | Provider | Role | Team | Lead | Status | Tools |
 |---|---|---|---|---|---|---|
 | claude-coordinator-0169tw | claude | coordinator | core |  | online | git, github, supabase, vercel-previews |
-| codex-reviewer-20261111-skill | codex | reviewer | review | claude-coordinator-0169tw | offline | git, shell |
+| codex-reviewer-20261111-skill | codex | reviewer | review | claude-coordinator-0169tw | online | git, shell |
 
 ## Tasks and claims
 
@@ -51,9 +51,9 @@ Coordinator: **claude-coordinator-0169tw**
         "git",
         "shell"
       ],
-      "status": "offline",
+      "status": "online",
       "registered": "2026-11-11T06:56:26Z",
-      "seen": "2026-11-11T07:24:34Z"
+      "seen": "2026-11-11T07:30:06Z"
     }
   },
   "tasks": {
