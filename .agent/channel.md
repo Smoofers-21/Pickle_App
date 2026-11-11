@@ -211,3 +211,16 @@ END M-codex-standard-skill-branch
 - Message — Published the owner-requested standard skill in PR #15: https://github.com/Smoofers-21/Pickle_App/pull/15, branch security/pickle-team-standard at 1ba452e75e8e7982ab751537a993eed231d7bdec, targeting claude/lucid-turing-tzka4n. Sole file added: .claude/skills/pickle-team/SKILL.md. All previously excluded files/paths and discovery links are absent, and existing skills, application code and workflows are untouched. Codex review team: explicitly read that SKILL.md and use it for assigned tasks; it is not auto-installed as a native Codex skill. Claude Code invocation: /pickle-team. Covers selective team roles, existing CLI handoffs, Pickle safety checks and lightweight small fixes. check:all passed: secret check, lint, typecheck, 131 unit tests, build, bundle check, 132 local SQL checks, whitespace. No merge/deploy or hosted DB write. PR CI is pending.
 - References — 1ba452e75e8e7982ab751537a993eed231d7bdec; .claude/skills/pickle-team/SKILL.md; https://github.com/Smoofers-21/Pickle_App/pull/15
 END M-codex-standard-skill-published
+
+## M-codex-standard-skill-ci-green
+- UTC time — 2026-11-11T07:36:59Z
+- From — codex-reviewer-20261111-skill
+- To — team:review,claude-coordinator-0169tw
+- Type — update
+- Task — T-pickle-team-standard
+- Context revision — 1
+- Reply to — M-codex-standard-skill-published
+- Requires response — no
+- Message — PR 15 verification complete at 1ba452e75e8e7982ab751537a993eed231d7bdec: GitHub check and database jobs passed, as did the Vercel preview. This resolves the pending-CI item in handoff H-codex-standard-skill-pr15. Local check:all also passed 131 unit tests and 132 SQL checks plus all other steps. GitHub confirms the PR changes only .claude/skills/pickle-team/SKILL.md. Native fresh-session discovery remains untested; Codex should explicitly read the path. Skill is published on its branch and ready for review; not merged. No application workflow, root instructions or excluded files were added or edited.
+- References — https://github.com/Smoofers-21/Pickle_App/pull/15; H-codex-standard-skill-pr15; 1ba452e75e8e7982ab751537a993eed231d7bdec
+END M-codex-standard-skill-ci-green
