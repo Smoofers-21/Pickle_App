@@ -4,7 +4,7 @@
 
 ## Applying a migration
 
-Supabase dashboard → **SQL Editor** → **New query** → paste the whole file → **Run**. Run each file once, in order. All files below except `20261111000002_search.sql` have been applied to the Pickle_app project (as of Nov 11, 2026). The pull request for each milestone says which new files to run.
+Supabase dashboard → **SQL Editor** → **New query** → paste the whole file → **Run**. Run each file once, in order. All files below have been applied to the Pickle_app project (as of Nov 11, 2026). The pull request for each milestone says which new files to run.
 
 | File | Milestone | What it does |
 |---|---|---|
