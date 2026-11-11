@@ -12,7 +12,7 @@ Phones only show screens and send actions; server routes on Vercel do the work, 
 
 architecture · 6 parts
 
-Google Places and Ticketmaster are called only by the server, so API keys and costs stay under control.
+Geoapify Places (restaurants and bars, from OpenStreetMap data) and Ticketmaster (events) are called only by the server, so API keys and request limits stay under control. *(The diagram still shows Google Places, which Geoapify replaced on Nov 11, 2026; see Places data provider below.)*
 
 ## Data model
 
@@ -24,7 +24,7 @@ Eight tables in Supabase (Postgres) hold everything. No user accounts: a member 
 | members       | People in a lobby                                                                                                                                          | lobby_id, name (with number suffix for duplicates), device_token, joined_at (sets host order), is_demo, removed_at, last_seen_at                                                                            |
 | games         | One game inside a lobby                                                                                                                                    | lobby_id, category, event_date, radius_mi, age, indoor_outdoor, rounds_total, current_round, stage, center_lat, center_lng                                                                                  |
 | picks         | Each member's Yes and No                                                                                                                                   | game_id, member_id, no_tag, no_other, yes_tag (optional), yes_other: a tag key, or "other" plus the typed text                                                                                                                                                  |
-| options       | Every place or event found during the game, shown or not (the game's search cache). Google details other than the place ID are deleted when the game ends. | game_id, shown_in_round (empty until shown), source (google or ticketmaster), source_id, name, normalized_name, tags, photo (1, shared address), start time (events), google_rank, distance_mi, link, score (never shown) |
+| options       | Every place or event found during the game, shown or not (the game's search cache), deleted with the game. | game_id, shown_in_round (empty until shown), source (geoapify or ticketmaster), source_id, name, normalized_name, address, tags, image (a local cuisine image key, or the event's Ticketmaster image), start time (events), distance_mi, link, score (never shown) |
 | card_views    | Which cards a member has seen                                                                                                                              | member_id, option_id; used to unlock Go vote                                                                                                                                                                |
 | votes         | One ranking per member per round                                                                                                                           | game_id, round_no (0 = final), member_id, ranking (ordered option ids), submitted_at                                                                                                                        |
 | round_results | Points and who advanced                                                                                                                                    | game_id, round_no, option_id, points, first_place_votes, place, advanced                                                                                                                                    |
@@ -53,9 +53,9 @@ A server route fills each round, calling the APIs only when saved results can't,
 
 1.  **Combine picks.** Collect every Yes and No. Drop any tag that is both someone's Yes and someone else's No.
 
-2.  **Search.** First use places already found earlier in this game; call the APIs only if those can't fill the round. Food and bars: one Google Places **Text Search (Pro fields only)** around the host's location, within the radius, with the **open now** filter. Events: Ticketmaster search by location, radius and the chosen date.
+2.  **Search.** First use places already found earlier in this game; call the APIs only if those can't fill the round. Food and bars: one **Geoapify Places** search around the host's location, within the radius, for the category's place types (restaurants or bars). Events: Ticketmaster search by location, radius and the chosen date.
 
-3.  **Filter.** Keep places open now (Google's open-now search filter), events on the chosen date, and 21+ venues only when the host allowed them. Remove anything already shown earlier in this game.
+3.  **Filter.** Drop places whose OpenStreetMap opening hours say they're closed now (places without hours are kept: the data is often missing), keep events on the chosen date, and 21+ venues only when the host allowed them. Remove anything already shown earlier in this game.
 
 4.  **Remove duplicates.** Normalize names (lowercase, no punctuation or location suffix) and keep the closest location of each chain.
 
@@ -63,7 +63,7 @@ A server route fills each round, calling the APIs only when saved results can't,
 
 6.  **Pick 6.** Keep options at or above the threshold (about 60), highest first. Fewer than 6: widen the radius by 5 mi once and search again; places already found are recognized by their source ID and skipped, never fetched or scored twice. Still fewer: use what was found. None: tell the host.
 
-7.  **No separate details calls.** The search itself returns everything a card needs from Google (name, types, location, photo reference, Google Maps link). One photo per place is fetched for the final options only (see API cost rule 3). Every result from every search is saved to the options table, so later rounds draw from it before calling the APIs again.
+7.  **No separate details calls.** The search itself returns everything a card needs (name, address, location, categories, cuisine, opening hours and website when OpenStreetMap has them). Each place gets a local cuisine image (see Cuisine images); no image is fetched from any API. Every result from every search is saved to the options table, so later rounds draw from it before calling the APIs again.
 
 **Starting score adjustments** (to be tuned with real searches)
 
@@ -74,32 +74,45 @@ A server route fills each round, calling the APIs only when saved results can't,
 | Each No that matches a primary tag    | −40        |
 | Each No that matches a secondary tag  | −10        |
 | Indoor/outdoor preference matches     | +5         |
-| Google's result order (first = full points; replaces rating) | up to +10  |
-| Distance (closest = full points)      | up to +10  |
+| Distance (closest = full points)      | up to +20  |
 
-Google ratings are **not** used to rank, score, filter or prioritize places, and the rating, review count and price level fields are never requested (they bill the search at the Enterprise tier). Google's own result order (its relevance ranking) stands in as the quality signal. Events have no rating either. *(Decided Nov 10, 2026.)*
+No ratings or review counts are used: the places data (OpenStreetMap) has none, and events have none either. Distance is worth up to 20 points instead, so a place halfway across the radius with no Yes or No match still reaches the threshold of 60. *(Decided Nov 10–11, 2026.)*
 
-Primary and secondary tags come from each source's own categories: for Google, the place's main type versus its other types; for Ticketmaster, the event's genre versus its subgenre.
+Primary and secondary tags come from each source's own categories: for places, the OpenStreetMap cuisine (for example `cuisine=italian`, reported by Geoapify as `catering.restaurant.italian`) or bar type versus the place's other categories; for Ticketmaster, the event's genre versus its subgenre.
+
+### Places data provider
+
+*(Decided Nov 11, 2026: Geoapify replaces Google Places so the project runs free, for a portfolio and public demos.)*
+
+- **Geoapify Places API** returns real nearby restaurants and bars from OpenStreetMap: name, address, coordinates, categories, cuisine, and, when mapped, opening hours, website and outdoor seating. No ratings, reviews or photos.
+- **Free-plan target:** 3,000 credits a day, subject to the project's current plan ([Geoapify pricing](https://geoapify.com/pricing)). Do not assume one HTTP request equals one credit: verify billing for the selected endpoint, result limit, pagination and retries before implementing the limiter in milestone 4. The category names, response fields and attribution/caching terms also require confirmation against official documentation and live fixtures.
+- **Swappable provider.** All provider code sits behind one interface (`PlacesProvider`: search(center, radius, category) → list of `Candidate`s). Scoring, picks, voting and results only ever see `Candidate`s, so changing provider later means writing one new adapter, not touching the game.
+- **Attribution:** every screen showing place data shows "Powered by Geoapify" and "© OpenStreetMap contributors", with links, as Geoapify and the OpenStreetMap license (ODbL) require. Confirm the exact wording against Geoapify's terms in milestone 4.
+
+### Cuisine images
+
+- Cards and results show a **cuisine image** chosen from a small local library in `public/images/restaurants/` (for example `italian.jpg`, `mexican.jpg`, `bar.jpg`), matched by the place's cuisine or bar type, with `restaurant-default.jpg` / `bar-default.jpg` when nothing matches.
+- Images are free stock photos whose licenses allow this use (Unsplash or Pexels), resized and compressed locally. Each one's source, author and license is recorded in `public/images/restaurants/CREDITS.md`.
+- Every card says the image is illustrative ("Illustrative photo") so nobody mistakes it for the actual restaurant.
+- No image is ever requested from a places API. Events keep the image Ticketmaster includes in its event data, at no extra cost.
 
 ## API cost
 
-The goal is about one Google search per round, details for at most 6 places, and no repeated work within a game. These rules are built into milestones 4 and 5 from the start.
+Everything runs on free tiers: Geoapify's free plan (3,000 credits a day) and Ticketmaster's free key (5,000 calls a day). The goal is about one places search per game and no repeated work. These rules are built into milestones 4 and 5 from the start.
 
-1.  **Pro fields only.** Google bills a request at the most expensive tier among the fields it asks for. The search asks only for Pro-tier fields: place ID, name, location, types, main type, business status, photo references and the Google Maps link. It never asks for Enterprise fields (rating, review count, price level, opening hours, website) or Enterprise + Atmosphere fields (outdoor seating, reviews, descriptions). Open-now is a search filter, not a returned field. Confirm the Pro billing on the first real searches in milestone 4. ([Google SKU details](https://developers.google.com/maps/billing-and-pricing/sku-details/places))
+1.  **One places search per game where possible.** One Geoapify request returns many places at once (the page size is set in milestone 4, around 50). All are scored, and the rest are saved for later rounds, so a multi-round game usually runs on one search. A second search happens only when a round comes up short (the 5 mi widening).
 
-2.  **One search per game where possible.** One Text Search (Pro) returns up to 20 places, all scored with the Pro data. The rest are saved for later rounds, so a multi-round game can usually run on one search. A second search (or the next page of results, which Google bills as another request) happens only when a round comes up short.
+2.  **No image requests.** Cards use the local cuisine images, so showing cards costs nothing (see Cuisine images).
 
-3.  **One shared photo per place.** Each photo fetch is its own billed request (Place Details Photos: 1,000 free a month, then about $7 per 1,000). The server fetches **one photo per place, once per game**, asking Google for a short-lived image address instead of the image itself, and shares that address with every phone in the lobby: at most 6 photo requests a round, whatever the group size. **Safety switch:** the server counts photo requests each month; from 900 on, cards show a "Show photo" button instead and fetch a photo only when someone taps it. Demo mode never fetches Google photos. *(Decided Nov 10, 2026.)*
+3.  **Never repeat work within a game.** Saved results are used first, and a wider search skips places already found (see Search and scoring).
 
-4.  **Never repeat work within a game.** Saved results are used first, and a wider search skips places already found (see Search and scoring).
+4.  **Saved data for demos and testing.** Demo mode and development run on a saved sample search, which costs nothing and keeps demos reliable.
 
-5.  **Saved data for demos and testing.** Demo mode and development run on a saved sample search, which costs nothing and keeps demos reliable.
+5.  **Ticketmaster in one batch.** A default key is free, limited to 5,000 calls a day and 5 a second. ([Ticketmaster docs](https://developer.ticketmaster.com/products-and-docs/apis/getting-started/)) One call fetches a large batch of events for the whole game.
 
-6.  **Ticketmaster in one batch.** A default key is free, limited to 5,000 calls a day and 5 a second. ([Ticketmaster docs](https://developer.ticketmaster.com/products-and-docs/apis/getting-started/)) One call fetches a large batch of events for the whole game.
+6.  **Hard limits and logging (milestone 4, not implemented yet).** At most 2 places searches per round, plus a shared daily credit budget targeting 2,500 credits (below the currently expected free-plan allowance). Reserve the verified worst-case request cost atomically before each outbound request, including pagination and retries; a process-local request counter is insufficient across Vercel instances. When the budget is unavailable, stop searching and show the nothing-found screen with a "try again later" note. Keep the existing per-device and per-IP limits. Log only safe counts/credit usage, never request URLs containing API keys, raw provider error bodies, or host locations.
 
-7.  **Hard limits and logging.** A daily quota cap and budget alert in Google Cloud, a server limit of at most 2 Google searches per round, and a log of every API call to track the real cost per game.
-
-Google allows place IDs to be stored indefinitely, but other Places content must not be cached or stored beyond its allowed exceptions ([Places API policies](https://developers.google.com/places/web-service/policies)). So the game cache keeps Google details only while a game is running, and any future cache shared between lobbies would store place IDs only. Confirm the details against the Google Maps Platform service terms before launch.
+OpenStreetMap data is open (ODbL): it may be stored with attribution, so the game cache keeps it for the length of the game. It is still deleted with the game, as the privacy rules require.
 
 ## Security and privacy
 
@@ -107,15 +120,15 @@ Secret keys live only on the server, every database table is locked down by defa
 
 **API keys (backend only)**
 
-- Google, Ticketmaster and the Supabase secret key (called the service_role key in Supabase's older key system) are stored only in Vercel's server environment settings. None of them uses the NEXT_PUBLIC\_ prefix, because Next.js sends any variable with that prefix to the browser.
+- The Geoapify key, the Ticketmaster key and the Supabase secret key (called the service_role key in Supabase's older key system) are stored only in Vercel's server environment settings. None of them uses the NEXT_PUBLIC\_ prefix, because Next.js sends any variable with that prefix to the browser.
 
-- Only server routes call Google and Ticketmaster. Phones call our own routes, so no outside API URL or key ever appears in the browser's network traffic.
+- Only server routes call Geoapify and Ticketmaster. Phones call our own routes, so no outside API URL or key ever appears in the browser's network traffic.
 
-- Photos are requested by the server, which asks Google for a short-lived image address and passes only that address to phones, so the Google key never appears in an image address or in the browser's network traffic.
+- Phones never load images from a places API: cuisine images are files on our own site, and event images come from Ticketmaster's image servers (which need no key).
 
-- The Google key is read only by server code through `src/lib/server-env.ts` (`serverSecret("GOOGLE_PLACES_API_KEY")`), which can't be imported into browser code, and the build stops if the key is ever given the NEXT_PUBLIC_ prefix.
+- The Geoapify key is read only by server code through `src/lib/server-env.ts` (`serverSecret("GEOAPIFY_API_KEY")`), which can't be imported into browser code, and the build stops if the key is ever given the NEXT_PUBLIC_ prefix.
 
-- The Google key is restricted to the Places API only, with a daily quota cap and a budget alert, so a leaked key can do little and cost little.
+- Geoapify's free plan has no billing attached, so a leaked key can't cost money; at worst it uses up the day's free credits. Geoapify lets you limit a key to certain sites or IP addresses, but Vercel has no fixed IPs, so the key stays unrestricted there and is rotated in Geoapify's dashboard if it ever leaks.
 
 - Separate keys for development and production. If a key ever leaks, rotate it in that service's console the same day.
 
@@ -139,7 +152,7 @@ Secret keys live only on the server, every database table is locked down by defa
 
 - The host's location is used only to center the search, is stored rounded to about 100 m, is never shown to other members (they see distances only), and is deleted as soon as the game's last search is done: after round 1's search in a 1-round game, after the last round's search otherwise, and at the latest when the game ends (built in milestone 4, decided Nov 10, 2026).
 
-- A daily cleanup job deletes lobbies, members, picks, votes and Google details more than 24 hours old.
+- A daily cleanup job deletes lobbies, members, picks, votes and saved places more than 24 hours old.
 
 - No ad trackers or third-party analytics. If analytics are added later, use a privacy-focused tool that doesn't store IP addresses.
 
@@ -157,7 +170,7 @@ Secret keys live only on the server, every database table is locked down by defa
 
 **Accounts and code**
 
-- Two-factor sign-in on GitHub, Vercel, Supabase, Google Cloud and Ticketmaster.
+- Two-factor sign-in on GitHub, Vercel, Supabase, Geoapify and Ticketmaster.
 
 - .env files are in .gitignore, and a pre-commit secret check (such as gitleaks) blocks commits that contain a key. GitHub's own secret scanning is free on public repositories; on a private repository it may require GitHub's paid Secret Protection.
 
@@ -189,13 +202,13 @@ Each milestone ends with something you can try on your phone. Search uses sample
 
 4.  **Search with real data** (screens 10–11)
 
-    - Google Places and Ticketmaster, filters, duplicate removal, scoring, widening by 5 mi, nothing-found screen, and the API cost rules 1, 2, 4, 6 and 7 (Pro fields only, one search per game, game cache, batched events, quota caps and call log).
+    - Geoapify Places (behind the swappable `PlacesProvider` interface) and Ticketmaster, filters, duplicate removal, scoring, widening by 5 mi, nothing-found screen, deleting the host's location after the last search, and the API cost rules 1, 3, 5 and 6 (one search per game, game cache, batched events, daily cap and call log). Confirm Geoapify's category names, credits per request and attribution wording against the live API.
 
-    - Test: food, bars and events at different radii; check the 6 options make sense and the call log shows about one Google search per round. Search the browser's page source and network traffic for the API keys and confirm they never appear.
+    - Test: food, bars and events at different radii; check the 6 options make sense and the call log shows about one places search per game. Search the browser's page source and network traffic for the API keys and confirm they never appear.
 
 5.  **Option cards** (screen 12)
 
-    - Card with one shared photo (API cost rule 3, with the tap-to-load safety switch), details and Google Maps link; arrows and swiping; Go vote unlocks after every card is seen. Cards with Google data show the required "Google Maps" attribution, the photo author's credit and a link to the place on Google Maps.
+    - Card with the cuisine image (labelled "Illustrative photo") or the event's Ticketmaster image, name, cuisine or type, distance, address, "Open now" when known, and a link (the place's website or a map link; the ticket page for events); arrows and swiping; Go vote unlocks after every card is seen. Cards with place data show "Powered by Geoapify · © OpenStreetMap contributors". The cuisine image library and its credits file are added here.
 
     - Test: try to vote before seeing all cards.
 
@@ -208,7 +221,7 @@ Each milestone ends with something you can try on your phone. Search uses sample
 
 7.  **Results and replay** (screens 16–17)
 
-    - Top 3, directions in Apple or Google Maps, web search link, Change lobby moving everyone to a new code. Results with Google data show the same "Google Maps" attribution and photo credit as the cards.
+    - Top 3, directions in Apple or Google Maps, web search link, Change lobby moving everyone to a new code. Results with place data show the same Geoapify / OpenStreetMap attribution as the cards.
 
     - Test: full game end to end, then start a second game.
 
@@ -233,7 +246,7 @@ You create these accounts yourself; set aside 30–60 minutes. Only the first th
 | GitHub                 | Storing the code                                    | Milestone 1     | Free                                                                         |
 | Vercel                 | Hosting the website                                 | Milestone 1     | Free tier; connect it to the GitHub repo                                     |
 | Supabase               | Database, real-time lobbies                         | Milestone 2     | Free tier                                                                    |
-| Google Cloud           | Places API key (restaurants, bars)                  | Milestone 4     | Requires billing; set a budget alert and a daily quota cap before going live |
+| Geoapify               | Places API key (restaurants, bars)                  | Milestone 4     | Free plan, no credit card: 3,000 credits a day                               |
 | Ticketmaster Developer | Events API key                                      | Milestone 4     | Free developer key; 5,000 calls a day, 5 a second                            |
 | Domain name (optional) | A short link for Pickle (pick one that's available) | Before the demo | Any registrar; Vercel connects it                                            |
 
@@ -274,10 +287,10 @@ The Markdown export replaces the two diagrams (game flow and architecture) with 
 
 | Risk                                                                    | What to do                                                                                                                                          |
 |-------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------|
-| Google Places costs grow with testing                                   | Fetch details only for the final 6, cache results during a game, keep the budget alert and quota cap on                                             |
+| Running out of Geoapify's free daily credits                            | One search per game, game cache, our own daily cap at about 2,500 credits, and demo mode on saved data                                                |
 | Thin results in small towns or on quiet nights                          | The 5 mi widening and the nothing-found screen cover this; test at your real demo location                                                          |
-| Event and venue data is incomplete (photos, age limits, indoor/outdoor) | Show placeholders when photos are missing; treat age and indoor/outdoor as best effort, as the spec says                                            |
+| OpenStreetMap data is incomplete (hours, cuisine, outdoor seating, 21+) | Keep places with unknown hours; default cuisine image when the cuisine is missing; treat age and indoor/outdoor as best effort, as the spec says      |
 | A phone drops mid-game                                                  | Rejoin with the saved token and name; the host can remove someone who is stuck                                                                      |
 | Demo-day surprises (bad signal, API outage)                             | Demo mode plus a saved sample search let the demo run even if a live search fails                                                                   |
-| Breaking Google's display and storage rules                             | Show "Google Maps" attribution and photo credits on cards and results; keep only place IDs after a game ends; check the service terms before launch |
+| Missing data attribution or image credits                               | Show "Powered by Geoapify · © OpenStreetMap contributors" wherever place data appears; keep CREDITS.md for every cuisine image                     |
 | The name Pickle is already used by another app or company               | Fine for a demo; before a public launch, run a trademark search and check the app stores and domains                                                |

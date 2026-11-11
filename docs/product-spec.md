@@ -57,7 +57,7 @@ The host sets the game's criteria before members make their picks; every round i
 | Indoor/outdoor | Indoor, Outdoor, Either        | Either          |
 | Rounds         | 1, 2, 3                        | 1               |
 
-Food and bars only show places open now (Google's open-now filter at search time); cards say "Open now" rather than open and close times, which would cost a more expensive Google request. Indoor/outdoor is a preference, not a strict filter, because the data is incomplete (see Data limits).
+Food and bars skip places that OpenStreetMap lists as closed right now; places without listed hours are kept, because hours are often missing. Cards say "Open now" when the hours are known. Indoor/outdoor is a preference, not a strict filter, because the data is incomplete (see Data limits).
 
 ## Yes / No picks
 
@@ -77,34 +77,34 @@ Each member picks one guaranteed No and, optionally, one guaranteed Yes. Picks c
 
 **Tags** (final, decided Nov 9, 2026)
 
-Each tag maps to categories the data sources return, so picks change the scores. A tag is a **primary** match when it matches a place's main type or an event's genre, and a **secondary** match when it matches another type or the subgenre (see rule 2). The exact Google type names are checked against the API in milestone 4.
+Each tag maps to categories the data sources return, so picks change the scores. A tag is a **primary** match when it matches a place's main type or an event's genre, and a **secondary** match when it matches another type or the subgenre (see rule 2). Places tags match OpenStreetMap data, which Geoapify returns: the `cuisine` value (like `italian`, shown by Geoapify as the category `catering.restaurant.italian`) or the bar type. The exact names are checked against Geoapify's live data in milestone 4. Tags marked *best effort* have no dedicated OpenStreetMap category and match by keyword or optional tag, so they'll miss some places.
 
 | Category | Tag | Matches |
 |---|---|---|
-| Food | Italian | Google: italian |
-| Food | Mexican | Google: mexican, tex-mex |
-| Food | Asian | Google: chinese, japanese, thai, korean, vietnamese, asian, ramen, sushi |
-| Food | Indian | Google: indian |
-| Food | Mediterranean | Google: mediterranean, greek, middle eastern |
-| Food | American | Google: american, diner |
-| Food | Burgers | Google: hamburger |
-| Food | Seafood | Google: seafood |
-| Food | Steakhouse | Google: steak house |
-| Food | BBQ | Google: barbecue |
-| Food | Vegetarian | Google: vegetarian, vegan |
-| Food | Fine dining | Google: fine dining |
-| Food | Breakfast | Google: breakfast |
-| Food | Brunch | Google: brunch |
-| Bars | Sports bar | Google: sports bar |
-| Bars | Cocktail bar | Google: cocktail bar, lounge |
-| Bars | Brewery | Google: brewery, brewpub, beer garden |
-| Bars | Wine bar | Google: wine bar |
-| Bars | Pub | Google: pub, irish pub |
-| Bars | Club | Google: night club |
-| Bars | Karaoke | Google: karaoke |
-| Bars | Live music | Google: live music venue |
-| Bars | Lounge | Google: lounge |
-| Bars | Rooftop | No Google type: matched by keyword (name, description), so best effort |
+| Food | Italian | OSM cuisine: italian, pizza |
+| Food | Mexican | OSM cuisine: mexican, tex-mex |
+| Food | Asian | OSM cuisine: chinese, japanese, thai, korean, vietnamese, asian, ramen, noodle, sushi |
+| Food | Indian | OSM cuisine: indian |
+| Food | Mediterranean | OSM cuisine: mediterranean, greek, lebanese, turkish, middle_eastern |
+| Food | American | OSM cuisine: american, diner |
+| Food | Burgers | OSM cuisine: burger |
+| Food | Seafood | OSM cuisine: seafood, fish |
+| Food | Steakhouse | OSM cuisine: steak_house |
+| Food | BBQ | OSM cuisine: barbecue, bbq |
+| Food | Vegetarian | OSM cuisine: vegetarian, vegan; also places tagged vegetarian- or vegan-friendly (secondary) |
+| Food | Fine dining | No OSM category: keyword ("fine dining", "tasting menu"), best effort |
+| Food | Breakfast | OSM cuisine: breakfast |
+| Food | Brunch | OSM cuisine: brunch |
+| Bars | Sports bar | Bars with an OSM `sport` tag, or keyword "sports", best effort |
+| Bars | Cocktail bar | Keyword "cocktail" or OSM cocktail tags, best effort |
+| Bars | Brewery | OSM beer garden (biergarten), microbrewery, or keyword "brewery"/"brewing" |
+| Bars | Wine bar | Keyword "wine" or OSM wine tags, best effort |
+| Bars | Pub | OSM pub |
+| Bars | Club | OSM nightclub |
+| Bars | Karaoke | OSM karaoke venue or karaoke tag, best effort |
+| Bars | Live music | OSM live-music tag, or keyword "live music", best effort |
+| Bars | Lounge | Keyword "lounge", best effort |
+| Bars | Rooftop | Keyword ("rooftop", "sky bar"), best effort |
 | Events | Country | Ticketmaster genre: Country |
 | Events | Pop | Ticketmaster genre: Pop |
 | Events | Hip-hop | Ticketmaster genre: Hip-Hop/Rap |
@@ -124,15 +124,15 @@ The "+ Other" field is matched as a keyword against names and types: it counts, 
 
 Each round aims for 6 options that score at or above the match threshold (about 60%, tuned during the build). The match score is never shown to members.
 
-- **Sources:** Google Places for restaurants and bars; the Ticketmaster API for events and concerts.
+- **Sources:** the Geoapify Places API for restaurants and bars (real places from OpenStreetMap); the Ticketmaster API for events and concerts. Both are free. The places provider sits behind one interface, so it can be swapped later without changing the game.
 
 - **Duplicates:** chains appear once, using the closest location. Results from different sources are merged by normalized name.
 
-- **Match score:** combines Yes boosts, scaled No penalties, host criteria (age, indoor/outdoor), distance and Google's result order. Google star ratings and review counts are not used, to keep searches in Google's cheaper Pro tier.
+- **Match score:** combines Yes boosts, scaled No penalties, host criteria (age, indoor/outdoor) and distance. There are no star ratings or reviews: the places data has none.
 
 - **Fewer than 6 matches:** widen the radius by 5 mi once. If there are still fewer than 6, the round uses only what was found. If nothing viable is found, the host is told and can change the criteria.
 
-- **Later rounds:** same criteria, all-new results. No option repeats within a game. To keep API costs down, every place found is saved for the whole game (Google details are deleted when the game ends; only place IDs are kept): later rounds use saved results first, and a wider search never re-fetches a place already found. The full cost rules (Pro fields only, one shared photo per place, quota caps) are in the [Pickle MVP Build Plan](https://claude.ai/artifact/7Cw68JuzPSG17P7eJqub6c).
+- **Later rounds:** same criteria, all-new results. No option repeats within a game. To stay within the free plans, every place found is saved for the whole game (and deleted with it): later rounds use saved results first, and a wider search never re-fetches a place already found. The full cost rules (one search per game, local images, daily caps) are in the [Pickle MVP Build Plan](https://claude.ai/artifact/7Cw68JuzPSG17P7eJqub6c).
 
 ## Cards, voting and rounds
 
@@ -140,7 +140,7 @@ Members must view every card (normally 6) before they can vote. Rankings are com
 
 **Cards (view only)**
 
-- Each card shows one photo, "Open now" (places) or the start time (events), distance, the type of place or event, and a link: Google Maps for places, the ticket page for events. If the month's free photo allowance is nearly used, the photo becomes a "Show photo" button that loads it on request. Cards and results using Google data show "Google Maps" attribution, the photo author's credit and a link to the place on Google Maps, as Google's policies require.
+- Each card shows an image, the name, the cuisine or type of place (or the event's genre and start time), distance, the address, "Open now" when known, and a link: the place's website or a map link, or the event's ticket page. For restaurants and bars the image is an **illustrative cuisine photo** from Pickle's own library (labelled "Illustrative photo", never presented as the actual place); events show the image Ticketmaster provides. Cards with place data show "Powered by Geoapify · © OpenStreetMap contributors".
 
 - Swiping or the arrow buttons only move between cards; they do not record likes.
 
@@ -186,9 +186,9 @@ Pickle keeps only what a game needs and deletes it within 24 hours; all API keys
 
 - **Location:** the host's location only centers the search. Other members see distances, never the host's position. It is stored rounded to about 100 m and deleted as soon as the game's last search is done (at the latest when the game ends).
 
-- **Retention:** Google place details are deleted when the game ends (only place IDs are kept); lobbies, members, picks and votes are deleted after 24 hours.
+- **Retention:** places found for a game are deleted with the game; lobbies, members, picks and votes are deleted after 24 hours.
 
-- **API keys:** Google, Ticketmaster and the database secret key are used only by server code and never sent to phones.
+- **API keys:** the Geoapify key, the Ticketmaster key and the database secret key are used only by server code and never sent to phones.
 
 - **Before public launch:** a short privacy policy and an outside security review.
 
@@ -232,7 +232,7 @@ The app uses a black-and-white "2F" style: pill-shaped chips and secondary butto
 | Chips and tags    | Pills; selected = solid black with white text                                                                                                                                                                   |
 | Lobby code        | Outlined pill bar with round copy and share buttons                                                                                                                                                             |
 | Members           | Pill chips with an initial; host chip in black                                                                                                                                                                  |
-| Option card       | Contained card filling most of the screen; one photo on top (no story bars); details and a Google Maps or ticket link below                                                                               |
+| Option card       | Contained card filling most of the screen; one image on top (cuisine photo with an "Illustrative photo" label, or the event image); details and a website, map or ticket link below |
 | Ranking           | Drag to reorder; dragged row lifts with a shadow and a dashed drop slot                                                                                                                                         |
 | Disabled states   | Light grey fill with grey text, plus a short reason ("3 of 6 seen")                                                                                                                                             |
 
@@ -264,7 +264,7 @@ The app uses the owner's Pickle logo (a green ballot box with a smiling pickle g
 
 - **21+:** reliable for ticketed events. For bars and clubs it is inferred from the venue type.
 
-- **Indoor/outdoor:** Google's outdoor-seating data costs a more expensive request, so for food and bars it is inferred from the place type where possible (for example a beer garden). Used as a preference, not a filter.
+- **Indoor/outdoor:** for food and bars it uses OpenStreetMap's outdoor-seating tag where present (and places like beer gardens); little is known for events. Used as a preference, not a filter.
 
 - **Event sources:** Ticketmaster only for the MVP. Search is built so more event sources can be added later without changing the rest of the app.
 
@@ -275,7 +275,7 @@ The app uses the owner's Pickle logo (a green ballot box with a smiling pickle g
 | Web app           | Next.js (PWA)     | One codebase for phones and desktop                     |
 | Real-time lobbies | Supabase          | Live member lists, picks and votes                      |
 | Hosting           | Vercel            | Simple deploys, free tier                               |
-| Places data       | Google Places API | Restaurants and bars; needs billing with a spending cap |
+| Places data       | Geoapify Places API (OpenStreetMap data) | Restaurants and bars; free plan, no credit card |
 | Events data       | Ticketmaster API  | Concerts and events by date and location                |
 
 **Demo mode**

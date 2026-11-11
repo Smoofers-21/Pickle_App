@@ -36,7 +36,7 @@ These images are the approved designs for every screen in the Pickle MVP, shown 
 
 When an image and the product spec differ, follow the spec. Known differences:
 
-- **Cards (12):** show one photo, not three (no story bars), "Open now" instead of hours, and no rating (decided Nov 10, 2026 to keep Google costs down; see the spec).
-- **Cards (12) and results (16):** add the "Google Maps" attribution, the photo author's credit and a link to the place on Google Maps whenever Google data is shown. The images don't show these yet.
+- **Cards (12):** show one image, not three (no story bars): an illustrative cuisine photo from `public/images/restaurants/`, labelled "Illustrative photo", or the event's Ticketmaster image. "Open now" instead of hours, no rating, and "Powered by Geoapify · © OpenStreetMap contributors" under place data (decided Nov 10–11, 2026; see the spec).
+- **Cards (12) and results (16):** add the Geoapify / OpenStreetMap attribution whenever place data is shown. The images don't show it yet.
 - **Round complete (14):** marked "Suggested screen" in the image; build it as shown.
 - **Host left (18):** the host role passes to the member who joined earliest.

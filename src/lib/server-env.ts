@@ -8,7 +8,7 @@ import "server-only";
 // development). They must never use the NEXT_PUBLIC_ prefix.
 export type ServerSecret =
   | "SUPABASE_SECRET_KEY" // milestone 2
-  | "GOOGLE_PLACES_API_KEY" // milestone 4
+  | "GEOAPIFY_API_KEY" // milestone 4
   | "TICKETMASTER_API_KEY"; // milestone 4
 
 export function serverSecret(name: ServerSecret): string {
