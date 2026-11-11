@@ -60,7 +60,7 @@ remains incomplete. No environment changes were reapplied by this follow-up.
 
 The fix branch includes PR #13's commits as the corrected replacement/follow-up.
 It also includes the subsequently requested Vercel Web Analytics addition; see
-[VERCEL_ANALYTICS.md](VERCEL_ANALYTICS.md) for its privacy filter, new dependency,
+[vercel-analytics.md](vercel-analytics.md) for its privacy filter, new dependency,
 118-test validation and enablement steps. Statements above about unchanged
 dependencies describe the original search fixes. No branch is merged and no
 production application or hosted migration was deployed by this work.

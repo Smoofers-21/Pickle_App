@@ -37,6 +37,8 @@ This file sets the order to build Pickle in. It follows the 9 milestones in [bui
 - **Nov 11, 2026: Geoapify instead of Google Places.** The project runs entirely on free tiers for a portfolio and public demos: Geoapify Places (OpenStreetMap data) for restaurants and bars, Ticketmaster for events, and a local library of illustrative cuisine photos instead of place photos. No ratings are used. See "Places data provider" and "Cuisine images" in the build plan.
 - **Nov 11, 2026: milestone 4 checked against the live APIs.** Geoapify charges 1 credit per 20 places, so one search for the nearest 100 places costs 5 credits; widening fetches the next 100. Results may be cached ("Cache/store results with no limits"), and the free plan requires both Geoapify and OpenStreetMap attribution. The key is sent in a header, never in a URL. "Open now" uses the host's phone time zone. The host's location is also deleted after a failed search (changing the criteria sends a fresh one). The score threshold stays at 60 after real searches in Austin and New York.
 
+- **Nov 11, 2026: Pickle green accent.** The owner wants the app to match the logo: selected Yes / No pills (milestone 5, screen 08) and the outline of the ranking being ordered (milestone 6, screens 13 and 15) use the logo wordmark's green, \#2F5E36. Everything else stays black and white. See Colors in the product spec.
+
 ## How each milestone runs
 
 1. Start the milestone by pointing Claude at this file, the build plan, the product spec and the milestone's screen images.

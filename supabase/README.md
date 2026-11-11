@@ -4,7 +4,7 @@
 
 ## Applying a migration
 
-Supabase dashboard → **SQL Editor** → **New query** → paste the whole file → **Run**. Run each file once, in order. Migrations through `20261111000002_search.sql` were reported applied to the Pickle_app project in PR #13. The worker-fencing migration below has been tested locally; this review has not inspected or changed the hosted database.
+Supabase dashboard → **SQL Editor** → **New query** → paste the whole file → **Run**. Run each file once, in order. All files below have been applied to the Pickle_app project (as of Nov 11, 2026); the worker-fencing migration was applied after review, and `security-audit.sql` passed against the hosted project.
 
 | File | Milestone | What it does |
 |---|---|---|
@@ -16,7 +16,7 @@ Supabase dashboard → **SQL Editor** → **New query** → paste the whole file
 | `20261110000005_no_rejoin_by_name.sql` | 3 | A name never reclaims someone's spot: only the phone that owns it can (security review) |
 | `20261111000001_geoapify_option_source.sql` | 4 preparation | Lets saved options come from Geoapify; keeps the old Google value for existing rows (security review, Codex) |
 | `20261111000002_search.sql` | 4 | Search: time zone and progress on games, card details on options, the daily API budget and call log (`api_usage`), and the functions to claim, save and finish a search, change the criteria and end a game |
-| `20261111000003_fence_search_workers.sql` | 4 security review | Token-based search ownership, guarded credit reservation and consistent lobby/game lock order; not applied to hosted Supabase by this review |
+| `20261111000003_fence_search_workers.sql` | 4 security review | Token-based search ownership, guarded credit reservation and consistent lobby/game lock order (security review, Codex) |
 
 Apply `20261111000003_fence_search_workers.sql` before deploying this branch.
 It replaces the search worker RPC signatures and reloads PostgREST's schema

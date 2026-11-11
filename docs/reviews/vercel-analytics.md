@@ -67,6 +67,6 @@ Included in [PR #14](https://github.com/Smoofers-21/Pickle_App/pull/14) on
    Ad blockers may suppress collection; app navigation should keep working.
 
 The analytics addition itself needs no database changes. PR #14 also contains
-the earlier search security migration: follow `PR_14_CHANGES.md` before deploying
+the earlier search security migration: follow `pr-14-changes.md` before deploying
 the complete branch. No merge, production deployment or hosted database change
 was performed. Pushing the PR branch can trigger the existing Vercel preview.

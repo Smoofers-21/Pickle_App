@@ -29,7 +29,7 @@ existing package versions and GitHub Actions are unchanged.
 
 **Vercel setup:** enable Web Analytics in the project's Analytics tab, then deploy
 to production. No analytics API key is needed. Previews intentionally do not
-collect traffic. See [VERCEL_ANALYTICS.md](VERCEL_ANALYTICS.md) for the complete
+collect traffic. See [vercel-analytics.md](vercel-analytics.md) for the complete
 integration, privacy decisions, verification and dashboard steps.
 
 **Access limitation:** GitHub API access now works and PR #14 is confirmed open.
@@ -37,4 +37,4 @@ Hosted Supabase remains unverified; no Supabase secret bindings are configured
 here. No hosted migration, application deployment or live analytics ingestion
 test was performed. Local verification does not establish hosted readiness.
 
-See [PR_13_SECURITY_REVIEW.md](PR_13_SECURITY_REVIEW.md) for findings, reproductions, validation details and remaining limitations.
+See [pr-13-security-review.md](pr-13-security-review.md) for findings, reproductions, validation details and remaining limitations.
