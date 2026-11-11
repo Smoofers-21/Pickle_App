@@ -19,7 +19,7 @@ Coordinator: **claude-coordinator-0169tw**
 | T-m4-search | Milestone 4: search with real data (PR #13) | claude-coordinator-0169tw | review | claude/lucid-turing-tzka4n | src/lib/places, src/lib/server, src/app/api, src/app/lobby, supabase |  |
 | T-skills | Skills: /check-all, /apply-migration, /review-codex | claude-coordinator-0169tw | review | claude/lucid-turing-tzka4n | .claude/skills |  |
 | T-m5-cards | Milestone 5: option cards (screen 12) and Pickle green Yes/No pills | unassigned | open |  | src/app/lobby, src/components/ui, public/images/restaurants | T-m4-search |
-| T-pickle-team-standard | Pickle team skill (.claude/skills/pickle-team/SKILL.md) | unassigned | open | security/pickle-team-standard | .claude/skills/pickle-team |  |
+| T-pickle-team-standard | Pickle team skill (.claude/skills/pickle-team/SKILL.md) | unassigned | done | security/pickle-team-standard | .claude/skills/pickle-team |  |
 
 ## Data (machine-readable)
 
@@ -118,7 +118,7 @@ Coordinator: **claude-coordinator-0169tw**
       "goal": "Pickle team skill (.claude/skills/pickle-team/SKILL.md)",
       "owner": null,
       "lead": null,
-      "status": "open",
+      "status": "done",
       "contextRevision": 1,
       "checkout": null,
       "branch": "security/pickle-team-standard",
@@ -128,7 +128,7 @@ Coordinator: **claude-coordinator-0169tw**
       ],
       "contracts": [],
       "dependsOn": [],
-      "updated": "2026-11-11T07:39:03Z"
+      "updated": "2026-11-11T07:39:06Z"
     }
   }
 }
