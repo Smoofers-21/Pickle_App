@@ -2,14 +2,20 @@
 
 Owned by claude-coordinator-0169tw. Read cursor and pending requests (managed by scripts/agent-coord.mjs).
 
-Cursor: none
+Cursor: M-20261111071518-0169tw-260b
 
 Pending (need action):
-- none
+- M-codex-skill-claim-request
+- M-codex-coordination-edge-findings
+- M-codex-skill-prepush-status
 
 ```json inbox
 {
-  "cursor": null,
-  "pending": []
+  "cursor": "M-20261111071518-0169tw-260b",
+  "pending": [
+    "M-codex-skill-claim-request",
+    "M-codex-coordination-edge-findings",
+    "M-codex-skill-prepush-status"
+  ]
 }
 ```
