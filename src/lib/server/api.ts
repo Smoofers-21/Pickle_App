@@ -5,6 +5,51 @@ import { isDatabaseConfigured } from "./supabase";
 
 const MAX_BODY_BYTES = 2048;
 
+function isSameHostOrigin(origin: string | null, host: string | null): boolean {
+  if (!origin || !host) return false;
+  try {
+    const url = new URL(origin);
+    return (url.protocol === "http:" || url.protocol === "https:") && url.origin === origin && url.host === host;
+  } catch {
+    return false;
+  }
+}
+
+/** Bound memory use even when Content-Length is absent or inaccurate. */
+async function readSmallBody(request: NextRequest): Promise<string | null> {
+  if (!request.body) return "";
+  const reader = request.body.getReader();
+  const decoder = new TextDecoder();
+  let bytes = 0;
+  let text = "";
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) return text + decoder.decode();
+      bytes += value.byteLength;
+      if (bytes > MAX_BODY_BYTES) {
+        // Do not wait for a client to finish an oversized upload.
+        void reader.cancel().catch(() => {});
+        return null;
+      }
+      text += decoder.decode(value, { stream: true });
+    }
+  } finally {
+    reader.releaseLock();
+  }
+}
+
+/**
+ * A safe label for logs: the error's type plus, for database errors, its
+ * short code (like 42703 or PGRST116). Never the message, which could carry
+ * request data.
+ */
+export function errorLabel(err: unknown): string {
+  const name = err instanceof Error ? err.name : typeof err === "object" && err !== null ? "DatabaseError" : "unknown error";
+  const code = typeof err === "object" && err !== null ? (err as { code?: unknown }).code : undefined;
+  return typeof code === "string" && /^[A-Z0-9]{2,12}$/.test(code) ? `${name} ${code}` : name;
+}
+
 export function fail(status: number, error: string, message: string) {
   return NextResponse.json({ error, message }, { status, headers: { "Cache-Control": "no-store" } });
 }
@@ -33,31 +78,31 @@ export function route(
   return async (request: NextRequest, context: { params: Promise<Record<string, string>> }) => {
     const origin = request.headers.get("origin");
     const host = request.headers.get("x-forwarded-host") ?? request.headers.get("host");
-    if (!origin || !host || new URL(origin).host !== host) {
+    if (!isSameHostOrigin(origin, host)) {
       return fail(403, "bad_origin", "This request must come from the Pickle app.");
     }
     if (!isDatabaseConfigured()) {
       return fail(503, "not_configured", "Pickle's database isn't set up yet.");
     }
 
-    let body: Record<string, unknown> = {};
-    const text = await request.text();
-    if (text.length > MAX_BODY_BYTES) return fail(413, "too_large", "That request is too large.");
-    if (text) {
-      try {
-        const parsed: unknown = JSON.parse(text);
-        if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) body = parsed as Record<string, unknown>;
-      } catch {
-        return fail(400, "bad_json", "That request couldn't be read.");
-      }
-    }
-
     try {
+      let body: Record<string, unknown> = {};
+      const text = await readSmallBody(request);
+      if (text === null) return fail(413, "too_large", "That request is too large.");
+      if (text) {
+        try {
+          const parsed: unknown = JSON.parse(text);
+          if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) body = parsed as Record<string, unknown>;
+        } catch {
+          return fail(400, "bad_json", "That request couldn't be read.");
+        }
+      }
+
       const params = await context.params;
       return await handler({ request, body, device: getDevice(request), params });
     } catch (err) {
       // Log the error type only: no IP addresses, tokens or request bodies.
-      console.error("Route failed:", request.nextUrl.pathname, err instanceof Error ? err.message : "unknown error");
+      console.error("Route failed:", request.nextUrl.pathname, errorLabel(err));
       return fail(500, "server_error", "Something went wrong. Try again.");
     }
   };

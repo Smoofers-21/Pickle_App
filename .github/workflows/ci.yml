@@ -27,7 +27,9 @@ jobs:
       - run: npm ci
       - run: npm run lint
       - run: npm run typecheck
+      - run: npm test
       - run: npm run build
+      - run: npm run check:bundle
       - name: Dependency audit (production packages)
         run: npm audit --omit=dev --audit-level=high
 
@@ -52,4 +54,4 @@ jobs:
           createdb pickle_test
           psql -v ON_ERROR_STOP=1 -q -d pickle_test -f supabase/tests/local-stubs.sql
           for f in supabase/migrations/*.sql; do psql -v ON_ERROR_STOP=1 -q -d pickle_test -f "$f"; done
-          psql -v ON_ERROR_STOP=1 -q -d pickle_test -f supabase/tests/lobby_test.sql
+          for f in supabase/tests/*_test.sql; do psql -v ON_ERROR_STOP=1 -q -d pickle_test -f "$f"; done

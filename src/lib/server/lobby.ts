@@ -1,9 +1,17 @@
 import "server-only";
-import type { LobbyState } from "@/lib/lobby-types";
+import type { GameInfo, LobbyState, PickSide } from "@/lib/lobby-types";
 import { MAX_MEMBERS } from "@/lib/lobby-rules";
+import { runDemoPicks } from "./demo";
 import { db } from "./supabase";
 
-type LobbyRow = { id: string; code: string; status: "open" | "locked" | "ended"; host_member_id: string | null; is_demo: boolean };
+export type LobbyRow = {
+  id: string;
+  code: string;
+  status: "open" | "locked" | "ended";
+  host_member_id: string | null;
+  is_demo: boolean;
+  current_game_id: string | null;
+};
 type MemberRow = {
   id: string;
   name: string;
@@ -11,11 +19,31 @@ type MemberRow = {
   removed_at: string | null;
   left_at: string | null;
 };
+export type GameRow = {
+  id: string;
+  stage: GameInfo["stage"];
+  category: GameInfo["category"];
+  event_date: string | null;
+  radius_mi: number;
+  age: GameInfo["age"];
+  indoor_outdoor: GameInfo["indoorOutdoor"];
+  rounds_total: number;
+  current_round: number;
+};
+export type PickRow = {
+  member_id: string;
+  no_tag: string;
+  no_other: string | null;
+  yes_tag: string | null;
+  yes_other: string | null;
+  submitted_at: string;
+  ready: boolean;
+};
 
 export async function findLobby(code: string): Promise<LobbyRow | null> {
   const { data, error } = await db()
     .from("lobbies")
-    .select("id, code, status, host_member_id, is_demo")
+    .select("id, code, status, host_member_id, is_demo, current_game_id")
     .eq("code", code)
     .neq("status", "ended")
     .gt("expires_at", new Date().toISOString())
@@ -38,9 +66,39 @@ export async function findMe(lobbyId: string, deviceHash: string): Promise<Membe
   return data as MemberRow | null;
 }
 
+/** The lobby and this device's active member row, or null if they aren't in it. */
+export async function findActiveMember(code: string, deviceHash: string) {
+  const lobby = await findLobby(code);
+  const me = lobby && (await findMe(lobby.id, deviceHash));
+  if (!lobby || !me || me.left_at || me.removed_at) return null;
+  return { lobby, me };
+}
+
+export async function findGame(gameId: string): Promise<GameRow | null> {
+  const { data, error } = await db()
+    .from("games")
+    .select("id, stage, category, event_date, radius_mi, age, indoor_outdoor, rounds_total, current_round")
+    .eq("id", gameId)
+    .maybeSingle();
+  if (error) throw error;
+  return data as GameRow | null;
+}
+
+export async function findPicks(gameId: string): Promise<PickRow[]> {
+  const { data, error } = await db()
+    .from("picks")
+    .select("member_id, no_tag, no_other, yes_tag, yes_other, submitted_at, ready")
+    .eq("game_id", gameId);
+  if (error) throw error;
+  return (data ?? []) as PickRow[];
+}
+
+const side = (tag: string, other: string | null): PickSide => ({ tag, other });
+
 /**
  * The lobby as this device should see it. Also records that the member is
- * still here (used to tell a dropped phone from an active one).
+ * still here (used to tell a dropped phone from an active one), and lets demo
+ * friends make their picks when it's their turn.
  */
 export async function lobbyState(code: string, deviceHash: string): Promise<LobbyState> {
   const lobby = await findLobby(code);
@@ -50,7 +108,7 @@ export async function lobbyState(code: string, deviceHash: string): Promise<Lobb
   if (!me || me.left_at) return { status: "not_member" };
   if (me.removed_at) return { status: "removed", code: lobby.code };
 
-  const [{ data: rows, error }] = await Promise.all([
+  const [{ data: rows, error }, game] = await Promise.all([
     db()
       .from("members")
       .select("id, name, is_demo")
@@ -58,6 +116,7 @@ export async function lobbyState(code: string, deviceHash: string): Promise<Lobb
       .is("removed_at", null)
       .is("left_at", null)
       .order("joined_at", { ascending: true }),
+    lobby.current_game_id ? findGame(lobby.current_game_id) : Promise.resolve(null),
     db().from("members").update({ last_seen_at: new Date().toISOString() }).eq("id", me.id),
   ]);
   if (error) throw error;
@@ -69,11 +128,48 @@ export async function lobbyState(code: string, deviceHash: string): Promise<Lobb
     isHost: m.id === lobby.host_member_id,
   }));
 
+  let picks: PickRow[] = [];
+  let demoPending = false;
+  let currentGame = game;
+  if (game && game.stage === "picks") {
+    picks = await findPicks(game.id);
+    if (lobby.is_demo) {
+      const demo = await runDemoPicks(game, lobby.host_member_id, members, picks);
+      demoPending = demo.pending;
+      if (demo.changed) {
+        [picks, currentGame] = await Promise.all([findPicks(game.id), findGame(game.id)]);
+      }
+    }
+  }
+  const mine = picks.find((p) => p.member_id === me.id);
+
   return {
     status: "ok",
-    lobby: { id: lobby.id, code: lobby.code, status: lobby.status, isDemo: lobby.is_demo },
+    lobby: { id: lobby.id, code: lobby.code, status: lobby.status === "locked" ? "locked" : "open", isDemo: lobby.is_demo },
     me: { id: me.id, name: me.name, isHost: me.id === lobby.host_member_id },
     members,
     maxMembers: MAX_MEMBERS,
+    game: currentGame
+      ? {
+          id: currentGame.id,
+          stage: currentGame.stage,
+          category: currentGame.category,
+          eventDate: currentGame.event_date,
+          radiusMi: Number(currentGame.radius_mi),
+          age: currentGame.age,
+          indoorOutdoor: currentGame.indoor_outdoor,
+          roundsTotal: currentGame.rounds_total,
+          currentRound: currentGame.current_round,
+        }
+      : null,
+    picksDone: picks.filter((p) => p.ready).map((p) => p.member_id),
+    myPicks: mine
+      ? {
+          no: side(mine.no_tag, mine.no_other),
+          yes: mine.yes_tag ? side(mine.yes_tag, mine.yes_other) : null,
+          ready: mine.ready,
+        }
+      : null,
+    demoPending,
   };
 }

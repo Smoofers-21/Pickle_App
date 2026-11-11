@@ -3,7 +3,7 @@
 
 import Link from "next/link";
 import type { ButtonHTMLAttributes, ReactNode } from "react";
-import { ArrowRight, ChevronLeft } from "./icons";
+import { ArrowRight, CheckIcon, ChevronDown, ChevronLeft, PlusIcon } from "./icons";
 import styles from "./ui.module.css";
 
 export { CodeCard, ShareButton } from "./CodeCard";
@@ -94,8 +94,15 @@ export function PillLink({ href, children, full }: { href: string; children: Rea
   );
 }
 
-/** Round outlined back button. */
-export function BackButton({ href }: { href: string }) {
+/** Round outlined back button: a link, or a button when given `onClick`. */
+export function BackButton({ href, onClick }: { href?: string; onClick?: () => void }) {
+  if (onClick || !href) {
+    return (
+      <button type="button" className={styles.roundButton} aria-label="Back" onClick={onClick}>
+        <ChevronLeft />
+      </button>
+    );
+  }
   return (
     <Link href={href} className={styles.roundButton} aria-label="Back">
       <ChevronLeft />
@@ -104,8 +111,8 @@ export function BackButton({ href }: { href: string }) {
 }
 
 /** A selectable pill, for tags and options. Selected = solid black. */
-export function Chip({ selected, className, ...props }: ButtonProps & { selected?: boolean }) {
-  return <button type="button" aria-pressed={!!selected} className={cx(styles.chip, className)} {...props} />;
+export function Chip({ selected, large, className, ...props }: ButtonProps & { selected?: boolean; large?: boolean }) {
+  return <button type="button" aria-pressed={!!selected} className={cx(styles.chip, large && styles.large, className)} {...props} />;
 }
 
 /** A pill that only shows a word, like the Food / Bars / Events on the home screen. */
@@ -206,5 +213,113 @@ export function ErrorCard({ title, children }: { title: string; children: ReactN
         <p className={styles.errorBody}>{children}</p>
       </div>
     </div>
+  );
+}
+
+/** Bold section heading with an optional small label on the right, like "REQUIRED". */
+export function SectionTitle({ children, aside }: { children: ReactNode; aside?: string }) {
+  return (
+    <div className={styles.sectionTitleRow}>
+      <h2 className={styles.sectionTitle}>{children}</h2>
+      {aside && <span className={styles.label}>{aside}</span>}
+    </div>
+  );
+}
+
+export function Divider() {
+  return <hr className={styles.divider} />;
+}
+
+/** The dashed "+ Other" chip. */
+export function OtherChip({ selected, ...props }: ButtonProps & { selected?: boolean }) {
+  return (
+    <button type="button" aria-pressed={!!selected} className={cx(styles.chip, styles.large, styles.otherChip)} {...props}>
+      + Other
+    </button>
+  );
+}
+
+/** Outlined pill dropdown with a chevron. */
+export function SelectField({
+  id,
+  label,
+  children,
+  ...props
+}: { id: string; label: string; children: ReactNode } & React.SelectHTMLAttributes<HTMLSelectElement>) {
+  return (
+    <div className={styles.field}>
+      <Label htmlFor={id}>{label}</Label>
+      <div className={styles.selectWrap}>
+        <select id={id} className={styles.select} {...props}>
+          {children}
+        </select>
+        <ChevronDown className={styles.selectChevron} />
+      </div>
+    </div>
+  );
+}
+
+export function ProgressBar({ value, max, label }: { value: number; max: number; label: string }) {
+  const pct = max > 0 ? Math.round((value / max) * 100) : 0;
+  return (
+    <div className={styles.progress} role="progressbar" aria-valuemin={0} aria-valuemax={max} aria-valuenow={value} aria-label={label}>
+      <div className={styles.progressFill} style={{ width: `${pct}%` }} />
+    </div>
+  );
+}
+
+/** A member who is done (check mark) or still going (dashed). Screen 09. */
+export function StatusChip({ name, done, you, pendingText = "picking…" }: { name: string; done: boolean; you?: boolean; pendingText?: string }) {
+  return (
+    <span className={cx(styles.statusChip, you && done && styles.you, !done && styles.pending)}>
+      {done ? (
+        <span className={styles.checkCircle} aria-hidden="true">
+          <CheckIcon />
+        </span>
+      ) : (
+        <span className={styles.dashedCircle} aria-hidden="true" />
+      )}
+      <span>
+        {name}
+        {you && " (you)"}
+        {!done && ` · ${pendingText}`}
+      </span>
+    </span>
+  );
+}
+
+export type CheckState = "done" | "active" | "todo";
+
+/** Card listing steps that are done, in progress or still to come. Screen 10. */
+export function Checklist({ items }: { items: { label: string; state: CheckState }[] }) {
+  return (
+    <ul className={styles.checklist} style={{ listStyle: "none", margin: 0 }}>
+      {items.map((item) => (
+        <li key={item.label} className={cx(styles.checkItem, item.state === "active" && styles.active, item.state === "todo" && styles.todo)}>
+          {item.state === "done" && (
+            <span className={styles.checkCircle} aria-hidden="true">
+              <CheckIcon />
+            </span>
+          )}
+          {item.state === "active" && <span className={styles.spinner} aria-hidden="true" />}
+          {item.state === "todo" && <span className={styles.todoCircle} aria-hidden="true" />}
+          {item.label}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+export function BigSpinner() {
+  return <span className={cx(styles.spinner, styles.bigSpinner)} aria-hidden="true" />;
+}
+
+/** Soft grey pill with a plus, like "+ Add demo friends". */
+export function SoftButton({ children, ...props }: ButtonProps) {
+  return (
+    <button type="button" className={styles.softButton} {...props}>
+      <PlusIcon />
+      {children}
+    </button>
   );
 }

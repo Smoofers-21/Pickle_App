@@ -59,9 +59,8 @@ async function hitDevice(deviceHash: string, limit: Limit): Promise<boolean> {
 
 /** Counts one hit against both limits. Returns false when either is exceeded. */
 export async function allow(request: NextRequest, deviceHash: string, limit: Limit): Promise<boolean> {
-  const ipOk = hitIp(request, limit);
-  const deviceOk = await hitDevice(deviceHash, limit);
-  return ipOk && deviceOk;
+  if (!hitIp(request, limit)) return false;
+  return hitDevice(deviceHash, limit);
 }
 
 /** True when this device or IP is already over the limit, without counting a hit. */

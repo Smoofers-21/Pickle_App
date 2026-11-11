@@ -20,11 +20,11 @@ Eight tables in Supabase (Postgres) hold everything. No user accounts: a member 
 
 | Table         | What it holds                                                                                                                                              | Key fields                                                                                                                                                                                                  |
 |---------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| lobbies       | One row per lobby code                                                                                                                                     | code (6 characters), status (open, locked, ended), host_member_id, is_demo, next_lobby_id, expires_at (24 hours)                                                                                            |
+| lobbies       | One row per lobby code (plus current_game_id, the game in progress)                                                                                                                                     | code (6 characters), status (open, locked, ended), host_member_id, is_demo, next_lobby_id, expires_at (24 hours)                                                                                            |
 | members       | People in a lobby                                                                                                                                          | lobby_id, name (with number suffix for duplicates), device_token, joined_at (sets host order), is_demo, removed_at, last_seen_at                                                                            |
 | games         | One game inside a lobby                                                                                                                                    | lobby_id, category, event_date, radius_mi, age, indoor_outdoor, rounds_total, current_round, stage, center_lat, center_lng                                                                                  |
-| picks         | Each member's Yes and No                                                                                                                                   | game_id, member_id, no_tag, yes_tag (optional), other_text                                                                                                                                                  |
-| options       | Every place or event found during the game, shown or not (the game's search cache). Google details other than the place ID are deleted when the game ends. | game_id, shown_in_round (empty until shown), source (google or ticketmaster), source_id, name, normalized_name, tags, photos (up to 3), hours or start time, rating, distance_mi, link, score (never shown) |
+| picks         | Each member's Yes and No                                                                                                                                   | game_id, member_id, no_tag, no_other, yes_tag (optional), yes_other: a tag key, or "other" plus the typed text                                                                                                                                                  |
+| options       | Every place or event found during the game, shown or not (the game's search cache). Google details other than the place ID are deleted when the game ends. | game_id, shown_in_round (empty until shown), source (google or ticketmaster), source_id, name, normalized_name, tags, photo (1, shared address), start time (events), google_rank, distance_mi, link, score (never shown) |
 | card_views    | Which cards a member has seen                                                                                                                              | member_id, option_id; used to unlock Go vote                                                                                                                                                                |
 | votes         | One ranking per member per round                                                                                                                           | game_id, round_no (0 = final), member_id, ranking (ordered option ids), submitted_at                                                                                                                        |
 | round_results | Points and who advanced                                                                                                                                    | game_id, round_no, option_id, points, first_place_votes, place, advanced                                                                                                                                    |
@@ -35,13 +35,13 @@ The game's **stage** drives every screen: picks → searching → cards_and_voti
 
 Every phone subscribes to its lobby through Supabase Realtime, so joins, picks and votes appear on all screens within about a second, without refreshing.
 
-- **What phones listen to:** an empty "changed" ping on a Realtime broadcast channel named after the lobby's random id, sent by a database trigger whenever the lobby or its members change. The ping carries no data; the phone then asks the server for the lobby as it should see it (and checks in every 30 seconds in case a ping is missed). Phones never read tables directly and never receive other members' picks or rankings, which keeps picks anonymous. *(Decided in milestone 2.)*
+- **What phones listen to:** an empty "changed" ping on a Realtime broadcast channel named after the lobby's random id, sent by a database trigger whenever the lobby or its members change. The ping carries no data; the phone then asks the server for the lobby as it should see it (and checks in every 30 seconds in case a ping is missed). Phones never read tables directly and never receive other members' picks or rankings, which keeps picks anonymous. *(Decided in milestone 2.)* Phones reload at most once every 2 seconds from pings, so fake pings on the channel can't flood them into their rate limits.
 
-- **Who moves the game forward:** the server, not the phones. When the last pick or vote arrives, a server route advances the stage (for example voting → round_complete) and every phone follows.
+- **Who moves the game forward:** the server, not the phones. When the last pick or vote arrives, a server route advances the stage (for example voting → round_complete) and every phone follows. Anyone who taps "Change my picks" (or changes a submitted ranking) stops counting as done until they submit again, so the game never moves on while someone is still changing their mind.
 
 - **Cards and voting:** each member moves through cards and voting at their own pace. The round ends when every active member has submitted a ranking, or the host removes someone who is stuck.
 
-- **Online status:** Supabase Presence shows who is connected. A dropped phone reconnects with its saved token and lands on the current stage with its progress intact.
+- **Online status:** Supabase Presence shows who is connected. A dropped phone reconnects with its saved token and lands on the current stage with its progress intact. A name alone never reclaims a spot: only the phone holding that spot's device token can (decided Nov 10, 2026).
 
 - **Host handover:** if the host leaves or is removed, the server makes the earliest-joined active member the host and sends the "You're now the host" notice.
 
@@ -53,9 +53,9 @@ A server route fills each round, calling the APIs only when saved results can't,
 
 1.  **Combine picks.** Collect every Yes and No. Drop any tag that is both someone's Yes and someone else's No.
 
-2.  **Search.** First use places already found earlier in this game; call the APIs only if those can't fill the round. Food and bars: Google Places nearby search around the host's location, within the radius. Events: Ticketmaster search by location, radius and the chosen date.
+2.  **Search.** First use places already found earlier in this game; call the APIs only if those can't fill the round. Food and bars: one Google Places **Text Search (Pro fields only)** around the host's location, within the radius, with the **open now** filter. Events: Ticketmaster search by location, radius and the chosen date.
 
-3.  **Filter.** Keep places open today, events on the chosen date, and 21+ venues only when the host allowed them. Remove anything already shown earlier in this game.
+3.  **Filter.** Keep places open now (Google's open-now search filter), events on the chosen date, and 21+ venues only when the host allowed them. Remove anything already shown earlier in this game.
 
 4.  **Remove duplicates.** Normalize names (lowercase, no punctuation or location suffix) and keep the closest location of each chain.
 
@@ -63,7 +63,7 @@ A server route fills each round, calling the APIs only when saved results can't,
 
 6.  **Pick 6.** Keep options at or above the threshold (about 60), highest first. Fewer than 6: widen the radius by 5 mi once and search again; places already found are recognized by their source ID and skipped, never fetched or scored twice. Still fewer: use what was found. None: tell the host.
 
-7.  **Fetch details for the 6 only.** Photos (up to 3), hours and links are requested only for the final options, and only once per place per game. Every result from every search is saved to the options table, so later rounds draw from it before calling the APIs again.
+7.  **No separate details calls.** The search itself returns everything a card needs from Google (name, types, location, photo reference, Google Maps link). One photo per place is fetched for the final options only (see API cost rule 3). Every result from every search is saved to the options table, so later rounds draw from it before calling the APIs again.
 
 **Starting score adjustments** (to be tuned with real searches)
 
@@ -74,8 +74,10 @@ A server route fills each round, calling the APIs only when saved results can't,
 | Each No that matches a primary tag    | −40        |
 | Each No that matches a secondary tag  | −10        |
 | Indoor/outdoor preference matches     | +5         |
-| Rating (4.5 or higher = full points)  | up to +10  |
+| Google's result order (first = full points; replaces rating) | up to +10  |
 | Distance (closest = full points)      | up to +10  |
+
+Google ratings are **not** used to rank, score, filter or prioritize places, and the rating, review count and price level fields are never requested (they bill the search at the Enterprise tier). Google's own result order (its relevance ranking) stands in as the quality signal. Events have no rating either. *(Decided Nov 10, 2026.)*
 
 Primary and secondary tags come from each source's own categories: for Google, the place's main type versus its other types; for Ticketmaster, the event's genre versus its subgenre.
 
@@ -83,11 +85,11 @@ Primary and secondary tags come from each source's own categories: for Google, t
 
 The goal is about one Google search per round, details for at most 6 places, and no repeated work within a game. These rules are built into milestones 4 and 5 from the start.
 
-1.  **Request only the fields needed.** Google bills a request at the most expensive tier among the fields it asks for. The first search asks only for basics (place ID, name, location, types); hours, rating and photos come later. ([Google SKU details](https://developers.google.com/maps/billing-and-pricing/sku-details/places))
+1.  **Pro fields only.** Google bills a request at the most expensive tier among the fields it asks for. The search asks only for Pro-tier fields: place ID, name, location, types, main type, business status, photo references and the Google Maps link. It never asks for Enterprise fields (rating, review count, price level, opening hours, website) or Enterprise + Atmosphere fields (outdoor seating, reviews, descriptions). Open-now is a search filter, not a returned field. Confirm the Pro billing on the first real searches in milestone 4. ([Google SKU details](https://developers.google.com/maps/billing-and-pricing/sku-details/places))
 
-2.  **Search broadly once, detail only the winners.** One nearby search returns up to 20 places. All are scored with the basic data; details are fetched only for the top 6. The rest are saved for later rounds, so a multi-round game can often run on one search.
+2.  **One search per game where possible.** One Text Search (Pro) returns up to 20 places, all scored with the Pro data. The rest are saved for later rounds, so a multi-round game can usually run on one search. A second search (or the next page of results, which Google bills as another request) happens only when a round comes up short.
 
-3.  **Load photos lazily.** Each photo is its own billed request. Photo 1 loads when a card appears; photos 2 and 3 load only when someone taps for them.
+3.  **One shared photo per place.** Each photo fetch is its own billed request (Place Details Photos: 1,000 free a month, then about $7 per 1,000). The server fetches **one photo per place, once per game**, asking Google for a short-lived image address instead of the image itself, and shares that address with every phone in the lobby: at most 6 photo requests a round, whatever the group size. **Safety switch:** the server counts photo requests each month; from 900 on, cards show a "Show photo" button instead and fetch a photo only when someone taps it. Demo mode never fetches Google photos. *(Decided Nov 10, 2026.)*
 
 4.  **Never repeat work within a game.** Saved results are used first, and a wider search skips places already found (see Search and scoring).
 
@@ -109,7 +111,9 @@ Secret keys live only on the server, every database table is locked down by defa
 
 - Only server routes call Google and Ticketmaster. Phones call our own routes, so no outside API URL or key ever appears in the browser's network traffic.
 
-- Photos are loaded through the server, so the Google key never appears in an image address.
+- Photos are requested by the server, which asks Google for a short-lived image address and passes only that address to phones, so the Google key never appears in an image address or in the browser's network traffic.
+
+- The Google key is read only by server code through `src/lib/server-env.ts` (`serverSecret("GOOGLE_PLACES_API_KEY")`), which can't be imported into browser code, and the build stops if the key is ever given the NEXT_PUBLIC_ prefix.
 
 - The Google key is restricted to the Places API only, with a daily quota cap and a budget alert, so a leaked key can do little and cost little.
 
@@ -133,7 +137,7 @@ Secret keys live only on the server, every database table is locked down by defa
 
 - Members never see each other's IP addresses: every update travels through Supabase, never directly between phones.
 
-- The host's location is used only to center the search, is never shown to other members (they see distances only), and is deleted when the game ends.
+- The host's location is used only to center the search, is stored rounded to about 100 m, is never shown to other members (they see distances only), and is deleted as soon as the game's last search is done: after round 1's search in a 1-round game, after the last round's search otherwise, and at the latest when the game ends (built in milestone 4, decided Nov 10, 2026).
 
 - A daily cleanup job deletes lobbies, members, picks, votes and Google details more than 24 hours old.
 
@@ -185,19 +189,20 @@ Each milestone ends with something you can try on your phone. Search uses sample
 
 4.  **Search with real data** (screens 10–11)
 
-    - Google Places and Ticketmaster, filters, duplicate removal, scoring, widening by 5 mi, nothing-found screen, and the API cost rules 1, 2, 4, 6 and 7 (field limits, one broad search, game cache, batched events, quota caps and call log).
+    - Google Places and Ticketmaster, filters, duplicate removal, scoring, widening by 5 mi, nothing-found screen, and the API cost rules 1, 2, 4, 6 and 7 (Pro fields only, one search per game, game cache, batched events, quota caps and call log).
 
     - Test: food, bars and events at different radii; check the 6 options make sense and the call log shows about one Google search per round. Search the browser's page source and network traffic for the API keys and confirm they never appear.
 
 5.  **Option cards** (screen 12)
 
-    - Card with up to 3 photos (loaded lazily, API cost rule 3), details and link; arrows and swiping; Go vote unlocks after every card is seen. Cards with Google data show the required "Google Maps" attribution, the photo author's credit and a link to the place on Google Maps.
+    - Card with one shared photo (API cost rule 3, with the tap-to-load safety switch), details and Google Maps link; arrows and swiping; Go vote unlocks after every card is seen. Cards with Google data show the required "Google Maps" attribution, the photo author's credit and a link to the place on Google Maps.
 
     - Test: try to vote before seeing all cards.
 
 6.  **Voting and rounds** (screens 13–15)
 
     - Drag to rank, points, tie-breaks, round complete, 2–3 rounds with all-new options, final vote.
+    - **Changing a ranking un-readies you** (same rule as picks, decided Nov 10, 2026): going back from Submit to change a ranking takes you out of "done" on the server until you submit again, so the round can't end while someone is still changing their ranking. Done in one locked database step, so a last submit and a change can't race.
 
     - Test: a 2-round game with 3 people, including a forced tie.
 

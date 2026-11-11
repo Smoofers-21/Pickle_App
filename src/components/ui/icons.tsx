@@ -55,3 +55,22 @@ export const PersonRemovedIcon = (p: IconProps) => (
     <path d="m21 17-4 4" />
   </svg>
 );
+
+export const CheckIcon = (p: IconProps) => (
+  <svg {...base} strokeWidth={3} {...p}>
+    <path d="m5 12.5 4.5 4.5L19 7.5" />
+  </svg>
+);
+
+export const ChevronDown = (p: IconProps) => (
+  <svg {...base} {...p}>
+    <path d="m6 9 6 6 6-6" />
+  </svg>
+);
+
+export const PlusIcon = (p: IconProps) => (
+  <svg {...base} strokeWidth={2.5} {...p}>
+    <path d="M12 5v14" />
+    <path d="M5 12h14" />
+  </svg>
+);

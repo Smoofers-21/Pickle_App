@@ -8,6 +8,13 @@ import { realtimeClient } from "@/lib/realtime";
 export type NoticeText = { id: number; title: string; body?: string };
 
 const HEARTBEAT_MS = 30_000;
+/**
+ * At most one ping-triggered reload every 2 seconds. Anyone who learns the
+ * lobby's channel could send fake "changed" pings; without a cap, a flood
+ * would make every phone reload until it hit its own rate limit.
+ */
+const PING_MIN_GAP_MS = 2_000;
+const PING_DEBOUNCE_MS = 150;
 
 /** Works out what changed between two lobby states, for the black notice. */
 function describeChange(prev: LobbyState, next: LobbyState): Omit<NoticeText, "id"> | null {
@@ -47,7 +54,10 @@ export function useLobby(code: string) {
     setNotice({ ...n, id: noticeId.current });
   }, []);
 
+  const lastRefreshAt = useRef(0);
+
   const refresh = useCallback(async () => {
+    lastRefreshAt.current = Date.now();
     const res = await post<LobbyState>(`/api/lobbies/${code}/state`);
     if (!res.ok) {
       setError(res.message);
@@ -89,8 +99,14 @@ export function useLobby(code: string) {
     const channel = supabase.channel(`lobby:${lobbyId}`, { config: { presence: { key: myId } } });
     channel
       .on("broadcast", { event: "changed" }, () => {
-        window.clearTimeout(timer);
-        timer = window.setTimeout(refresh, 150);
+        // One reload is already scheduled: it will pick up this change too.
+        if (timer !== undefined) return;
+        const sinceLast = Date.now() - lastRefreshAt.current;
+        const wait = Math.max(PING_DEBOUNCE_MS, PING_MIN_GAP_MS - sinceLast);
+        timer = window.setTimeout(() => {
+          timer = undefined;
+          refresh();
+        }, wait);
       })
       .on("presence", { event: "sync" }, () => {
         setOnline(new Set(Object.keys(channel.presenceState())));
@@ -105,6 +121,14 @@ export function useLobby(code: string) {
       supabase.removeChannel(channel);
     };
   }, [lobbyId, myId, refresh]);
+
+  // While demo friends are about to pick, check back every couple of seconds.
+  const demoPending = state?.status === "ok" && state.demoPending;
+  useEffect(() => {
+    if (!demoPending) return;
+    const t = window.setInterval(refresh, 1500);
+    return () => window.clearInterval(t);
+  }, [demoPending, refresh]);
 
   // "Sam was taken, so you're Sam 2" after joining.
   useEffect(() => {
@@ -137,5 +161,5 @@ export function useLobby(code: string) {
     [code, refresh, showNotice],
   );
 
-  return { state, online, notice, dismissNotice: () => setNotice(null), error, leave, remove };
+  return { state, online, notice, dismissNotice: () => setNotice(null), showNotice, error, leave, remove, refresh };
 }
