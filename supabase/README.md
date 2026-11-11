@@ -4,7 +4,7 @@
 
 ## Applying a migration
 
-Supabase dashboard → **SQL Editor** → **New query** → paste the whole file → **Run**. Run each file once, in order. The migrations through `20261110000005_no_rejoin_by_name.sql` were reported applied to the Pickle_app project as of Nov 10, 2026. The new Geoapify source migration below has only been tested locally; apply it using the normal deployment process before caching Geoapify results.
+Supabase dashboard → **SQL Editor** → **New query** → paste the whole file → **Run**. Run each file once, in order. All files below have been applied to the Pickle_app project (as of Nov 11, 2026). The pull request for each milestone says which new files to run.
 
 | File | Milestone | What it does |
 |---|---|---|
@@ -14,7 +14,7 @@ Supabase dashboard → **SQL Editor** → **New query** → paste the whole file
 | `20261110000003_unready_picks.sql` | 3 | "Change my picks" takes you out of "done" until you submit again |
 | `20261110000004_serialize_picks_advance.sql` | 3 | Locks the game before counting who's done, so leaving/removal and "Change my picks" can't race (security review, Codex) |
 | `20261110000005_no_rejoin_by_name.sql` | 3 | A name never reclaims someone's spot: only the phone that owns it can (security review) |
-| `20261111000001_geoapify_option_source.sql` | 4 preparation | Allows Geoapify option caching while preserving legacy source values; not applied to hosted Supabase by this review |
+| `20261111000001_geoapify_option_source.sql` | 4 preparation | Lets saved options come from Geoapify; keeps the old Google value for existing rows (security review, Codex) |
 
 ## Testing locally
 
