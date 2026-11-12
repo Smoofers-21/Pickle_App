@@ -268,11 +268,13 @@ export async function lobbyState(code: string, deviceHash: string): Promise<Lobb
   }
   const mine = picks.find((p) => p.member_id === me.id);
 
-  let options = currentGame ? await stageOptions(currentGame) : [];
-  let votes: VoteRow[] = [];
   let round = currentGame ? votingRound(currentGame) : null;
+  // Independent reads for this phone's request; run them together.
+  let [options, votes] = await Promise.all([
+    currentGame ? stageOptions(currentGame) : Promise.resolve([] as OptionView[]),
+    currentGame && round !== null ? findVotes(currentGame.id, round) : Promise.resolve([] as VoteRow[]),
+  ]);
   if (currentGame && round !== null) {
-    votes = await findVotes(currentGame.id, round);
     if (lobby.is_demo) {
       const demo = await runDemoVotes(currentGame.id, round, lobby.host_member_id, members, votes, options.map((o) => o.id));
       demoPending = demoPending || demo.pending;

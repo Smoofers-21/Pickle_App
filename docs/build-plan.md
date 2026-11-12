@@ -68,7 +68,7 @@ A server route fills each round, calling the APIs only when saved results can't,
 
 5.  **Score.** Start every option at 50, then apply the adjustments below.
 
-6.  **Pick 6.** Keep options at or above the threshold (60, kept after real searches in Austin and New York), highest first. Fewer than 6: widen the radius by 5 mi once and search again; places already found are recognized by their source ID and skipped, never scored twice. Geoapify returns the nearest places first, so when the first search came back full (100 places) the widened search fetches the next 100 instead of the same ones. Still fewer: use what was found. None: tell the host.
+6.  **Pick 6.** Keep options at or above the threshold (60, kept after real searches in Austin and New York), highest first. Fewer than 6: widen the radius by 5 mi once; places already found are rescored at the wider radius first, and the provider is searched again only if the round is still short (Nov 12, 2026); places already found are recognized by their source ID and skipped, never scored twice. Geoapify returns the nearest places first, so when the first search came back full (100 places) the widened search fetches the next 100 instead of the same ones. Still fewer: use what was found. None: tell the host.
 
 7.  **No separate details calls.** The search itself returns everything a card needs (name, address, location, categories, cuisine, opening hours and website when OpenStreetMap has them). Each place gets a local cuisine image (see Cuisine images); no image is fetched from any API. Every result from every search is saved to the options table, so later rounds draw from it before calling the APIs again.
 

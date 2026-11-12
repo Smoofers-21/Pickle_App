@@ -183,6 +183,19 @@ describe("runSearchIfNeeded", () => {
     expect(h.state.reserved).toBe(10);
   });
 
+  it("rescores what it already found before fetching again when it widens", async () => {
+    // Six places 4 mi away that match nobody's picks: too far for the 5 mi
+    // threshold, but they qualify within 10 mi without any new data.
+    const neutral = ["Thai One", "Thai Two", "Thai Three", "Thai Four", "Thai Five", "Thai Six"].map((n) => place(n, "thai", 4));
+    h.geoSearch.mockResolvedValueOnce({ candidates: neutral, more: false, consumed: 100 });
+    await runSearchIfNeeded("g1");
+    expect(h.geoSearch).toHaveBeenCalledOnce(); // no second, paid search
+    expect(h.state.reserved).toBe(5);
+    expect(h.state.finished?.status).toBe("done");
+    expect(h.state.finished?.chosen).toHaveLength(6);
+    expect(h.state.finished?.search).toMatchObject({ radius_mi: 5, widened_to: 10, matches: 6 });
+  });
+
   it("never searches more than twice in a round, and uses what it found", async () => {
     h.geoSearch.mockResolvedValue({ candidates: [six[0]], more: false, consumed: 100 });
     await runSearchIfNeeded("g1");
