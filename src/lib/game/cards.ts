@@ -43,9 +43,10 @@ export function cardLink(o: Pick<OptionView, "source" | "link" | "name" | "addre
   return { href: `https://www.google.com/maps/search/?api=1&query=${query}`, label: "Map" };
 }
 
-/** The "Go vote" button: unlocked once every card has been seen. */
-export function voteGate(seen: ReadonlySet<number>, total: number): { unlocked: boolean; label: string; share: number } {
-  const count = Math.min([...seen].filter((i) => i >= 0 && i < total).length, total);
+/** The "Go vote" button: unlocked once every card in this round has been seen. */
+export function voteGate(seen: ReadonlySet<string>, ids: readonly string[]): { unlocked: boolean; label: string; share: number } {
+  const total = ids.length;
+  const count = ids.filter((id) => seen.has(id)).length;
   const unlocked = total > 0 && count === total;
   return {
     unlocked,
@@ -55,22 +56,37 @@ export function voteGate(seen: ReadonlySet<number>, total: number): { unlocked: 
   };
 }
 
+/** Prefix of every saved "seen cards" entry; only the current round's is kept. */
+export const SEEN_PREFIX = "pickle:seen:";
+
 /** Where this phone remembers which cards it has seen, per game and round. */
 export function seenStorageKey(gameId: string, round: number): string {
-  return `pickle:seen:${gameId}:${round}`;
+  return `${SEEN_PREFIX}${gameId}:${round}`;
 }
 
-/** Reads a saved list of seen card indexes, ignoring anything malformed. */
-export function parseSeen(raw: string | null, total: number): Set<number> {
-  const seen = new Set<number>([0]);
+/**
+ * Reads a saved list of seen option IDs, keeping only IDs in this round (so a
+ * changed set of options can never count as seen) and always counting the
+ * first card. Anything malformed is ignored.
+ */
+export function parseSeen(raw: string | null, ids: readonly string[]): Set<string> {
+  const seen = new Set<string>(ids.slice(0, 1));
   if (!raw) return seen;
   try {
     const list: unknown = JSON.parse(raw);
     if (Array.isArray(list)) {
-      for (const i of list) if (Number.isInteger(i) && i >= 0 && i < total) seen.add(i);
+      const valid = new Set(ids);
+      for (const id of list) if (typeof id === "string" && valid.has(id)) seen.add(id);
     }
   } catch {
     // A corrupt value just means starting over at the first card.
   }
   return seen;
+}
+
+/** A horizontal swipe far enough to change card: -1 back, 1 forward, 0 none. */
+export function swipeDirection(dx: number, dy: number, minPx = 50): -1 | 0 | 1 {
+  // Mostly-vertical moves are scrolling, not swiping.
+  if (Math.abs(dx) < minPx || Math.abs(dx) <= Math.abs(dy)) return 0;
+  return dx < 0 ? 1 : -1;
 }

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { cardLink, kindChips, milesLabel, parseSeen, seenStorageKey, timeLabel, voteGate } from "./cards";
+import { cardLink, kindChips, milesLabel, parseSeen, seenStorageKey, swipeDirection, timeLabel, voteGate } from "./cards";
 
 describe("card labels", () => {
   it("formats miles", () => {
@@ -42,14 +42,15 @@ describe("cardLink", () => {
 });
 
 describe("Go vote gate", () => {
+  const ids = ["a", "b", "c", "d", "e", "f"];
   it("stays locked until every card is seen", () => {
-    expect(voteGate(new Set([0, 1, 2]), 6)).toEqual({ unlocked: false, label: "Go vote · 3 of 6 seen", share: 0.5 });
-    expect(voteGate(new Set([0, 1, 2, 3, 4, 5]), 6)).toEqual({ unlocked: true, label: "Go vote", share: 1 });
+    expect(voteGate(new Set(["a", "b", "c"]), ids)).toEqual({ unlocked: false, label: "Go vote · 3 of 6 seen", share: 0.5 });
+    expect(voteGate(new Set(ids), ids)).toEqual({ unlocked: true, label: "Go vote", share: 1 });
   });
 
-  it("ignores indexes outside the round and never unlocks an empty round", () => {
-    expect(voteGate(new Set([0, 7, -1]), 2).unlocked).toBe(false);
-    expect(voteGate(new Set(), 0)).toEqual({ unlocked: false, label: "Go vote · 0 of 0 seen", share: 0 });
+  it("ignores IDs from other rounds and never unlocks an empty round", () => {
+    expect(voteGate(new Set(["a", "x", "y"]), ["a", "b"]).unlocked).toBe(false);
+    expect(voteGate(new Set(), [])).toEqual({ unlocked: false, label: "Go vote · 0 of 0 seen", share: 0 });
   });
 });
 
@@ -58,10 +59,23 @@ describe("remembered seen cards", () => {
     expect(seenStorageKey("g1", 2)).toBe("pickle:seen:g1:2");
   });
 
-  it("always counts the first card and drops bad values", () => {
-    expect([...parseSeen(null, 6)]).toEqual([0]);
-    expect([...parseSeen("[1,3,9,-2,\"x\",2.5]", 6)].sort()).toEqual([0, 1, 3]);
-    expect([...parseSeen("not json", 6)]).toEqual([0]);
-    expect([...parseSeen("{\"a\":1}", 6)]).toEqual([0]);
+  it("always counts the first card and keeps only this round's IDs", () => {
+    expect([...parseSeen(null, ["a", "b"])]).toEqual(["a"]);
+    expect([...parseSeen('["b","z",3,null]', ["a", "b", "c"])].sort()).toEqual(["a", "b"]);
+    expect([...parseSeen("not json", ["a"])]).toEqual(["a"]);
+    expect([...parseSeen('{"a":1}', ["a"])]).toEqual(["a"]);
+    expect([...parseSeen(null, [])]).toEqual([]);
+  });
+});
+
+describe("swipeDirection", () => {
+  it("moves on a clear horizontal swipe", () => {
+    expect(swipeDirection(-80, 10)).toBe(1);
+    expect(swipeDirection(90, -5)).toBe(-1);
+  });
+
+  it("ignores short or mostly vertical moves (scrolling)", () => {
+    expect(swipeDirection(-30, 0)).toBe(0);
+    expect(swipeDirection(-70, 120)).toBe(0);
   });
 });
