@@ -20,3 +20,4 @@ without payment. Record every file here when it's added.
 | `sushi.jpg` | Unsplash | Mahmoud Fawzy | Unsplash License | [Photo page](https://unsplash.com/photos/sushi-on-black-square-plate-Dbx6-XZY6Dg) |
 | `american.jpg` | Unsplash | Natalie Scott | Unsplash License (cropped) | [Photo page](https://unsplash.com/photos/potato-fries-near-burger-with-cabbage-beside-ketchup-xQkAk3yTUFM) |
 | `pub.jpg` | Unsplash | Amie Johnson | Unsplash License | [Photo page](https://unsplash.com/photos/person-filling-beer-on-glass-VJXLzQi5TlE) |
+| `seafood.jpg` | Unsplash | Max Mota | Unsplash License | [Photo page](https://unsplash.com/photos/brown-bread-on-brown-wooden-tray-N6BTNbaKZMo) |
