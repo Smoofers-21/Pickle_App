@@ -43,13 +43,13 @@ describe("cardLink", () => {
 
 describe("Go vote gate", () => {
   it("stays locked until every card is seen", () => {
-    expect(voteGate(new Set([0, 1, 2]), 6)).toEqual({ unlocked: false, label: "Go vote · 3 of 6 seen" });
-    expect(voteGate(new Set([0, 1, 2, 3, 4, 5]), 6)).toEqual({ unlocked: true, label: "Go vote" });
+    expect(voteGate(new Set([0, 1, 2]), 6)).toEqual({ unlocked: false, label: "Go vote · 3 of 6 seen", share: 0.5 });
+    expect(voteGate(new Set([0, 1, 2, 3, 4, 5]), 6)).toEqual({ unlocked: true, label: "Go vote", share: 1 });
   });
 
   it("ignores indexes outside the round and never unlocks an empty round", () => {
     expect(voteGate(new Set([0, 7, -1]), 2).unlocked).toBe(false);
-    expect(voteGate(new Set(), 0).unlocked).toBe(false);
+    expect(voteGate(new Set(), 0)).toEqual({ unlocked: false, label: "Go vote · 0 of 0 seen", share: 0 });
   });
 });
 

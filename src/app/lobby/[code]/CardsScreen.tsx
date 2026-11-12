@@ -175,7 +175,12 @@ function CardDeck({
           <button type="button" className={styles.navButton} aria-label="Previous option" disabled={index === 0} onClick={() => go(index - 1)}>
             <ChevronLeft />
           </button>
-          <MainButton disabled={!gate.unlocked} onClick={() => setVoting(true)} className={styles.voteButton}>
+          <MainButton
+            disabled={!gate.unlocked}
+            onClick={() => setVoting(true)}
+            className={`${styles.voteButton} ${gate.share > 0.2 ? styles.voteDark : ""}`}
+            style={{ "--vote-mix": `${Math.round(gate.share * 100)}%` } as React.CSSProperties}
+          >
             {gate.label}
           </MainButton>
           <button

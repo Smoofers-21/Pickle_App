@@ -41,7 +41,12 @@
 }
 
 .barSeen {
-  background: var(--ink);
+  background: var(--pickle);
+}
+
+.bar,
+.barSeen {
+  transition: background-color 0.3s ease;
 }
 
 .swipeArea {
@@ -189,7 +194,24 @@
   padding: 0 12px;
 }
 
-/* Go vote turns Pickle green once every card is seen. */
+/* Go vote fills from grey to Pickle green as cards are seen (--vote-mix is
+   the share seen), and is fully green once it unlocks. Dark text keeps at
+   least 5:1 contrast on every in-between shade; white on the final green. */
+.nav .voteButton {
+  transition:
+    background-color 0.35s ease,
+    color 0.35s ease;
+}
+
+.nav .voteButton:disabled {
+  background: var(--fill-2);
+  background: color-mix(in srgb, var(--pickle) var(--vote-mix, 0%), var(--fill-2));
+}
+
+.nav .voteButton.voteDark:disabled {
+  color: var(--ink);
+}
+
 .nav .voteButton:not(:disabled) {
   background: var(--pickle);
 }

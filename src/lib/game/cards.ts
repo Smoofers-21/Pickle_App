@@ -44,10 +44,15 @@ export function cardLink(o: Pick<OptionView, "source" | "link" | "name" | "addre
 }
 
 /** The "Go vote" button: unlocked once every card has been seen. */
-export function voteGate(seen: ReadonlySet<number>, total: number): { unlocked: boolean; label: string } {
+export function voteGate(seen: ReadonlySet<number>, total: number): { unlocked: boolean; label: string; share: number } {
   const count = Math.min([...seen].filter((i) => i >= 0 && i < total).length, total);
   const unlocked = total > 0 && count === total;
-  return { unlocked, label: unlocked ? "Go vote" : `Go vote · ${count} of ${total} seen` };
+  return {
+    unlocked,
+    label: unlocked ? "Go vote" : `Go vote · ${count} of ${total} seen`,
+    /** How much of the round has been seen, 0 to 1: how green the button is. */
+    share: total > 0 ? count / total : 0,
+  };
 }
 
 /** Where this phone remembers which cards it has seen, per game and round. */
