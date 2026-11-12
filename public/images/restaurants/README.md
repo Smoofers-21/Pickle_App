@@ -30,22 +30,24 @@ only the processed files here are.
 
 ## The photo list
 
+✅ = added (credited in `CREDITS.md`).
+
 **Needed first** (everything else falls back to these):
 
 | File | Shows |
 |---|---|
-| `restaurant-default.jpg` | A restaurant table or a shared meal, no specific cuisine |
-| `bar-default.jpg` | A bar counter with drinks |
-| `italian.jpg` | Pasta |
-| `pizza.jpg` | Pizza |
-| `mexican.jpg` | Tacos |
-| `chinese.jpg` | Dumplings or noodles |
-| `japanese.jpg` | Ramen or a Japanese set meal |
-| `sushi.jpg` | Sushi |
-| `indian.jpg` | Curry with naan |
-| `american.jpg` | A diner-style meal |
-| `burger.jpg` | A burger |
-| `pub.jpg` | Pints in a pub |
+| `restaurant-default.jpg` ✅ | A restaurant table or a shared meal, no specific cuisine |
+| `bar-default.jpg` ✅ | A bar counter with drinks |
+| `italian.jpg` ✅ | Pasta |
+| `pizza.jpg` ✅ | Pizza |
+| `mexican.jpg` ✅ | Tacos |
+| `chinese.jpg` ✅ | Dumplings or noodles |
+| `japanese.jpg` ✅ | Ramen or a Japanese set meal |
+| `sushi.jpg` ✅ | Sushi |
+| `indian.jpg` ✅ | Curry with naan |
+| `american.jpg` ✅ | A diner-style meal |
+| `burger.jpg` ✅ | A burger |
+| `pub.jpg` ✅ | Pints in a pub |
 
 **Nice to have** (until added, these use the fallback in brackets):
 
@@ -57,7 +59,7 @@ only the processed files here are.
 | `mediterranean.jpg` | Mezze, hummus, falafel | `restaurant-default` |
 | `greek.jpg` | Greek salad or gyros | `mediterranean` |
 | `middle-eastern.jpg` | Shawarma or kebab | `mediterranean` |
-| `seafood.jpg` | Seafood platter | `restaurant-default` |
+| `seafood.jpg` ✅ | Seafood platter | `restaurant-default` |
 | `steakhouse.jpg` | Steak | `restaurant-default` |
 | `bbq.jpg` | Barbecue ribs or brisket | `restaurant-default` |
 | `vegetarian.jpg` | A colourful vegetable bowl | `restaurant-default` |

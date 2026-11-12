@@ -34,8 +34,10 @@ import { SetupScreen } from "./SetupScreen";
 import { useLobby } from "./useLobby";
 import { WaitingScreen } from "./WaitingScreen";
 
-// Active-member screens share their exit and dialogs, including setup,
-// cards and the ranking placeholder nested inside the cards screen.
+// Screens 05 (host), 06 (member), 07 (setup), 08 (picks), 09 (waiting for
+// picks), 10 (searching), 11 (nothing found), 12 (cards), 18 (host left
+// notice) and 19 (removed). Every active-member screen shares the top-right
+// Leave lobby button and its confirm dialog.
 export function LobbyView() {
   const params = useParams<{ code: string }>();
   const code = cleanCodeInput(params.code ?? "");

@@ -4,7 +4,7 @@ A mobile web app that helps a group of friends decide where to go — a restaura
 
 Built as a portfolio project to show full-stack work end to end: real-time multiplayer state, a locked-down database, third-party API integration on free tiers, a tested scoring algorithm and a mobile-first design system.
 
-**Current status:** lobbies, host setup, picks, demo friends and the live search (Geoapify for restaurants and bars, Ticketmaster for events, with widening, a shared daily credit cap and the nothing-found screen) are built through milestone 4. Option cards and voting follow in milestones 5 and 6. No stock photos have been added yet, so cards will show a placeholder until they are.
+**Current status:** built through milestone 5: lobbies, host setup, picks, demo friends, the live search (Geoapify for restaurants and bars, Ticketmaster for events, with widening, a shared daily credit cap and the nothing-found screen), and swipeable option cards with illustrative cuisine photos (13 credited Unsplash photos so far). Leave lobby works from every screen. Voting and rounds follow in milestone 6.
 
 ## What it demonstrates
 
