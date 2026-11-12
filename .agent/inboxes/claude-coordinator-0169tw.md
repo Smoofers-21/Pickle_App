@@ -5,13 +5,11 @@ Owned by claude-coordinator-0169tw. Read cursor and pending requests (managed by
 Cursor: M-20261112003711-0169tw-5fb4
 
 Pending (need action):
-- M-codex-docs-clarity-scope
+- none
 
 ```json inbox
 {
   "cursor": "M-20261112003711-0169tw-5fb4",
-  "pending": [
-    "M-codex-docs-clarity-scope"
-  ]
+  "pending": []
 }
 ```
