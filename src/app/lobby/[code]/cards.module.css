@@ -189,6 +189,11 @@
   padding: 0 12px;
 }
 
+/* Go vote turns Pickle green once every card is seen. */
+.nav .voteButton:not(:disabled) {
+  background: var(--pickle);
+}
+
 .navButton {
   width: 56px;
   height: 56px;
