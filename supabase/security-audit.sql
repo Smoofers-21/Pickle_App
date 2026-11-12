@@ -27,7 +27,10 @@ begin
     'public.finish_search(uuid,text,jsonb,jsonb,uuid)',
     'public.change_criteria(uuid,uuid,text,date,numeric,text,text,smallint,double precision,double precision,text)',
     'public.end_game(uuid,uuid)',
-    'public.start_game(uuid,uuid,text,date,numeric,text,text,smallint,double precision,double precision,text)'] loop
+    'public.start_game(uuid,uuid,text,date,numeric,text,text,smallint,double precision,double precision,text)',
+    'public.submit_vote(uuid,uuid,smallint,uuid[])', 'public.unready_vote(uuid,uuid,smallint)',
+    'public.advance_after_votes(uuid)', 'public.continue_after_round(uuid,uuid)',
+    'public.tally_round(public.games,smallint)', 'public.ballot_options(uuid,smallint)'] loop
     f:=to_regprocedure(signature);
     if f is null then raise exception 'Missing required RPC: %',signature; end if;
   end loop;
@@ -47,6 +50,10 @@ begin
       and table_name='games' and column_name='search_claim_token' and data_type='uuid') then
     raise exception 'Missing search ownership token column';
   end if;
+  if not exists(select 1 from information_schema.columns where table_schema='public'
+      and table_name='votes' and column_name='ready' and data_type='boolean') then
+    raise exception 'Missing votes.ready column (voting migration)';
+  end if;
   if not exists(select 1 from pg_constraint where conrelid='public.options'::regclass
       and conname='options_source_check' and pg_get_constraintdef(oid) like '%geoapify%') then
     raise exception 'Options source constraint does not support Geoapify';
@@ -56,6 +63,6 @@ begin
     or to_regprocedure('public.finish_search(uuid,text,jsonb,jsonb)') is not null then
     raise exception 'Unfenced search RPC overload remains';
   end if;
-  raise notice 'PASS: required schema/RPCs, provider source, forced RLS, browser grants, and worker signatures';
+  raise notice 'PASS: required schema/RPCs, provider source, forced RLS, browser grants, worker signatures and voting';
 end $$;
 rollback;
