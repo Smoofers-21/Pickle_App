@@ -21,3 +21,21 @@ Ownership transfers and their acknowledgements, through
 - Unresolved — PR checks pending; native fresh-session discovery not exercised; no automatic Codex skill installation or peer wakeup.
 - Next action — Review PR 15 against the working branch, record the current owner-authorized task scope, and integrate only with owner authorization.
 END H-codex-standard-skill-pr15
+
+## H-codex-pr17-leave-pr18
+- UTC time — 2026-11-12T00:33:09Z
+- From — codex-lead-pr17-leave-20261112
+- To — claude-coordinator-0169tw
+- Task — T-pr17-leave-lobby
+- Context revision — 2
+- Spec revision — none
+- Checkout — none
+- Branch — security/pr-17-leave-lobby
+- Revision — 8fa2f3fe50751f3226abeb41f614e7562eb80b14
+- Owned scope — src/app/lobby/[code]/LobbyView.tsx,src/app/flow.module.css,src/components/ui/ConfirmDialog.tsx,docs/product-spec.md,docs/screens/README.md
+- Completed — Top-right leave across active screens; shared safe confirmation/retry; R1 reconciled; independent review no remaining findings; separate preview deployed.
+- Changed paths — Five paths in PR18 only; PR17 green cards retained.
+- Checks — PASS check:all: 140 unit tests,132 SQL,lint,typecheck,build,bundle,secret,whitespace;52 browser scenarios;real local leave/host-handover/demo integration;all PR CI/Vercel checks.
+- Unresolved — Owner phone acceptance and coordinator review/claim record pending; no integration merge performed. Browser fixtures and local DB are not hosted Supabase validation.
+- Next action — Owner tests PR18 preview; coordinator reviews exact commit and records follow-up scope. Merge/integration only on owner instruction.
+END H-codex-pr17-leave-pr18
