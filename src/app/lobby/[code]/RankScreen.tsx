@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { MainButton, PillButton, Screen, Subtitle, Title } from "@/components/ui";
 import { milesLabel } from "@/lib/game/cards";
-import { dropIndex, initialOrder, moveItem, ordinal, shiftFor } from "@/lib/game/ranking";
+import { dropIndex, moveItem, ordinal, shiftFor, startingOrder } from "@/lib/game/ranking";
 import { post } from "@/lib/client-api";
 import type { GameInfo, OptionView } from "@/lib/lobby-types";
 import { OptionCard } from "./CardsScreen";
@@ -42,6 +42,14 @@ function saveDraft(key: string, order: string[]) {
     store.setItem(key, JSON.stringify(order));
   } catch {
     // Storage blocked: the ranking still works, it just isn't kept on reload.
+  }
+}
+
+function clearDraft(key: string) {
+  try {
+    window.localStorage.removeItem(key);
+  } catch {
+    // Nothing to clear.
   }
 }
 
@@ -95,11 +103,9 @@ export function RankScreen({
   const byId = useMemo(() => new Map(options.map((o) => [o.id, o])), [options]);
   const draftKey = `${DRAFT_PREFIX}${game.id}:${final ? 0 : game.currentRound}`;
   // A submitted ranking (when changing it) wins, then an unsent draft from before a reload.
-  const [order, setOrderState] = useState(() => {
-    const ids = options.map((o) => o.id);
-    const fromSaved = initialOrder(ids, saved);
-    return saved ? fromSaved : initialOrder(ids, loadDraft(draftKey));
-  });
+  // The order being arranged (kept across a reload) wins over a submitted
+  // ranking being changed; the draft is cleared once a ranking is submitted.
+  const [order, setOrderState] = useState(() => startingOrder(options.map((o) => o.id), loadDraft(draftKey), saved));
   const setOrder = (next: string[]) => {
     setOrderState(next);
     saveDraft(draftKey, next);
@@ -179,6 +185,7 @@ export function RankScreen({
       setError(res.message);
       return;
     }
+    clearDraft(draftKey);
     onSubmitted();
   }
 
@@ -280,7 +287,18 @@ export function RankScreen({
               </span>
               <Thumb option={o} />
               <span className={styles.text}>
-                <span className={styles.name}>{o.name}</span>
+                {/* Taps open the card through the row; this button gives
+                    keyboard and screen-reader users the same (Enter / Space). */}
+                <button
+                  type="button"
+                  className={styles.nameButton}
+                  aria-label={`See the card for ${o.name}`}
+                  onClick={(e) => {
+                    if (e.detail === 0) setCardOf(o);
+                  }}
+                >
+                  <span className={styles.name}>{o.name}</span>
+                </button>
                 <span className={styles.meta}>
                   {final && o.fromRound ? <span className={styles.roundTag}>R{o.fromRound}</span> : null}
                   {dragging ? "Moving…" : milesLabel(o.distanceMi)}

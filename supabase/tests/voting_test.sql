@@ -148,4 +148,15 @@ begin
   o := pg_temp.fake_round(v_game, 1::smallint, 2);
   perform pg_temp.check(public.submit_vote(v_game, v_host, 1::smallint, o)->>'stage' = 'cards_and_voting',
                         'the new round 1 waits for everyone again');
+  -- The deciding vote keeps ties as shared places (1st, 1st, 3rd)
+  r := public.create_lobby('VTXX27', 'Tie', 'dev-vt');
+  v_lobby := (r->>'lobby_id')::uuid; v_host := (r->>'member_id')::uuid;
+  v_a := (public.join_lobby('VTXX27', 'Ana', 'dev-vt-a')->>'member_id')::uuid;
+  v_game := (public.start_game(v_lobby, v_host, 'food', null, 5, 'all', 'either', 1::smallint, 40.0, -74.0, 'America/New_York')->>'game_id')::uuid;
+  o := pg_temp.fake_round(v_game, 1::smallint, 3);
+  -- host: o1 o2 o3, Ana: o2 o1 o3 -> o1 5 (1 first), o2 5 (1 first), o3 2
+  perform public.submit_vote(v_game, v_host, 1::smallint, array[o[1], o[2], o[3]]);
+  perform public.submit_vote(v_game, v_a, 1::smallint, array[o[2], o[1], o[3]]);
+  perform pg_temp.check((select array_agg(place order by place, option_id) from public.round_results where game_id = v_game and round_no = 1)
+                        = array[1, 1, 3]::smallint[], 'a full tie in the deciding vote shares 1st place; next is 3rd');
 end $$;

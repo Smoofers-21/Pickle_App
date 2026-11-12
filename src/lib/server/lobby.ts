@@ -165,7 +165,8 @@ export function votingRound(game: GameRow): number | null {
 /**
  * The options a phone sees for the game's stage. Cards and voting: this
  * round's options. Round complete: the round's top 2. Final vote: every
- * round's top 2. Results: the deciding round in order, with points.
+ * round's top 2. Results: the deciding round in order, with places (ties
+ * share one). Point totals never leave the server.
  */
 export async function stageOptions(game: GameRow): Promise<OptionView[]> {
   const now = new Date();
@@ -181,13 +182,13 @@ export async function stageOptions(game: GameRow): Promise<OptionView[]> {
   }
   if (game.stage !== "round_complete" && game.stage !== "final_vote" && game.stage !== "results") return [];
 
-  let query = db().from("round_results").select("option_id, round_no, points, place").eq("game_id", game.id);
+  let query = db().from("round_results").select("option_id, round_no, place").eq("game_id", game.id);
   if (game.stage === "round_complete") query = query.eq("round_no", game.current_round).eq("advanced", true);
   if (game.stage === "final_vote") query = query.gt("round_no", 0).eq("advanced", true);
   if (game.stage === "results") query = query.eq("round_no", game.rounds_total > 1 ? 0 : 1);
   const { data: results, error } = await query.order("round_no").order("place");
   if (error) throw error;
-  const rows = (results ?? []) as { option_id: string; round_no: number; points: number; place: number }[];
+  const rows = (results ?? []) as { option_id: string; round_no: number; place: number }[];
   if (rows.length === 0) return [];
 
   const { data, error: optionsError } = await db()
@@ -202,10 +203,7 @@ export async function stageOptions(game: GameRow): Promise<OptionView[]> {
     if (!row) return [];
     const view = toView(row, game, now);
     if (game.stage === "final_vote") view.fromRound = r.round_no;
-    if (game.stage === "results") {
-      view.points = r.points;
-      view.place = r.place;
-    }
+    if (game.stage === "results") view.place = r.place;
     return [view];
   });
 }

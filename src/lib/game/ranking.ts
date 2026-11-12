@@ -14,10 +14,26 @@ export function moveItem<T>(list: readonly T[], from: number, to: number): T[] {
  * options exactly, otherwise the options in the order they came (best first).
  */
 export function initialOrder(optionIds: readonly string[], saved: readonly string[] | null | undefined): string[] {
-  if (saved && saved.length === optionIds.length && new Set(saved).size === saved.length && saved.every((id) => optionIds.includes(id))) {
-    return [...saved];
-  }
-  return [...optionIds];
+  return sameOptions(optionIds, saved) ? [...saved] : [...optionIds];
+}
+
+/** True when `list` holds exactly these option IDs, each once, in any order. */
+export function sameOptions(optionIds: readonly string[], list: readonly string[] | null | undefined): list is readonly string[] {
+  return !!list && list.length === optionIds.length && new Set(list).size === list.length && list.every((id) => optionIds.includes(id));
+}
+
+/**
+ * Where a ranking screen starts: the order this phone was arranging (an
+ * unsent draft, kept across a reload), else the submitted ranking being
+ * changed, else the options' own order.
+ */
+export function startingOrder(
+  optionIds: readonly string[],
+  draft: readonly string[] | null | undefined,
+  submitted: readonly string[] | null | undefined,
+): string[] {
+  if (sameOptions(optionIds, draft)) return [...draft];
+  return initialOrder(optionIds, submitted);
 }
 
 /**

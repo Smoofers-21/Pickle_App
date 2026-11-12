@@ -55,8 +55,7 @@ export type OptionView = {
   source: "geoapify" | "ticketmaster";
   /** Final vote: the round this finalist came from. */
   fromRound?: number;
-  /** Results only: total points and place (1 = winner). Points stay hidden until then. */
-  points?: number;
+  /** Results only: the place (1 = winner); tied options share one. Points are never sent. */
   place?: number;
 };
 
@@ -83,7 +82,7 @@ export type LobbyState =
       /**
        * Depends on the stage: the round's options (cards and voting), the
        * round's top 2 (round complete), the finalists (final vote), or every
-       * option of the deciding round in order, with points (results).
+       * option of the deciding round in order, with places (results).
        */
       options: OptionView[];
       /** Members whose ranking for the open vote is submitted. Never their rankings. */

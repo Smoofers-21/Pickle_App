@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { dropIndex, initialOrder, moveItem, ordinal, shiftFor } from "./ranking";
+import { dropIndex, initialOrder, moveItem, ordinal, shiftFor, startingOrder } from "./ranking";
 
 describe("moveItem", () => {
   it("moves down and up", () => {
@@ -48,5 +48,18 @@ describe("dragging", () => {
 describe("ordinal", () => {
   it("names places", () => {
     expect([1, 2, 3, 4, 11, 12, 13, 21, 22].map(ordinal)).toEqual(["1st", "2nd", "3rd", "4th", "11th", "12th", "13th", "21st", "22nd"]);
+  });
+});
+
+describe("startingOrder", () => {
+  const ids = ["a", "b", "c"];
+  it("prefers the draft being edited over the submitted ranking", () => {
+    expect(startingOrder(ids, ["b", "c", "a"], ["c", "a", "b"])).toEqual(["b", "c", "a"]);
+  });
+
+  it("uses the submitted ranking when there is no valid draft, then the default", () => {
+    expect(startingOrder(ids, null, ["c", "a", "b"])).toEqual(["c", "a", "b"]);
+    expect(startingOrder(ids, ["a", "z", "b"], ["c", "a", "b"])).toEqual(["c", "a", "b"]);
+    expect(startingOrder(ids, null, null)).toEqual(ids);
   });
 });
