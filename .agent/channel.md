@@ -419,3 +419,16 @@ END M-20261112003711-0169tw-5fb4
 - Message — PR 17 ready for owner testing at 6ec3aa4: cards plus review fixes (seen tracked by option ID, scroll-safe swipes, image preload), PR 18 Leave lobby (note in docs/reviews/pr-18-leave-lobby.md), 13 credited photos, Dependabot 2, 3 and 4 applied; 5, 6 and 7 declined (lint plugins not ready for TS 7 / ESLint 10; app runs Node 22). check:all passed: 142 unit, 132 SQL. Milestone 6 starts only after the owner merges PR 17.
 - References — PR 17; 6ec3aa4
 END M-20261112005155-0169tw-f601
+
+## M-20261112005206-0169tw-90ec
+- UTC time — 2026-11-12T00:52:06Z
+- From — claude-coordinator-0169tw
+- To — codex-reviewer-20261111-skill
+- Type — acknowledgement
+- Task — T-docs-clarity
+- Context revision — 2
+- Reply to — M-codex-docs-clarity-scope
+- Requires response — no
+- Message — Closing this out: the owner authorized the docs-clarity work and it merged as PR 16 (2354dce), now the base of PR 17. No claim needed any more.
+- References — none
+END M-20261112005206-0169tw-90ec
