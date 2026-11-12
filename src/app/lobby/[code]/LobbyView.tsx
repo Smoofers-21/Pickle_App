@@ -29,14 +29,17 @@ import styles from "../../flow.module.css";
 import { CardsScreen } from "./CardsScreen";
 import { NothingFoundScreen } from "./NothingFoundScreen";
 import { PicksScreen } from "./PicksScreen";
+import { RankScreen } from "./RankScreen";
+import { ResultsScreen, RoundCompleteScreen } from "./RoundCompleteScreen";
 import { SearchingScreen } from "./SearchingScreen";
 import { SetupScreen } from "./SetupScreen";
 import { useLobby } from "./useLobby";
 import { WaitingScreen } from "./WaitingScreen";
 
 // Screens 05 (host), 06 (member), 07 (setup), 08 (picks), 09 (waiting for
-// picks), 10 (searching), 11 (nothing found), 12 (cards), 18 (host left
-// notice) and 19 (removed). Every active-member screen shares the top-right
+// picks), 10 (searching), 11 (nothing found), 12 (cards), 13 (rank), 14
+// (round complete), 15 (final vote), results until 16, 18 (host left notice)
+// and 19 (removed). Every active-member screen shares the top-right
 // Leave lobby button and its confirm dialog.
 export function LobbyView() {
   const params = useParams<{ code: string }>();
@@ -53,6 +56,7 @@ export function LobbyView() {
   const [toRemove, setToRemove] = useState<LobbyMember | null>(null);
   const [settingUp, setSettingUp] = useState(false);
   const [changingPicks, setChangingPicks] = useState(false);
+  const [changingVote, setChangingVote] = useState(false);
   const [addingDemo, setAddingDemo] = useState(false);
   const [changingCriteria, setChangingCriteria] = useState(false);
 
@@ -113,7 +117,7 @@ export function LobbyView() {
     );
   }
 
-  const { me, members, maxMembers, lobby, game, myPicks, picksDone, options } = state;
+  const { me, members, maxMembers, lobby, game, myPicks, picksDone, options, myVote, votesDone } = state;
   const host = members.find((m) => m.isHost);
   const nextHost = members.find((m) => m.id !== me.id && !m.isDemo);
   // Demo friends are never "connected", but they count as here.
@@ -266,7 +270,69 @@ export function LobbyView() {
         }
         return <SearchingScreen game={game} notice={noticeBar} />;
       }
-      return <CardsScreen game={game} options={options} notice={noticeBar} demo={lobby.isDemo} />;
+      if (game.stage === "round_complete") {
+        return (
+          <RoundCompleteScreen
+            code={code}
+            game={game}
+            options={options}
+            isHost={me.isHost}
+            hostName={host?.name ?? "the host"}
+            onContinued={refresh}
+            notice={noticeBar}
+          />
+        );
+      }
+      if (game.stage === "results") return <ResultsScreen options={options} notice={noticeBar} />;
+
+      // Voting: a round's cards and ranking (12, 13), or the final vote (15).
+      const final = game.stage === "final_vote";
+      if (myVote?.ready) {
+        return (
+          <WaitingScreen
+            kind={final ? "final" : "votes"}
+            game={game}
+            members={members}
+            meId={me.id}
+            picksDone={votesDone}
+            changing={changingVote}
+            onChange={async () => {
+              // Un-ready on the server first, so the round waits for us.
+              setChangingVote(true);
+              const res = await post(`/api/lobbies/${code}/vote`, { round: final ? 0 : game.currentRound }, "DELETE");
+              setChangingVote(false);
+              if (!res.ok) showNotice({ title: res.message });
+              refresh();
+            }}
+            notice={noticeBar}
+          />
+        );
+      }
+      const rank = (back?: () => void) => (
+        <RankScreen
+          key={`${game.id}:${final ? 0 : game.currentRound}`}
+          code={code}
+          game={game}
+          options={options}
+          saved={myVote?.ranking ?? null}
+          final={final}
+          demo={lobby.isDemo}
+          onGoToChoices={back}
+          onSubmitted={refresh}
+          notice={noticeBar}
+        />
+      );
+      if (final) return rank();
+      return (
+        <CardsScreen
+          game={game}
+          options={options}
+          notice={noticeBar}
+          demo={lobby.isDemo}
+          startVoting={myVote !== null}
+          renderVote={rank}
+        />
+      );
     }
 
     if (me.isHost && settingUp && lobby.status === "open") {

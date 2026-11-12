@@ -3,9 +3,43 @@
 import { ChipRow, Hint, Label, PillButton, ProgressBar, Screen, StatusChip, Subtitle, Title } from "@/components/ui";
 import type { GameInfo, LobbyMember } from "@/lib/lobby-types";
 import styles from "../../flow.module.css";
-import { gameLabel } from "./gameLabel";
+import { gameLabel, roundLabel } from "./gameLabel";
 
-// Screen 09: who has picked (never what they picked).
+const COPY = {
+  picks: {
+    top: "Picks submitted",
+    noun: "picks are in",
+    progress: "Picks submitted",
+    next: "The search starts when everyone has picked.",
+    change: "Change my picks",
+    opening: "Opening your picks…",
+    pending: "picking…",
+    hint: "Only who's done is shown. Nobody sees what anyone picked.",
+  },
+  votes: {
+    top: "Ranking submitted",
+    noun: "rankings are in",
+    progress: "Rankings submitted",
+    next: "The round ends when everyone has ranked the options.",
+    change: "Change my ranking",
+    opening: "Opening your ranking…",
+    pending: "ranking…",
+    hint: "Only who's done is shown. Nobody sees anyone's ranking.",
+  },
+  final: {
+    top: "Final ranking submitted",
+    noun: "final rankings are in",
+    progress: "Final rankings submitted",
+    next: "The results appear when everyone has ranked the finalists.",
+    change: "Change my ranking",
+    opening: "Opening your ranking…",
+    pending: "ranking…",
+    hint: "Only who's done is shown. Nobody sees anyone's ranking.",
+  },
+};
+
+// Screen 09: who has picked (never what they picked). Also used while
+// waiting for everyone's ranking (rounds and the final vote).
 export function WaitingScreen({
   game,
   members,
@@ -14,15 +48,19 @@ export function WaitingScreen({
   onChange,
   changing,
   notice,
+  kind = "picks",
 }: {
   game: GameInfo;
   members: LobbyMember[];
   meId: string;
+  /** Members who are done (picks or rankings). */
   picksDone: string[];
   onChange: () => void;
   changing?: boolean;
   notice?: React.ReactNode;
+  kind?: keyof typeof COPY;
 }) {
+  const copy = COPY[kind];
   const done = new Set(picksDone);
   const doneCount = members.filter((m) => done.has(m.id)).length;
   // Done members first, keeping join order within each group.
@@ -32,19 +70,22 @@ export function WaitingScreen({
     <Screen
       footer={
         <PillButton full onClick={onChange} disabled={changing}>
-          {changing ? "Opening your picks…" : "Change my picks"}
+          {changing ? copy.opening : copy.change}
         </PillButton>
       }
     >
       {notice}
       <div className={styles.memberHeader}>
-        <p className={styles.small}>Picks submitted · {gameLabel(game)}</p>
+        <p className={styles.small}>
+          {copy.top} · {roundLabel(game)}
+          {gameLabel(game)}
+        </p>
         <Title>
-          {doneCount} of {members.length} picks are in
+          {doneCount} of {members.length} {copy.noun}
         </Title>
         <div className={styles.progressBlock}>
-          <ProgressBar value={doneCount} max={members.length} label="Picks submitted" />
-          <Subtitle>The search starts when everyone has picked.</Subtitle>
+          <ProgressBar value={doneCount} max={members.length} label={copy.progress} />
+          <Subtitle>{copy.next}</Subtitle>
         </div>
       </div>
 
@@ -53,11 +94,11 @@ export function WaitingScreen({
       </div>
       <ChipRow>
         {ordered.map((m) => (
-          <StatusChip key={m.id} name={m.name} done={done.has(m.id)} you={m.id === meId} />
+          <StatusChip key={m.id} name={m.name} done={done.has(m.id)} you={m.id === meId} pendingText={copy.pending} />
         ))}
       </ChipRow>
       <div className={styles.otherField}>
-        <Hint>Only who&apos;s done is shown. Nobody sees what anyone picked.</Hint>
+        <Hint>{copy.hint}</Hint>
       </div>
     </Screen>
   );

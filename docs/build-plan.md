@@ -229,6 +229,8 @@ Each milestone ends with something you can try on your phone. Search uses sample
     - Drag to rank, points, tie-breaks, round complete, 2–3 rounds with all-new options, final vote.
     - **Changing a ranking un-readies you** (same rule as picks, decided Nov 10, 2026): going back from Submit to change a ranking takes you out of "done" on the server until you submit again, so the round can't end while someone is still changing their ranking. Done in one locked database step, so a last submit and a change can't race.
 
+    - Built Nov 12, 2026 (migration `20261112000001_voting.sql`): rankings are checked in the database (exactly that round's options, each once); points, 1st-place counts and places are stored in `round_results`; only active members' submitted rankings count, and leaving or being removed can end a round. The host continues from Round complete (next round's search, or the final vote). Hold a row or grab its handle to drag; arrow keys work on the handle; tapping a row shows its card. Demo friends rank a few seconds after the host. Until milestone 7, the results stage shows the top 3 with points.
+
     - Test: a 2-round game with 3 people, including a forced tie.
     - **Pickle green outline** (decided Nov 11, 2026): the ranking list you're ordering (screens 13 and 15) uses the same green, \#4A7C44 (`--pickle`), for its outline, instead of black.
 
