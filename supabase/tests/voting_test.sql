@@ -131,4 +131,21 @@ begin
   perform public.submit_vote(v_game, v_host, 1::smallint, o);
   perform public.remove_member(v_lobby, v_host, v_a);
   perform pg_temp.check((select stage from public.games where id = v_game) = 'results', 'removing a stuck member ends the round');
+  -- Changing the criteria after round 2 finds nothing clears old rankings
+  r := public.create_lobby('VTXX26', 'Crit', 'dev-vc');
+  v_lobby := (r->>'lobby_id')::uuid; v_host := (r->>'member_id')::uuid;
+  v_a := (public.join_lobby('VTXX26', 'Ana', 'dev-vc-a')->>'member_id')::uuid;
+  v_game := (public.start_game(v_lobby, v_host, 'food', null, 5, 'all', 'either', 2::smallint, 40.0, -74.0, 'America/New_York')->>'game_id')::uuid;
+  o := pg_temp.fake_round(v_game, 1::smallint, 2);
+  perform public.submit_vote(v_game, v_host, 1::smallint, o);
+  perform public.submit_vote(v_game, v_a, 1::smallint, o);
+  perform public.continue_after_round(v_lobby, v_host);
+  update public.games set search = jsonb_build_object('round', 2, 'status', 'nothing_found') where id = v_game;
+  r := public.change_criteria(v_game, v_host, 'food', null, 10, 'all', 'either', 2::smallint, 40.0, -74.0, 'America/New_York');
+  perform pg_temp.check(r->>'status' = 'ok', 'host changes the criteria in round 2');
+  perform pg_temp.check(not exists (select 1 from public.votes where game_id = v_game), 'old rankings are cleared');
+  perform pg_temp.check(not exists (select 1 from public.round_results where game_id = v_game), 'old round results are cleared');
+  o := pg_temp.fake_round(v_game, 1::smallint, 2);
+  perform pg_temp.check(public.submit_vote(v_game, v_host, 1::smallint, o)->>'stage' = 'cards_and_voting',
+                        'the new round 1 waits for everyone again');
 end $$;

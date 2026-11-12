@@ -18,6 +18,33 @@ const SCROLL_SLOP_PX = 8;
 const ROW_GAP_PX = 12;
 
 /** A drag in progress. `slot` is one row's height plus the gap, measured at the start. */
+const DRAFT_PREFIX = "pickle:rank:";
+
+/** The order this phone was arranging before a reload, if it still fits. */
+function loadDraft(key: string): string[] | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const list: unknown = JSON.parse(window.localStorage.getItem(key) ?? "null");
+    return Array.isArray(list) && list.every((id) => typeof id === "string") ? list : null;
+  } catch {
+    return null;
+  }
+}
+
+/** Remembers the order being arranged; keeps only this vote's draft. */
+function saveDraft(key: string, order: string[]) {
+  try {
+    const store = window.localStorage;
+    for (let i = store.length - 1; i >= 0; i--) {
+      const k = store.key(i);
+      if (k && k.startsWith(DRAFT_PREFIX) && k !== key) store.removeItem(k);
+    }
+    store.setItem(key, JSON.stringify(order));
+  } catch {
+    // Storage blocked: the ranking still works, it just isn't kept on reload.
+  }
+}
+
 type Drag = { from: number; startY: number; dy: number; middles: number[]; slot: number; to: number; pointerId: number };
 
 function Thumb({ option }: { option: OptionView }) {
@@ -66,7 +93,17 @@ export function RankScreen({
   notice?: React.ReactNode;
 }) {
   const byId = useMemo(() => new Map(options.map((o) => [o.id, o])), [options]);
-  const [order, setOrder] = useState(() => initialOrder(options.map((o) => o.id), saved));
+  const draftKey = `${DRAFT_PREFIX}${game.id}:${final ? 0 : game.currentRound}`;
+  // A submitted ranking (when changing it) wins, then an unsent draft from before a reload.
+  const [order, setOrderState] = useState(() => {
+    const ids = options.map((o) => o.id);
+    const fromSaved = initialOrder(ids, saved);
+    return saved ? fromSaved : initialOrder(ids, loadDraft(draftKey));
+  });
+  const setOrder = (next: string[]) => {
+    setOrderState(next);
+    saveDraft(draftKey, next);
+  };
   const [drag, setDrag] = useState<Drag | null>(null);
   const [announce, setAnnounce] = useState("");
   const [submitting, setSubmitting] = useState(false);

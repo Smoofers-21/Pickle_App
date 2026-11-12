@@ -48,7 +48,6 @@ export function RoundCompleteScreen({
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const last = game.currentRound >= game.roundsTotal;
-  const finalists = game.roundsTotal * 2;
 
   async function next() {
     setBusy(true);
@@ -97,7 +96,7 @@ export function RoundCompleteScreen({
         </p>
         <p>
           {last
-            ? `Final vote: rank the top ${finalists} from every round.`
+            ? "Final vote: rank the options that moved on from every round."
             : `Round ${game.currentRound + 1} of ${game.roundsTotal}: same criteria, all-new options.`}
         </p>
       </div>

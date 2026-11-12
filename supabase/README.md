@@ -18,6 +18,7 @@ Supabase dashboard → **SQL Editor** → **New query** → paste the whole file
 | `20261111000002_search.sql` | 4 | Search: time zone and progress on games, card details on options, the daily API budget and call log (`api_usage`), and the functions to claim, save and finish a search, change the criteria and end a game |
 | `20261111000003_fence_search_workers.sql` | 4 security review | Token-based search ownership, guarded credit reservation and consistent lobby/game lock order (security review, Codex) |
 | `20261112000001_voting.sql` | 6 | Rankings (`votes.ready`, submit / change), points and places in `round_results` with tie-breaks, round complete, next round and final vote; leaving or removal can end a round. Applied to hosted Supabase Nov 12, 2026 (grants, advisor, audit and function hashes checked) |
+| `20261112000002_change_criteria_clears_votes.sql` | 6 review | Changing the criteria (which restarts at round 1) also deletes earlier rankings and round results, so old "done" rankings can't count in the new round. Not yet applied |
 
 Apply `20261111000003_fence_search_workers.sql` before deploying this branch.
 It replaces the search worker RPC signatures and reloads PostgREST's schema
