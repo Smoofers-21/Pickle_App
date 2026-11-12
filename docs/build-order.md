@@ -39,7 +39,7 @@ This file sets the order to build Pickle in. It follows the 9 milestones in [bui
 
 - **Nov 11, 2026: Pickle green accent.** The owner wants the app to match the logo: selected Yes / No pills (milestone 5, screen 08) and the outline of the ranking being ordered (milestone 6, screens 13 and 15) use the logo wordmark's green, \#2F5E36. Everything else stays black and white. See Colors in the product spec.
 - **Nov 12, 2026: more Pickle green, lighter.** The owner widened the accent and asked for a lighter shade: \#4A7C44 (the lightest green that keeps white text readable, 4.9:1) for the selected pills (Yes / No picks, setup options), the host's member chip, the share buttons, the done chips on the waiting screen, the check marks on the searching screen, the card progress bars, the Go vote button (filling from grey to green as cards are seen), the outline and text of the home screen's Food / Bars / Events pills, and the outline of the ranking you're ordering (screens 13 and 15). Other main buttons stay black.
-- **Nov 12, 2026: wording.** The picks are labelled "Not my ideal place" (the required No) and "I’d like to go" (the optional Yes); the home slogan is "Pickle together. Go together."; the ranking screens say "Put your favorite first: everyone's ranking counts toward the result." (owner, with Codex's suggestion).
+- **Nov 12, 2026: wording.** The picks are labelled "Not my ideal place" ("Not my ideal event" for events; the required No) and "I’d like to go" (the optional Yes); the home slogan is "Pickle together. Go together."; the ranking screens say "Put your favorite first: everyone's ranking counts toward the result." (owner, with Codex's suggestion).
 
 ## How each milestone runs
 

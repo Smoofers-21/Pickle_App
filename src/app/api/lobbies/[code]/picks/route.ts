@@ -1,5 +1,5 @@
 import { after } from "next/server";
-import { cleanOther, findTag, type Category } from "@/lib/game/tags";
+import { cleanOther, findTag, pickLabels, type Category } from "@/lib/game/tags";
 import { isValidCode } from "@/lib/lobby-rules";
 import { fail, ok, route, tooMany } from "@/lib/server/api";
 import { findActiveMember, findGame } from "@/lib/server/lobby";
@@ -32,12 +32,13 @@ export const POST = route(async ({ request, body, device, params }) => {
   const game = await findGame(found.lobby.current_game_id);
   if (!game) return fail(404, "not_found", "There's no game to pick for.");
 
+  const labels = pickLabels(game.category);
   const no = readSide(body.no, game.category);
-  if (!no) return fail(400, "bad_picks", "Pick one for “Not my ideal place”.");
+  if (!no) return fail(400, "bad_picks", `Pick one for “${labels.no}”.`);
   const yes = body.yes == null ? null : readSide(body.yes, game.category);
-  if (body.yes != null && !yes) return fail(400, "bad_picks", "Your “I’d like to go” pick isn't one of the options.");
+  if (body.yes != null && !yes) return fail(400, "bad_picks", `Your “${labels.yes}” pick isn't one of the options.`);
   if (yes && yes.tag !== "other" && yes.tag === no.tag) {
-    return fail(400, "bad_picks", "“Not my ideal place” and “I’d like to go” can't be the same.");
+    return fail(400, "bad_picks", `“${labels.no}” and “${labels.yes}” can't be the same.`);
   }
 
   const { data, error } = await db().rpc("submit_picks", {

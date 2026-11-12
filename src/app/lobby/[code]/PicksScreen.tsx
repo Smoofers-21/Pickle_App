@@ -15,7 +15,7 @@ import {
   Title,
 } from "@/components/ui";
 import { post } from "@/lib/client-api";
-import { cleanOther, OTHER_MAX, TAGS } from "@/lib/game/tags";
+import { cleanOther, OTHER_MAX, pickLabels, TAGS } from "@/lib/game/tags";
 import type { GameInfo, PickSide } from "@/lib/lobby-types";
 import styles from "../../flow.module.css";
 import { gameLabel } from "./gameLabel";
@@ -71,7 +71,8 @@ function TagPicker({
   );
 }
 
-// Screen 08: one required No ("Not my ideal place") and an optional Yes ("I’d like to go").
+// Screen 08: one required No ("Not my ideal place", or "event" for events)
+// and an optional Yes ("I’d like to go"); see pickLabels.
 export function PicksScreen({
   code,
   game,
@@ -84,6 +85,7 @@ export function PicksScreen({
   onSubmitted: () => void;
 }) {
   const tags = TAGS[game.category];
+  const labels = pickLabels(game.category);
   const [no, setNo] = useState<Choice>(fromSide(initial?.no));
   const [yes, setYes] = useState<Choice>(fromSide(initial?.yes));
   const [busy, setBusy] = useState(false);
@@ -114,7 +116,7 @@ export function PicksScreen({
           arrow
           onClick={submit}
           disabled={!noValid || !yesValid || busy}
-          disabledReason={busy ? undefined : !noValid ? "Pick one for “Not my ideal place”" : !yesValid ? "Type your “I’d like to go”, or unselect Other" : undefined}
+          disabledReason={busy ? undefined : !noValid ? `Pick one for “${labels.no}”` : !yesValid ? `Type your “${labels.yes}”, or unselect Other` : undefined}
         >
           {busy ? "Sending…" : initial ? "Update picks" : "Submit picks"}
         </MainButton>
@@ -130,12 +132,12 @@ export function PicksScreen({
         </Subtitle>
       </div>
 
-      <SectionTitle aside="Required">Not my ideal place</SectionTitle>
+      <SectionTitle aside="Required">{labels.no}</SectionTitle>
       <TagPicker id="no-other" choice={no} onChange={setNo} blockedTag={blockForNo} tags={tags} />
 
       <Divider />
 
-      <SectionTitle aside="Optional">I’d like to go</SectionTitle>
+      <SectionTitle aside="Optional">{labels.yes}</SectionTitle>
       <TagPicker id="yes-other" choice={yes} onChange={setYes} blockedTag={blockForYes} tags={tags} />
 
       {error && (
