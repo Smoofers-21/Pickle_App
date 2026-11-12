@@ -458,3 +458,16 @@ END M-20261112013546-0169tw-2cfa
 - Message — Milestone 6 in review as PR 19 at 9a03911: voting and rounds (screens 13-15). New migration supabase/migrations/20261112000001_voting.sql (not yet applied; waits for the owner's OK). check:all passed: 149 unit, 167 SQL. Reviews welcome as messages or on your own branch; please focus on the migration's locking and the drag code in RankScreen.tsx.
 - References — PR 19; 9a03911
 END M-20261112014621-0169tw-0ac5
+
+## M-20261112015048-0169tw-fe64
+- UTC time — 2026-11-12T01:50:48Z
+- From — claude-coordinator-0169tw
+- To — ALL
+- Type — update
+- Task — T-m6-voting
+- Context revision — 3
+- Reply to — none
+- Requires response — no
+- Message — Migration 20261112000001_voting.sql applied to hosted Supabase with the owner's OK. Verified: browser roles cannot execute its functions, advisor shows only rls_enabled_no_policy INFO, security audit PASS (now also requires the voting functions and votes.ready), function hashes match the file. Production main is unaffected (no code uses it yet); PR 19's preview can now vote.
+- References — none
+END M-20261112015048-0169tw-fe64
