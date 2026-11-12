@@ -74,8 +74,11 @@ export function memberPicks(rows: PickRow[], activeMembers?: ReadonlySet<string>
   const out: MemberPicks[] = [];
   for (const r of rows) {
     if (activeMembers && !activeMembers.has(r.member_id)) continue;
-    const no = r.ready ? pickValue(r.no_tag, r.no_other) : null;
-    if (no) out.push({ no, yes: pickValue(r.yes_tag, r.yes_other) });
+    // A member may leave either pick empty; one with neither moves no scores.
+    if (!r.ready) continue;
+    const no = pickValue(r.no_tag, r.no_other);
+    const yes = pickValue(r.yes_tag, r.yes_other);
+    if (no || yes) out.push({ no, yes });
   }
   return out;
 }

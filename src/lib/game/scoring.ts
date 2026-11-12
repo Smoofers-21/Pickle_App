@@ -11,7 +11,8 @@ import { findTag, type Category, type TagDef } from "./tags";
 
 /** One Yes or No: a preset tag, or the free-text "+ Other". */
 export type PickValue = { tag: string } | { other: string };
-export type MemberPicks = { no: PickValue; yes?: PickValue | null };
+/** One member's picks. Both are optional (decided Nov 12, 2026). */
+export type MemberPicks = { no?: PickValue | null; yes?: PickValue | null };
 
 /** A tag (or "other" text) in the combined pool, with how many members chose it. */
 export type PoolEntry = { key: string; tag?: TagDef; other?: string; count: number };
@@ -46,7 +47,7 @@ export function combinePicks(category: Category, picks: MemberPicks[]): Pool {
   };
 
   for (const p of picks) {
-    add(no, p.no);
+    if (p.no) add(no, p.no);
     if (p.yes) add(yes, p.yes);
   }
 

@@ -49,6 +49,8 @@ export function WaitingScreen({
   changing,
   notice,
   kind = "picks",
+  onRemove,
+  isOffline,
 }: {
   game: GameInfo;
   members: LobbyMember[];
@@ -59,6 +61,10 @@ export function WaitingScreen({
   changing?: boolean;
   notice?: React.ReactNode;
   kind?: keyof typeof COPY;
+  /** Host only: remove someone who isn't done (stuck or disconnected). */
+  onRemove?: (member: LobbyMember) => void;
+  /** Whether a member's phone has dropped off (shown as "offline"). */
+  isOffline?: (id: string) => boolean;
 }) {
   const copy = COPY[kind];
   const done = new Set(picksDone);
@@ -94,11 +100,22 @@ export function WaitingScreen({
       </div>
       <ChipRow>
         {ordered.map((m) => (
-          <StatusChip key={m.id} name={m.name} done={done.has(m.id)} you={m.id === meId} pendingText={copy.pending} />
+          <StatusChip
+            key={m.id}
+            name={m.name}
+            done={done.has(m.id)}
+            you={m.id === meId}
+            pendingText={isOffline?.(m.id) ? "offline" : copy.pending}
+            onClick={onRemove && !done.has(m.id) && m.id !== meId ? () => onRemove(m) : undefined}
+            label={`Remove ${m.name}, who isn't done yet`}
+          />
         ))}
       </ChipRow>
       <div className={styles.otherField}>
         <Hint>{copy.hint}</Hint>
+        {onRemove && members.some((m) => !done.has(m.id) && m.id !== meId) && (
+          <Hint>Someone stuck or offline? Tap their name to remove them so the group can finish.</Hint>
+        )}
       </div>
     </Screen>
   );

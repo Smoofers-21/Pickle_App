@@ -238,6 +238,8 @@ export function LobbyView() {
             members={members}
             meId={me.id}
             picksDone={picksDone}
+            onRemove={me.isHost ? setToRemove : undefined}
+            isOffline={isOffline}
             changing={changingPicks}
             onChange={async () => {
               // Un-ready on the server first, so the search waits for us.
@@ -295,6 +297,8 @@ export function LobbyView() {
             members={members}
             meId={me.id}
             picksDone={votesDone}
+            onRemove={me.isHost ? setToRemove : undefined}
+            isOffline={isOffline}
             changing={changingVote}
             onChange={async () => {
               // Un-ready on the server first, so the round waits for us.

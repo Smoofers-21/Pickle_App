@@ -244,4 +244,12 @@ describe("memberPicks", () => {
     ];
     expect(memberPicks(rows)).toEqual([{ no: { tag: "seafood" }, yes: { other: "Ramen" } }]);
   });
+
+  it("keeps a Yes without a No, and skips members who picked neither", () => {
+    const rows = [
+      { ...pick("seafood"), no_tag: null, yes_tag: "italian" },
+      { ...pick("bbq"), no_tag: null },
+    ];
+    expect(memberPicks(rows)).toEqual([{ no: null, yes: { tag: "italian" } }]);
+  });
 });

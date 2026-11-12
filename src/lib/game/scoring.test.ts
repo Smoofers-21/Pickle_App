@@ -55,6 +55,12 @@ describe("combinePicks", () => {
     ]);
   });
 
+  it("accepts members who skip the No, or both picks", () => {
+    const pool = combinePicks("food", [{ yes: { tag: "italian" } }, { no: null, yes: null }, {}]);
+    expect(pool.yes).toMatchObject([{ key: "tag:italian", count: 1 }]);
+    expect(pool.no).toEqual([]);
+  });
+
   it("drops a tag that is one member's Yes and another's No (cancel-out)", () => {
     const pool = combinePicks("events", [
       { no: { tag: "country" }, yes: { tag: "pop" } },

@@ -127,3 +127,23 @@ begin
 exception when insufficient_privilege then raise notice 'ok - anon cannot call unready_picks';
 end $$;
 reset role;
+
+do $$
+declare
+  r jsonb;
+  v_lobby uuid; v_host uuid; v_a uuid; v_game uuid;
+begin
+  -- Both picks are optional (Nov 12, 2026)
+  r := public.create_lobby('PKFR23', 'Free', 'dev-pk');
+  v_lobby := (r->>'lobby_id')::uuid; v_host := (r->>'member_id')::uuid;
+  v_a := (public.join_lobby('PKFR23', 'Ana', 'dev-pk-a')->>'member_id')::uuid;
+  v_game := (public.start_game(v_lobby, v_host, 'food', null, 5, 'all', 'either', 1::smallint, 40.0, -74.0)->>'game_id')::uuid;
+  perform pg_temp.check(public.submit_picks(v_game, v_host, null, null, null, null)->>'status' = 'ok', 'a member can submit no picks at all');
+  perform pg_temp.check(public.submit_picks(v_game, v_a, null, null, 'italian', null)->>'stage' = 'searching', 'a Yes without a No counts as done');
+  begin
+    insert into public.picks (game_id, member_id, no_tag, no_other) values (v_game, gen_random_uuid(), null, 'stray');
+    raise exception 'FAILED: other text without an other No was accepted';
+  exception when check_violation or foreign_key_violation then
+    raise notice 'ok - other text needs an other No';
+  end;
+end $$;

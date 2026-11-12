@@ -37,7 +37,7 @@ export type GameRow = {
 };
 export type PickRow = {
   member_id: string;
-  no_tag: string;
+  no_tag: string | null;
   no_other: string | null;
   yes_tag: string | null;
   yes_other: string | null;
@@ -311,7 +311,7 @@ export async function lobbyState(code: string, deviceHash: string): Promise<Lobb
     picksDone: picks.filter((p) => p.ready).map((p) => p.member_id),
     myPicks: mine
       ? {
-          no: side(mine.no_tag, mine.no_other),
+          no: mine.no_tag ? side(mine.no_tag, mine.no_other) : null,
           yes: mine.yes_tag ? side(mine.yes_tag, mine.yes_other) : null,
           ready: mine.ready,
         }
