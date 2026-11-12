@@ -219,7 +219,7 @@ export function RankScreen({
       <p className={styles.top}>{top}</p>
       <div className={styles.head}>
         <Title>{final ? "Rank the finalists" : "Rank your choices"}</Title>
-        <Subtitle>Hold and drag to reorder. 1st is your favorite. Tap one to see its card again.</Subtitle>
+        <Subtitle>Put your favorite first: everyone&apos;s ranking counts toward the result. Hold and drag to reorder, or tap one to see its card again.</Subtitle>
       </div>
 
       <ol className={styles.list} aria-label="Your ranking">

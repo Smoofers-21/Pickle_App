@@ -33,11 +33,11 @@ export const POST = route(async ({ request, body, device, params }) => {
   if (!game) return fail(404, "not_found", "There's no game to pick for.");
 
   const no = readSide(body.no, game.category);
-  if (!no) return fail(400, "bad_picks", "Pick one No preference.");
+  if (!no) return fail(400, "bad_picks", "Pick one for “Not my ideal place”.");
   const yes = body.yes == null ? null : readSide(body.yes, game.category);
-  if (body.yes != null && !yes) return fail(400, "bad_picks", "That Yes isn't one of the options.");
+  if (body.yes != null && !yes) return fail(400, "bad_picks", "Your “I’d like to go” pick isn't one of the options.");
   if (yes && yes.tag !== "other" && yes.tag === no.tag) {
-    return fail(400, "bad_picks", "Your Yes and No can't be the same.");
+    return fail(400, "bad_picks", "“Not my ideal place” and “I’d like to go” can't be the same.");
   }
 
   const { data, error } = await db().rpc("submit_picks", {

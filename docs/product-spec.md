@@ -63,7 +63,7 @@ Food and bars skip places that OpenStreetMap lists as closed right now; places w
 
 ## Yes / No picks
 
-Each member must pick one No preference and may also pick one Yes preference. "Required" describes submitting a No, not a guarantee that matching options will be excluded. Picks come from preset tags for the chosen category, with an optional "other" field. Picks are anonymous; the group only sees the combined pool.
+Each member must pick one No preference and may also pick one Yes preference. On screen they are labelled **"Not my ideal place"** (Required) and **"I’d like to go"** (Optional) (decided Nov 12, 2026). "Required" describes submitting a No, not a guarantee that matching options will be excluded. Picks come from preset tags for the chosen category, with an optional "other" field. Picks are anonymous; the group only sees the combined pool.
 
 **Rules**
 

@@ -187,7 +187,7 @@ export function SetupScreen({ code, onBack, change }: { code: string; onBack: ()
           </ChipRow>
           <Hint>With 2 or 3 rounds, each round&apos;s top 2 go to a final vote.</Hint>
           {change && setup.category !== change.category && (
-            <Hint>A new category means everyone picks their Yes and No again.</Hint>
+            <Hint>A new category means everyone makes their picks again.</Hint>
           )}
         </div>
 
