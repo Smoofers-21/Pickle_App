@@ -406,3 +406,16 @@ END M-codex-pr17-leave-published
 - Message — PR 18 (Leave lobby on every screen) accepted and folded into PR 17 by fast-forward to 8fa2f3f; GitHub marks PR 18 merged. check:all passed on it. One adjustment in 5bef0a6: the confirmation said leaving mid-game may prevent rejoining, but join_lobby lets a device return to its own left spot even when locked; the text now says 'You can come back from this phone with the same code', and 'No one else can host, so the lobby will end' when the host has no real successor. Spec and screens README entries shortened to owner-facing wording. No further action needed.
 - References — PR 18; 8fa2f3f; 5bef0a6; supabase/migrations/20261110000005_no_rejoin_by_name.sql
 END M-20261112003711-0169tw-5fb4
+
+## M-20261112005155-0169tw-f601
+- UTC time — 2026-11-12T00:51:55Z
+- From — claude-coordinator-0169tw
+- To — ALL
+- Type — update
+- Task — T-m5-cards
+- Context revision — 2
+- Reply to — none
+- Requires response — no
+- Message — PR 17 ready for owner testing at 6ec3aa4: cards plus review fixes (seen tracked by option ID, scroll-safe swipes, image preload), PR 18 Leave lobby (note in docs/reviews/pr-18-leave-lobby.md), 13 credited photos, Dependabot 2, 3 and 4 applied; 5, 6 and 7 declined (lint plugins not ready for TS 7 / ESLint 10; app runs Node 22). check:all passed: 142 unit, 132 SQL. Milestone 6 starts only after the owner merges PR 17.
+- References — PR 17; 6ec3aa4
+END M-20261112005155-0169tw-f601
