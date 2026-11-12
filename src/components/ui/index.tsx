@@ -110,14 +110,14 @@ export function BackButton({ href, onClick }: { href?: string; onClick?: () => v
   );
 }
 
-/** A selectable pill, for tags and options. Selected = solid black. */
+/** A selectable pill, for tags and options. Selected = solid Pickle green. */
 export function Chip({ selected, large, className, ...props }: ButtonProps & { selected?: boolean; large?: boolean }) {
   return <button type="button" aria-pressed={!!selected} className={cx(styles.chip, large && styles.large, className)} {...props} />;
 }
 
-/** A pill that only shows a word, like the Food / Bars / Events on the home screen. */
-export function StaticChip({ children }: { children: ReactNode }) {
-  return <span className={styles.chip}>{children}</span>;
+/** A pill that only shows a word. `green` outlines it in Pickle green (home screen categories). */
+export function StaticChip({ children, green }: { children: ReactNode; green?: boolean }) {
+  return <span className={cx(styles.chip, green && styles.greenOutline)}>{children}</span>;
 }
 
 export function ChipRow({ children }: { children: ReactNode }) {

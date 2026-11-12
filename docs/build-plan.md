@@ -219,8 +219,10 @@ Each milestone ends with something you can try on your phone. Search uses sample
 
     - Card with the cuisine image (labelled "Illustrative photo") or the event's Ticketmaster image, name, cuisine or type, distance, address, "Open now" when known, and a link (the place's website or a map link; the ticket page for events); arrows and swiping; Go vote unlocks after every card is seen. Cards with place data show "Powered by Geoapify · © OpenStreetMap contributors". The cuisine image library and its credits file are added here.
 
+    - Built Nov 11, 2026: each phone remembers which cards it has seen this round (browser storage, so a reload keeps progress). Places without a website get a map search link built from their public name and address. Until milestone 6, Go vote opens a "Ranking is next" placeholder with Go to choices.
+
     - Test: try to vote before seeing all cards.
-    - **Pickle green** (decided Nov 11, 2026): change the selected Yes and No pills on the picks screen (08) from black to the logo's green, \#2F5E36, as a `--pickle` color in the design kit. White text on it passes contrast (about 8:1). The cards themselves stay black and white.
+    - **Pickle green** (decided Nov 11, widened Nov 12, 2026): a `--pickle` color in the design kit, \#4A7C44 (lighter than the first choice, \#2F5E36; white text on it is 4.9:1). Used for the selected pills (Yes / No picks, setup options), the host's member chip, the share buttons, the done chips on the waiting screen, the check marks on the searching screen, the card progress bars, the Go vote button (filling from grey to green as cards are seen), the outline and text of the home screen's Food / Bars / Events pills, and the outline of the ranking you're ordering (screens 13 and 15). The cards themselves stay black and white.
 
 6.  **Voting and rounds** (screens 13–15)
 
@@ -228,7 +230,7 @@ Each milestone ends with something you can try on your phone. Search uses sample
     - **Changing a ranking un-readies you** (same rule as picks, decided Nov 10, 2026): going back from Submit to change a ranking takes you out of "done" on the server until you submit again, so the round can't end while someone is still changing their ranking. Done in one locked database step, so a last submit and a change can't race.
 
     - Test: a 2-round game with 3 people, including a forced tie.
-    - **Pickle green outline** (decided Nov 11, 2026): the ranking list you're ordering (screens 13 and 15) uses the same green, \#2F5E36 (`--pickle`), for its outline, instead of black.
+    - **Pickle green outline** (decided Nov 11, 2026): the ranking list you're ordering (screens 13 and 15) uses the same green, \#4A7C44 (`--pickle`), for its outline, instead of black.
 
 7.  **Results and replay** (screens 16–17)
 

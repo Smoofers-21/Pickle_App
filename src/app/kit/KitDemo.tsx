@@ -3,6 +3,7 @@
 import { useState } from "react";
 import {
   Chip,
+  StaticChip,
   ChipRow,
   CodeCard,
   ErrorCard,
@@ -63,6 +64,11 @@ export function KitDemo() {
             </Chip>
           ))}
           <Chip disabled>Picked by no one</Chip>
+        </ChipRow>
+        <ChipRow>
+          <StaticChip green>Food</StaticChip>
+          <StaticChip green>Bars</StaticChip>
+          <StaticChip green>Events</StaticChip>
         </ChipRow>
       </section>
 

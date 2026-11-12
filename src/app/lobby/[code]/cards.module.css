@@ -1,0 +1,256 @@
+/* Screen 12: option cards. Black and white; see Design in docs/product-spec.md. */
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.round {
+  margin: 0;
+  font-weight: 700;
+  font-size: 17px;
+}
+
+.position {
+  margin: 0;
+  color: var(--ink-2);
+  font-size: 16px;
+  white-space: nowrap;
+}
+
+.small {
+  margin: 0;
+  color: var(--ink-2);
+  font-size: 15px;
+}
+
+.progress {
+  margin: 12px 0 14px;
+  display: flex;
+  gap: 6px;
+}
+
+.bar,
+.barSeen {
+  flex: 1;
+  height: 5px;
+  border-radius: 999px;
+  background: var(--fill-2);
+}
+
+.barSeen {
+  background: var(--pickle);
+}
+
+.bar,
+.barSeen {
+  transition: background-color 0.3s ease;
+}
+
+.swipeArea {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  touch-action: pan-y;
+}
+
+.card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  border: var(--border);
+  border-radius: 28px;
+  overflow: hidden;
+  background: var(--paper);
+}
+
+.photo {
+  position: relative;
+  aspect-ratio: 3 / 2;
+  background: var(--fill-2);
+}
+
+.photoImg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.photoTag {
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  padding: 5px 11px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--ink);
+  font-size: 13px;
+}
+
+.photoTagRight {
+  left: auto;
+  right: 12px;
+}
+
+.body {
+  padding: 20px 20px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.name {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+}
+
+.venue {
+  margin: -6px 0 0;
+  color: var(--ink-2);
+  font-size: 16px;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.facts {
+  list-style: none;
+  margin: 2px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 16px;
+}
+
+.facts li {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.factIcon {
+  width: 20px;
+  height: 20px;
+  flex: none;
+  margin-top: 1px;
+}
+
+.address {
+  color: var(--ink-2);
+  overflow-wrap: anywhere;
+}
+
+.link {
+  align-self: flex-start;
+  min-height: 44px;
+  padding: 0 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: var(--border);
+  border-radius: 999px;
+  color: var(--ink);
+  font-weight: 600;
+  font-size: 16px;
+  text-decoration: none;
+}
+
+.linkIcon {
+  width: 16px;
+  height: 16px;
+}
+
+.attribution {
+  margin: 2px 0 0;
+  color: var(--ink-2);
+  font-size: 12px;
+}
+
+.attribution a {
+  color: inherit;
+}
+
+/* Footer: back, Go vote, next */
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.voteButton {
+  flex: 1;
+  min-width: 0;
+  padding: 0 12px;
+}
+
+/* Go vote fills from grey to Pickle green as cards are seen (--vote-mix is
+   the share seen), and is fully green once it unlocks. Dark text keeps at
+   least 5:1 contrast on every in-between shade; white on the final green. */
+.nav .voteButton {
+  transition:
+    background-color 0.35s ease,
+    color 0.35s ease;
+}
+
+.nav .voteButton:disabled {
+  background: var(--fill-2);
+  background: color-mix(in srgb, var(--pickle) var(--vote-mix, 0%), var(--fill-2));
+}
+
+.nav .voteButton.voteDark:disabled {
+  color: var(--ink);
+}
+
+.nav .voteButton:not(:disabled) {
+  background: var(--pickle);
+}
+
+.navButton {
+  width: 56px;
+  height: 56px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border: var(--border);
+  border-radius: 50%;
+  background: var(--paper);
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.navButton svg {
+  width: 22px;
+  height: 22px;
+}
+
+.navNext {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.navButton:disabled {
+  border-color: var(--fill-2);
+  background: var(--paper);
+  color: #b5b5b5;
+  cursor: not-allowed;
+}
+
+.navNext:disabled {
+  background: var(--fill-2);
+}
+
+.comingSoon {
+  margin-top: 28px;
+}

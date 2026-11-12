@@ -28,7 +28,9 @@ const contentSecurityPolicy = [
   // site are blocked.
   `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
   "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data: blob:",
+  // Event images come only from Ticketmaster's image host (the parser keeps
+  // https *.ticketm.net URLs only); restaurant photos are local.
+  "img-src 'self' data: blob: https://*.ticketm.net",
   "font-src 'self'",
   `connect-src 'self' ${supabaseOrigins.join(" ")}`.trim(),
   "manifest-src 'self'",

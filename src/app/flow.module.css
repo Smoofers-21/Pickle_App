@@ -1,5 +1,29 @@
 /* Layout shared by the join, create and lobby screens. */
 
+/* Active lobby screens share one normal-flow exit row. The child Screen
+   fills the remaining viewport instead of adding a second 100dvh. */
+.lobbyFrame {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+.lobbyActions {
+  width: 100%;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  display: flex;
+  justify-content: flex-end;
+  padding: calc(env(safe-area-inset-top) + 20px) max(var(--gutter), env(safe-area-inset-right)) 0 max(var(--gutter), env(safe-area-inset-left));
+}
+
+.lobbyFrame > main {
+  width: 100%;
+  min-height: 0;
+  flex: 1;
+  padding-top: 12px;
+}
+
 .topBar {
   display: flex;
   align-items: center;
@@ -172,42 +196,4 @@
 .summary dd {
   margin: 0;
   text-align: right;
-}
-
-/* Options list shown between the search and the cards (until milestone 5) */
-.optionList {
-  list-style: none;
-  margin: 22px 0 12px;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.optionItem {
-  padding: 16px 20px;
-  border: var(--border);
-  border-radius: 24px;
-}
-
-.optionName {
-  margin: 0 0 4px;
-  font-size: 18px;
-  font-weight: 700;
-}
-
-.optionMeta {
-  margin: 0;
-  color: var(--ink-2);
-  font-size: 15px;
-}
-
-.attribution {
-  margin: 4px 0 0;
-  color: var(--ink-2);
-  font-size: 13px;
-}
-
-.attribution a {
-  color: inherit;
 }

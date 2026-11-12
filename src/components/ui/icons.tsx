@@ -82,3 +82,31 @@ export const SearchMinusIcon = (p: IconProps) => (
     <path d="M7.5 10.5h6" />
   </svg>
 );
+
+export const ChevronRight = (p: IconProps) => (
+  <svg {...base} {...p}>
+    <path d="m9 6 6 6-6 6" />
+  </svg>
+);
+
+export const PinIcon = (p: IconProps) => (
+  <svg {...base} {...p}>
+    <path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11Z" />
+    <circle cx="12" cy="10" r="2.4" />
+  </svg>
+);
+
+export const ClockIcon = (p: IconProps) => (
+  <svg {...base} {...p}>
+    <circle cx="12" cy="12" r="9" />
+    <path d="M12 7v5l3 2" />
+  </svg>
+);
+
+export const ExternalIcon = (p: IconProps) => (
+  <svg {...base} {...p}>
+    <path d="M14 5h5v5" />
+    <path d="M19 5 11 13" />
+    <path d="M18 14v4a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h4" />
+  </svg>
+);

@@ -118,7 +118,7 @@ export function searchInfo(game: GameRow): SearchInfo | null {
   };
 }
 
-/** The options shown in this round, for the cards (milestone 5) and the list in between. */
+/** The options shown in this round, for the option cards (screen 12). Never their scores. */
 export async function roundOptions(game: GameRow): Promise<OptionView[]> {
   const { data, error } = await db()
     .from("options")

@@ -7,6 +7,11 @@
   --fill: #f2f2f2; /* light fills */
   --fill-2: #ededed; /* disabled fills */
   --paper: #ffffff;
+  /* The one accent: Pickle green, a lighter green matching the logo (white
+     text on it is 4.9:1). Used for selected pills, the host chip, the share
+     button, done chips, the home screen's category pills and the outline of
+     the ranking being ordered. See Colors in docs/product-spec.md. */
+  --pickle: #4a7c44;
 
   --font: "Outfit Variable", system-ui, -apple-system, "Segoe UI", sans-serif;
 

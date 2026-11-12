@@ -40,6 +40,8 @@ One lobby code lasts for one full game (all rounds plus the final vote). When th
 
 - **Host leaves:** the host role passes automatically to the member who joined earliest.
 
+- **Leaving:** every member has an outlined **Leave lobby** button at the top-right of the lobby and every game screen. It asks for confirmation first; Cancel keeps your place (including cards already seen). If leaving fails, the box offers a retry. A phone can come back to its own spot with the same code, even mid-game; if the host leaves and no other real member is left, the lobby ends.
+
 - **Removing members:** the host can remove a member from the lobby.
 
 - **Timers:** none. The group waits until everyone has finished each step.
@@ -224,7 +226,7 @@ The app uses a black-and-white "2F" style: pill-shaped chips and secondary butto
 
 | Element           | Decision                                                                                                                                                                                                        |
 |-------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Colors            | Black \#111111 on white; grey \#555555 for secondary text; light grey \#EDEDED / \#F2F2F2 for fills and disabled states. One accent: **Pickle green \#2F5E36**, the green of the logo's "Pickle" wordmark, used only for the selected Yes / No pills (screen 08) and the outline of the ranking you're ordering (screens 13 and 15). Everything else stays black and white; the logo keeps its own greens. |
+| Colors            | Black \#111111 on white; grey \#555555 for secondary text; light grey \#EDEDED / \#F2F2F2 for fills and disabled states. One accent: **Pickle green \#4A7C44**, a lighter green matching the logo (white text on it is 4.9:1, above the 4.5:1 readability minimum), used for the selected pills (Yes / No picks, setup options), the host's member chip, the share buttons, the done chips on the waiting screen, the check marks on the searching screen, the card progress bars, the Go vote button (filling from grey to green as cards are seen), the outline and text of the home screen's Food / Bars / Events pills, and the outline of the ranking you're ordering (screens 13 and 15). Everything else, including the other main buttons, stays black and white; the logo keeps its own greens. |
 | Logo              | The owner's Pickle logo file, used exactly as supplied (see Logo below)                                                                                                                                         |
 | Font              | Outfit (Google Fonts): 700 for headings, 600 for buttons and names, 400 for body                                                                                                                                |
 | Main button       | Black, 22px corners, soft shadow, one per screen, pinned near the bottom                                                                                                                                        |
