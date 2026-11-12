@@ -110,30 +110,14 @@ export function BackButton({ href, onClick }: { href?: string; onClick?: () => v
   );
 }
 
-/** Chip colors: selected is solid black, or Pickle green for Yes / No picks. */
-export type ChipTone = "ink" | "pickle";
-
-/** A selectable pill, for tags and options. Selected = solid black (or green with `tone="pickle"`). */
-export function Chip({
-  selected,
-  large,
-  tone = "ink",
-  className,
-  ...props
-}: ButtonProps & { selected?: boolean; large?: boolean; tone?: ChipTone }) {
-  return (
-    <button
-      type="button"
-      aria-pressed={!!selected}
-      className={cx(styles.chip, large && styles.large, tone === "pickle" && styles.pickle, className)}
-      {...props}
-    />
-  );
+/** A selectable pill, for tags and options. Selected = solid Pickle green. */
+export function Chip({ selected, large, className, ...props }: ButtonProps & { selected?: boolean; large?: boolean }) {
+  return <button type="button" aria-pressed={!!selected} className={cx(styles.chip, large && styles.large, className)} {...props} />;
 }
 
-/** A pill that only shows a word, like the Food / Bars / Events on the home screen. */
-export function StaticChip({ children }: { children: ReactNode }) {
-  return <span className={styles.chip}>{children}</span>;
+/** A pill that only shows a word. `green` outlines it in Pickle green (home screen categories). */
+export function StaticChip({ children, green }: { children: ReactNode; green?: boolean }) {
+  return <span className={cx(styles.chip, green && styles.greenOutline)}>{children}</span>;
 }
 
 export function ChipRow({ children }: { children: ReactNode }) {
@@ -247,14 +231,9 @@ export function Divider() {
 }
 
 /** The dashed "+ Other" chip. */
-export function OtherChip({ selected, tone = "ink", ...props }: ButtonProps & { selected?: boolean; tone?: ChipTone }) {
+export function OtherChip({ selected, ...props }: ButtonProps & { selected?: boolean }) {
   return (
-    <button
-      type="button"
-      aria-pressed={!!selected}
-      className={cx(styles.chip, styles.large, styles.otherChip, tone === "pickle" && styles.pickle)}
-      {...props}
-    >
+    <button type="button" aria-pressed={!!selected} className={cx(styles.chip, styles.large, styles.otherChip)} {...props}>
       + Other
     </button>
   );

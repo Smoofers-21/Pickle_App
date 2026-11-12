@@ -155,7 +155,7 @@
   width: 48px;
   height: 48px;
   border: none;
-  background: var(--ink);
+  background: var(--pickle);
   color: var(--paper);
 }
 
@@ -191,8 +191,16 @@ span.chip {
 }
 
 .chip[aria-pressed="true"] {
-  background: var(--ink);
+  border-color: var(--pickle);
+  background: var(--pickle);
   color: var(--paper);
+}
+
+/* Display-only pills in Pickle green (home screen categories). */
+span.chip.greenOutline {
+  border-color: var(--pickle);
+  color: var(--pickle);
+  font-weight: 600;
 }
 
 .chip:disabled {
@@ -333,8 +341,8 @@ button.memberChip {
 }
 
 .memberChip.host {
-  background: var(--ink);
-  border-color: var(--ink);
+  background: var(--pickle);
+  border-color: var(--pickle);
   color: var(--paper);
 }
 
@@ -561,20 +569,13 @@ button.memberChip {
 
 .otherChip[aria-pressed="true"] {
   border-style: solid;
-  border-color: var(--ink);
-  background: var(--ink);
+  border-color: var(--pickle);
+  background: var(--pickle);
   color: var(--paper);
 }
 
 .chip:disabled.otherChip {
   border-style: dashed;
-}
-
-/* Selected Yes / No pills on the picks screen use Pickle green. */
-.chip.pickle[aria-pressed="true"] {
-  border-color: var(--pickle);
-  background: var(--pickle);
-  color: var(--paper);
 }
 
 /* ---------- Select (outlined pill with a chevron) ---------- */
@@ -637,6 +638,10 @@ button.memberChip {
   font-size: 16px;
 }
 
+.statusChip:not(.pending) {
+  border-color: var(--pickle);
+}
+
 .statusChip.you {
   border-width: 3px;
   padding: 3px 16px 3px 3px;
@@ -654,7 +659,7 @@ button.memberChip {
   display: grid;
   place-items: center;
   border-radius: 50%;
-  background: var(--ink);
+  background: var(--pickle);
   color: var(--paper);
 }
 

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import {
   Chip,
+  StaticChip,
   ChipRow,
   CodeCard,
   ErrorCard,
@@ -64,12 +65,10 @@ export function KitDemo() {
           ))}
           <Chip disabled>Picked by no one</Chip>
         </ChipRow>
-        <p>Yes / No picks (screen 08) use Pickle green when selected:</p>
         <ChipRow>
-          <Chip tone="pickle" selected>
-            Italian
-          </Chip>
-          <Chip tone="pickle">Mexican</Chip>
+          <StaticChip green>Food</StaticChip>
+          <StaticChip green>Bars</StaticChip>
+          <StaticChip green>Events</StaticChip>
         </ChipRow>
       </section>
 

@@ -28,9 +28,9 @@ export default function Home() {
         />
         <h1 className={styles.headline}>Decide where to go, together.</h1>
         <ChipRow>
-          <StaticChip>Food</StaticChip>
-          <StaticChip>Bars</StaticChip>
-          <StaticChip>Events</StaticChip>
+          <StaticChip green>Food</StaticChip>
+          <StaticChip green>Bars</StaticChip>
+          <StaticChip green>Events</StaticChip>
         </ChipRow>
         <p className={styles.body}>Join with a code, pick one Yes and one No, then rank the options as a group.</p>
       </div>
