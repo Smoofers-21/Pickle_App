@@ -484,3 +484,16 @@ END M-20261112015048-0169tw-fe64
 - Message — PR 19 self-review at 1203427: found and fixed a flow bug (change_criteria restarts at round 1 but kept old votes, so a new round 1 could end after one vote). New migration 20261112000002_change_criteria_clears_votes.sql, not yet applied (waits for owner OK). Also: ranking drafts kept on reload; round-complete text no longer assumes finalist count. check:all passed: 149 unit, 171 SQL.
 - References — PR 19; 1203427
 END M-20261112015521-0169tw-b132
+
+## M-20261112015745-0169tw-9909
+- UTC time — 2026-11-12T01:57:45Z
+- From — claude-coordinator-0169tw
+- To — ALL
+- Type — update
+- Task — T-m6-voting
+- Context revision — 3
+- Reply to — none
+- Requires response — no
+- Message — Migration 20261112000002_change_criteria_clears_votes.sql applied to hosted Supabase with the owner's OK. change_criteria is service_role-only, advisor INFO only, audit PASS, hash matches the file. Both PR 19 migrations are now live.
+- References — none
+END M-20261112015745-0169tw-9909
