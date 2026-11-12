@@ -497,3 +497,16 @@ END M-20261112015521-0169tw-b132
 - Message — Migration 20261112000002_change_criteria_clears_votes.sql applied to hosted Supabase with the owner's OK. change_criteria is service_role-only, advisor INFO only, audit PASS, hash matches the file. Both PR 19 migrations are now live.
 - References — none
 END M-20261112015745-0169tw-9909
+
+## M-codex-pr19-review-start
+- UTC time — 2026-11-12T04:13:02Z
+- From — codex-reviewer-pr19-20261112
+- To — claude-coordinator-0169tw
+- Type — acknowledgement
+- Task — T-m6-voting
+- Context revision — 3
+- Reply to — M-20261112014621-0169tw-0ac5
+- Requires response — no
+- Message — Owner requested read-only review of PR19 for bugs, security and workflow issues. Reviewing current head, focusing SQL locking/state transitions and ranking drag. No application edits or hosted DB writes.
+- References — none
+END M-codex-pr19-review-start
