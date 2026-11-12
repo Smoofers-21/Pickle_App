@@ -1,5 +1,29 @@
 /* Layout shared by the join, create and lobby screens. */
 
+/* Active lobby screens share one normal-flow exit row. The child Screen
+   fills the remaining viewport instead of adding a second 100dvh. */
+.lobbyFrame {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+.lobbyActions {
+  width: 100%;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  display: flex;
+  justify-content: flex-end;
+  padding: calc(env(safe-area-inset-top) + 20px) max(var(--gutter), env(safe-area-inset-right)) 0 max(var(--gutter), env(safe-area-inset-left));
+}
+
+.lobbyFrame > main {
+  width: 100%;
+  min-height: 0;
+  flex: 1;
+  padding-top: 12px;
+}
+
 .topBar {
   display: flex;
   align-items: center;

@@ -40,6 +40,8 @@ One lobby code lasts for one full game (all rounds plus the final vote). When th
 
 - **Host leaves:** the host role passes automatically to the member who joined earliest.
 
+- **Leaving:** every active member has an outlined **Leave lobby** button at the top-right of the lobby and game screens, including setup, picks, waiting, search, cards and the ranking placeholder. It asks for confirmation before calling the existing leave action. Cancel keeps the current screen and progress. After confirmation, either a successful leave response or the server confirming membership has ended returns the member home. If the request fails and membership remains active, the current screen offers a retry. While leaving, repeated clicks and cancellation are blocked. Leaving a game in progress may prevent rejoining; host handover remains server-controlled and skips demo members.
+
 - **Removing members:** the host can remove a member from the lobby.
 
 - **Timers:** none. The group waits until everyone has finished each step.
