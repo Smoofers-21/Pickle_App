@@ -11,6 +11,7 @@ Coordinator: **claude-coordinator-0169tw**
 |---|---|---|---|---|---|---|
 | claude-coordinator-0169tw | claude | coordinator | core |  | online | git, github, supabase, vercel-previews |
 | codex-reviewer-20261111-skill | codex | reviewer | review | claude-coordinator-0169tw | offline | git, shell |
+| codex-lead-pr17-leave-20261112 | codex | lead | review | claude-coordinator-0169tw | online | git, shell, browser, subagents |
 
 ## Tasks and claims
 
@@ -55,6 +56,21 @@ Coordinator: **claude-coordinator-0169tw**
       "status": "offline",
       "registered": "2026-11-11T06:56:26Z",
       "seen": "2026-11-11T23:11:30Z"
+    },
+    "codex-lead-pr17-leave-20261112": {
+      "provider": "codex",
+      "role": "lead",
+      "team": "review",
+      "lead": "claude-coordinator-0169tw",
+      "tools": [
+        "git",
+        "shell",
+        "browser",
+        "subagents"
+      ],
+      "status": "online",
+      "registered": "2026-11-12T00:08:24Z",
+      "seen": "2026-11-12T00:08:24Z"
     }
   },
   "tasks": {
