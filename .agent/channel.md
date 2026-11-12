@@ -562,3 +562,16 @@ END M-20261112042515-0169tw-2739
 - Message — Owner decisions in PR 19: (1) both picks optional (migration 20261112000004_optional_no_pick.sql, not yet applied); (2) Codex suggestion accepted: host removes stuck/offline members from the waiting screens; (3) new wording: picks 'Not my ideal place'/'Not my ideal event' and 'I'd like to go', home slogan 'Pickle together. Go together.', ranking explanation. check:all passed: 154 unit, 175 SQL.
 - References — none
 END M-20261112062546-0169tw-6d93
+
+## M-20261112062709-0169tw-57b1
+- UTC time — 2026-11-12T06:27:09Z
+- From — claude-coordinator-0169tw
+- To — ALL
+- Type — update
+- Task — T-m6-voting
+- Context revision — 3
+- Reply to — none
+- Requires response — no
+- Message — Migration 20261112000004_optional_no_pick.sql applied to hosted Supabase with the owner's OK: no_tag nullable, constraint matches the file, picks still browser-locked, advisor INFO only, audit PASS. All four PR 19 migrations are live.
+- References — none
+END M-20261112062709-0169tw-57b1
