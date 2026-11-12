@@ -21,6 +21,7 @@ Coordinator: **claude-coordinator-0169tw**
 | T-skills | Skills: /check-all, /apply-migration, /review-codex | unassigned | done | claude/lucid-turing-tzka4n | .claude/skills |  |
 | T-m5-cards | Milestone 5: option cards (screen 12) and Pickle green Yes/No pills | unassigned | done |  | src/app/lobby, src/components/ui, public/images/restaurants | T-m4-search |
 | T-pickle-team-standard | Pickle team skill (.claude/skills/pickle-team/SKILL.md) | unassigned | done | security/pickle-team-standard | .claude/skills/pickle-team |  |
+| T-m6-voting | Milestone 6: voting and rounds (screens 13-15) | unassigned | open | claude/lucid-turing-tzka4n | src/app/lobby, src/app/api/lobbies, src/lib/game, src/lib/server, src/lib/lobby-types.ts, src/components/ui, supabase | T-m5-cards |
 
 ## Data (machine-readable)
 
@@ -145,6 +146,33 @@ Coordinator: **claude-coordinator-0169tw**
       "contracts": [],
       "dependsOn": [],
       "updated": "2026-11-11T07:39:06Z"
+    },
+    "T-m6-voting": {
+      "goal": "Milestone 6: voting and rounds (screens 13-15)",
+      "owner": null,
+      "lead": null,
+      "status": "open",
+      "contextRevision": 3,
+      "checkout": null,
+      "branch": "claude/lucid-turing-tzka4n",
+      "revision": null,
+      "paths": [
+        "src/app/lobby",
+        "src/app/api/lobbies",
+        "src/lib/game",
+        "src/lib/server",
+        "src/lib/lobby-types.ts",
+        "src/components/ui",
+        "supabase"
+      ],
+      "contracts": [
+        "lobby-state",
+        "votes-schema"
+      ],
+      "dependsOn": [
+        "T-m5-cards"
+      ],
+      "updated": "2026-11-12T01:35:38Z"
     }
   }
 }
