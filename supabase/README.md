@@ -19,7 +19,7 @@ Supabase dashboard → **SQL Editor** → **New query** → paste the whole file
 | `20261111000003_fence_search_workers.sql` | 4 security review | Token-based search ownership, guarded credit reservation and consistent lobby/game lock order (security review, Codex) |
 | `20261112000001_voting.sql` | 6 | Rankings (`votes.ready`, submit / change), points and places in `round_results` with tie-breaks, round complete, next round and final vote; leaving or removal can end a round. Applied to hosted Supabase Nov 12, 2026 (grants, advisor, audit and function hashes checked) |
 | `20261112000002_change_criteria_clears_votes.sql` | 6 review | Changing the criteria (which restarts at round 1) also deletes earlier rankings and round results, so old "done" rankings can't count in the new round. Applied to hosted Supabase Nov 12, 2026 (grants, advisor, audit and function hash checked) |
-| `20261112000003_shared_result_places.sql` | 6 review (Codex) | In the deciding vote, options still tied on points and 1st places share their place (1st, 1st, 3rd); random tie-breaks stay only for choosing each round's top 2. Not yet applied |
+| `20261112000003_shared_result_places.sql` | 6 review (Codex) | In the deciding vote, options still tied on points and 1st places share their place (1st, 1st, 3rd); random tie-breaks stay only for choosing each round's top 2. Applied to hosted Supabase Nov 12, 2026 (grants, advisor, audit and function hash checked) |
 
 Apply `20261111000003_fence_search_workers.sql` before deploying this branch.
 It replaces the search worker RPC signatures and reloads PostgREST's schema
