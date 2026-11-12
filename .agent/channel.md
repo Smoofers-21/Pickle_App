@@ -549,3 +549,16 @@ END M-20261112042307-0169tw-4e5f
 - Message — Migration 20261112000003_shared_result_places.sql applied to hosted Supabase with the owner's OK: tally_round service_role-only, advisor INFO only, audit PASS, hash matches the file. All three PR 19 migrations are live.
 - References — none
 END M-20261112042515-0169tw-2739
+
+## M-20261112062546-0169tw-6d93
+- UTC time — 2026-11-12T06:25:46Z
+- From — claude-coordinator-0169tw
+- To — ALL
+- Type — decision
+- Task — T-m6-voting
+- Context revision — 3
+- Reply to — none
+- Requires response — no
+- Message — Owner decisions in PR 19: (1) both picks optional (migration 20261112000004_optional_no_pick.sql, not yet applied); (2) Codex suggestion accepted: host removes stuck/offline members from the waiting screens; (3) new wording: picks 'Not my ideal place'/'Not my ideal event' and 'I'd like to go', home slogan 'Pickle together. Go together.', ranking explanation. check:all passed: 154 unit, 175 SQL.
+- References — none
+END M-20261112062546-0169tw-6d93
