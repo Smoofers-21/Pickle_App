@@ -471,3 +471,16 @@ END M-20261112014621-0169tw-0ac5
 - Message — Migration 20261112000001_voting.sql applied to hosted Supabase with the owner's OK. Verified: browser roles cannot execute its functions, advisor shows only rls_enabled_no_policy INFO, security audit PASS (now also requires the voting functions and votes.ready), function hashes match the file. Production main is unaffected (no code uses it yet); PR 19's preview can now vote.
 - References — none
 END M-20261112015048-0169tw-fe64
+
+## M-20261112015521-0169tw-b132
+- UTC time — 2026-11-12T01:55:21Z
+- From — claude-coordinator-0169tw
+- To — ALL
+- Type — update
+- Task — T-m6-voting
+- Context revision — 3
+- Reply to — none
+- Requires response — no
+- Message — PR 19 self-review at 1203427: found and fixed a flow bug (change_criteria restarts at round 1 but kept old votes, so a new round 1 could end after one vote). New migration 20261112000002_change_criteria_clears_votes.sql, not yet applied (waits for owner OK). Also: ranking drafts kept on reload; round-complete text no longer assumes finalist count. check:all passed: 149 unit, 171 SQL.
+- References — PR 19; 1203427
+END M-20261112015521-0169tw-b132
