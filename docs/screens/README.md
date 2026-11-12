@@ -36,7 +36,7 @@ These images are the approved designs for every screen in the Pickle MVP, shown 
 
 When an image and the product spec differ, follow the spec. Known differences:
 
-- **Active lobby screens:** the outlined **Leave lobby** control is consistently at the top-right, including setup, game screens and the ranking placeholder. It replaces the older host-header/member-footer exits shown in the mockups. The confirmation stays available across game stages; Cancel makes no request, failed requests while membership remains active offer a retry, and a pending leave cannot be submitted twice. Server-confirmed membership removal after submission completes the leave even if its original response was lost.
+- **Leave lobby (all lobby and game screens):** an outlined **Leave lobby** button at the top-right, replacing the host-header and member-footer exits in the images (added Nov 12, 2026).
 - **Picks (08):** use "No preference" (Required) and "Yes preference" (Optional) instead of the original "Guaranteed" labels. A No lowers a matching option's score rather than vetoing it; a Yes boosts it rather than guaranteeing a match. Conflicting preferences cancel out as defined in the product spec.
 - **Cards (12):** show one image, not three (no story bars): an illustrative cuisine photo from `public/images/restaurants/`, labelled "Illustrative photo", or the event's Ticketmaster image. "Open now" instead of hours, no rating, and "Powered by Geoapify · © OpenStreetMap contributors" under place data (decided Nov 10–11, 2026; see the spec).
 - **Cards (12) and results (16):** add the Geoapify / OpenStreetMap attribution whenever place data is shown. The images don't show it yet.

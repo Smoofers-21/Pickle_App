@@ -171,18 +171,22 @@ export function LobbyView() {
     </ChipRow>
   );
 
+  // Matches the server: the host role passes to the earliest real member
+  // (never a demo friend), the lobby ends when there is none, and a phone can
+  // always come back to its own spot, even after the game has started.
+  const rejoin = "You can come back from this phone with the same code.";
   const leaveBody = me.isHost
     ? nextHost
-      ? `${nextHost.name} is next in line to become the host. You'll return to the home screen.`
-      : "You'll return to the home screen. If no other member can host, the lobby will end."
-    : "You'll return to the home screen.";
+      ? `${nextHost.name} will become the host. ${rejoin}`
+      : "No one else can host, so the lobby will end."
+    : rejoin;
 
   const dialogs = (
     <>
       <ConfirmDialog
         open={confirmLeave}
         title="Leave this lobby?"
-        body={`${leaveBody} Leaving a game in progress may prevent you from rejoining.`}
+        body={leaveBody}
         confirmLabel={leaving ? "Leaving…" : "Leave lobby"}
         pending={leaving}
         error={leaveError ?? undefined}
