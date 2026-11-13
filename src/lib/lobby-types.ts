@@ -53,6 +53,10 @@ export type OptionView = {
   venue: string | null;
   startTime: string | null;
   source: "geoapify" | "ticketmaster";
+  /** Final vote: the round this finalist came from. */
+  fromRound?: number;
+  /** Results only: the place (1 = winner); tied options share one. Points are never sent. */
+  place?: number;
 };
 
 /** One side of a pick: a preset tag key, or "other" with typed text. */
@@ -72,11 +76,19 @@ export type LobbyState =
        * This phone's own picks, so they can be changed. `ready` is false
        * after "Change my picks" until they are submitted again.
        */
-      myPicks: { no: PickSide; yes: PickSide | null; ready: boolean } | null;
+      myPicks: { no: PickSide | null; yes: PickSide | null; ready: boolean } | null;
       /** Demo friends are still about to pick: check back soon. */
       demoPending: boolean;
-      /** The options shown in the current round (from milestone 4). */
+      /**
+       * Depends on the stage: the round's options (cards and voting), the
+       * round's top 2 (round complete), the finalists (final vote), or every
+       * option of the deciding round in order, with places (results).
+       */
       options: OptionView[];
+      /** Members whose ranking for the open vote is submitted. Never their rankings. */
+      votesDone: string[];
+      /** This phone's own ranking for the open vote; `ready` is false while changing it. */
+      myVote: { ranking: string[]; ready: boolean } | null;
     }
   | { status: "removed"; code: string }
   | { status: "not_member" }

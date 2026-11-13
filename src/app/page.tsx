@@ -26,13 +26,13 @@ export default function Home() {
           priority
           className={styles.logo}
         />
-        <h1 className={styles.headline}>Decide where to go, together.</h1>
+        <h1 className={styles.headline}>Pickle together. Go together.</h1>
         <ChipRow>
           <StaticChip green>Food</StaticChip>
           <StaticChip green>Bars</StaticChip>
           <StaticChip green>Events</StaticChip>
         </ChipRow>
-        <p className={styles.body}>Join with a code, pick one Yes and one No, then rank the options as a group.</p>
+        <p className={styles.body}>Join with a code, say what&apos;s not your ideal place and where you&apos;d like to go, then rank the options as a group.</p>
       </div>
     </Screen>
   );

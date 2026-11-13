@@ -15,7 +15,7 @@ import {
   Title,
 } from "@/components/ui";
 import { post } from "@/lib/client-api";
-import { cleanOther, OTHER_MAX, TAGS } from "@/lib/game/tags";
+import { cleanOther, OTHER_MAX, pickLabels, TAGS } from "@/lib/game/tags";
 import type { GameInfo, PickSide } from "@/lib/lobby-types";
 import styles from "../../flow.module.css";
 import { gameLabel } from "./gameLabel";
@@ -71,7 +71,8 @@ function TagPicker({
   );
 }
 
-// Screen 08: one required No preference and an optional Yes preference.
+// Screen 08: an optional No ("Not my ideal place", or "event" for events)
+// and an optional Yes ("I’d like to go"); see pickLabels.
 export function PicksScreen({
   code,
   game,
@@ -80,24 +81,26 @@ export function PicksScreen({
 }: {
   code: string;
   game: GameInfo;
-  initial: { no: PickSide; yes: PickSide | null } | null;
+  initial: { no: PickSide | null; yes: PickSide | null } | null;
   onSubmitted: () => void;
 }) {
   const tags = TAGS[game.category];
+  const labels = pickLabels(game.category);
   const [no, setNo] = useState<Choice>(fromSide(initial?.no));
   const [yes, setYes] = useState<Choice>(fromSide(initial?.yes));
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const sideValid = (c: Choice) => c.tag !== null && (c.tag !== "other" || cleanOther(c.other) !== null);
-  const noValid = sideValid(no);
+  // Both picks are optional; an "Other" pick needs its text.
+  const noValid = no.tag === null || sideValid(no);
   const yesValid = yes.tag === null || sideValid(yes);
 
   async function submit() {
     setBusy(true);
     setError(null);
     const side = (c: Choice) => (c.tag === "other" ? { tag: "other", other: c.other } : { tag: c.tag });
-    const res = await post(`/api/lobbies/${code}/picks`, { no: side(no), yes: yes.tag ? side(yes) : null });
+    const res = await post(`/api/lobbies/${code}/picks`, { no: no.tag ? side(no) : null, yes: yes.tag ? side(yes) : null });
     setBusy(false);
     if (res.ok) onSubmitted();
     else setError(res.message);
@@ -114,7 +117,7 @@ export function PicksScreen({
           arrow
           onClick={submit}
           disabled={!noValid || !yesValid || busy}
-          disabledReason={busy ? undefined : !noValid ? "Pick a No preference" : !yesValid ? "Type your Yes, or unselect Other" : undefined}
+          disabledReason={busy ? undefined : !noValid ? `Type your “${labels.no}”, or unselect Other` : !yesValid ? `Type your “${labels.yes}”, or unselect Other` : undefined}
         >
           {busy ? "Sending…" : initial ? "Update picks" : "Submit picks"}
         </MainButton>
@@ -126,16 +129,16 @@ export function PicksScreen({
         <Subtitle>
           {initial
             ? "You're not counted as done until you submit again. The search waits for you."
-            : "Anonymous. The group only sees the combined pool."}
+            : "Both are optional. Anonymous: the group only sees the combined pool."}
         </Subtitle>
       </div>
 
-      <SectionTitle aside="Required">No preference</SectionTitle>
+      <SectionTitle aside="Optional">{labels.no}</SectionTitle>
       <TagPicker id="no-other" choice={no} onChange={setNo} blockedTag={blockForNo} tags={tags} />
 
       <Divider />
 
-      <SectionTitle aside="Optional">Yes preference</SectionTitle>
+      <SectionTitle aside="Optional">{labels.yes}</SectionTitle>
       <TagPicker id="yes-other" choice={yes} onChange={setYes} blockedTag={blockForYes} tags={tags} />
 
       {error && (

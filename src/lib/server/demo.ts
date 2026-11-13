@@ -54,3 +54,49 @@ export async function runDemoPicks(
   }
   return { pending: picked < waiting.length, changed: picked > 0 };
 }
+
+/** A random order of the given IDs (Fisher-Yates with a secure random source). */
+function shuffled(ids: string[]): string[] {
+  const out = [...ids];
+  for (let i = out.length - 1; i > 0; i--) {
+    const j = randomInt(i + 1);
+    [out[i], out[j]] = [out[j], out[i]];
+  }
+  return out;
+}
+
+/**
+ * Lets demo friends rank the options a few seconds after the host submits,
+ * so one person can play a whole game. Same pacing as their picks.
+ */
+export async function runDemoVotes(
+  gameId: string,
+  round: number,
+  hostId: string | null,
+  members: LobbyMember[],
+  votes: { member_id: string; ready: boolean; submitted_at: string }[],
+  ballot: string[],
+): Promise<{ pending: boolean; changed: boolean }> {
+  const demo = members.filter((m) => m.isDemo);
+  const waiting = demo.filter((m) => !votes.some((v) => v.member_id === m.id && v.ready));
+  if (waiting.length === 0 || ballot.length === 0) return { pending: false, changed: false };
+
+  const hostVote = votes.find((v) => v.member_id === hostId && v.ready);
+  if (!hostVote) return { pending: false, changed: false }; // they wait for the host
+
+  const since = (Date.now() - new Date(hostVote.submitted_at).getTime()) / 1000;
+  let voted = 0;
+  for (const m of waiting) {
+    const delay = FIRST_DELAY_S + STAGGER_S * demo.indexOf(m);
+    if (since < delay) continue;
+    const { error } = await db().rpc("submit_vote", {
+      p_game_id: gameId,
+      p_member_id: m.id,
+      p_round: round,
+      p_ranking: shuffled(ballot),
+    });
+    if (error) throw error;
+    voted += 1;
+  }
+  return { pending: voted < waiting.length, changed: voted > 0 };
+}

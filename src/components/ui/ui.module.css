@@ -647,6 +647,13 @@ button.memberChip {
   padding: 3px 16px 3px 3px;
 }
 
+button.statusChip {
+  background: var(--paper);
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
 .statusChip.pending {
   border: 1.5px dashed #9a9a9a;
   color: var(--ink-2);

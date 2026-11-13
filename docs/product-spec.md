@@ -4,7 +4,7 @@ Nov 4, 2026 · @Santiago Perez Alferez
 
 ## Overview
 
-Pickle helps a group of up to 10 friends agree on a plan (a restaurant, bar or event) in a few minutes. Members join a lobby with a code, each submits one required No preference and an optional Yes preference, then everyone browses up to 6 matched options and ranks them. No preferences lower scores rather than vetoing an option; Yes preferences boost scores rather than guaranteeing a match. Conflicting Yes and No preferences cancel out as described below.
+Pickle helps a group of up to 10 friends agree on a plan (a restaurant, bar or event) in a few minutes. Members join a lobby with a code, each may submit a No preference and a Yes preference (both optional), then everyone browses up to 6 matched options and ranks them. No preferences lower scores rather than vetoing an option; Yes preferences boost scores rather than guaranteeing a match. Conflicting Yes and No preferences cancel out as described below.
 
 - **Platform:** mobile-first website (PWA), no install. Can be wrapped as a native app later.
 
@@ -42,7 +42,7 @@ One lobby code lasts for one full game (all rounds plus the final vote). When th
 
 - **Leaving:** every member has an outlined **Leave lobby** button at the top-right of the lobby and every game screen. It asks for confirmation first; Cancel keeps your place (including cards already seen). If leaving fails, the box offers a retry. A phone can come back to its own spot with the same code, even mid-game; if the host leaves and no other real member is left, the lobby ends.
 
-- **Removing members:** the host can remove a member from the lobby.
+- **Removing members:** the host can remove a member from the lobby. On the waiting screens (picks and rankings), the host can also tap anyone who isn't done, shown as "offline" when their phone has dropped, to remove them so the group can finish (decided Nov 12, 2026).
 
 - **Timers:** none. The group waits until everyone has finished each step.
 
@@ -63,7 +63,7 @@ Food and bars skip places that OpenStreetMap lists as closed right now; places w
 
 ## Yes / No picks
 
-Each member must pick one No preference and may also pick one Yes preference. "Required" describes submitting a No, not a guarantee that matching options will be excluded. Picks come from preset tags for the chosen category, with an optional "other" field. Picks are anonymous; the group only sees the combined pool.
+Each member may pick one No preference and one Yes preference; **both are optional** (decided Nov 12, 2026), and a member who picks neither simply doesn't move any scores. On screen they are labelled **"Not my ideal place"** (**"Not my ideal event"** in events games) and **"I’d like to go"** (decided Nov 12, 2026). A No lowers matching options' scores; it never excludes them. Picks come from preset tags for the chosen category, with an optional "other" field. Picks are anonymous; the group only sees the combined pool.
 
 **Rules**
 

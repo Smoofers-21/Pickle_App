@@ -4,7 +4,7 @@ import type { Candidate } from "@/lib/game/scoring";
 import type { GameInfo, LobbyState, OptionView, PickSide, SearchInfo } from "@/lib/lobby-types";
 import { isOpenNow } from "@/lib/places/opening-hours";
 import { MAX_MEMBERS } from "@/lib/lobby-rules";
-import { runDemoPicks } from "./demo";
+import { runDemoPicks, runDemoVotes } from "./demo";
 import { db } from "./supabase";
 
 export type LobbyRow = {
@@ -37,7 +37,7 @@ export type GameRow = {
 };
 export type PickRow = {
   member_id: string;
-  no_tag: string;
+  no_tag: string | null;
   no_other: string | null;
   yes_tag: string | null;
   yes_other: string | null;
@@ -118,39 +118,106 @@ export function searchInfo(game: GameRow): SearchInfo | null {
   };
 }
 
-/** The options shown in this round, for the option cards (screen 12). Never their scores. */
-export async function roundOptions(game: GameRow): Promise<OptionView[]> {
-  const { data, error } = await db()
-    .from("options")
-    .select("id, name, distance_mi, address, link, details, source, score")
-    .eq("game_id", game.id)
-    .eq("shown_in_round", game.current_round)
-    .order("score", { ascending: false });
-  if (error) throw error;
+type OptionRow = {
+  id: string;
+  name: string;
+  distance_mi: number | string;
+  address: string | null;
+  link: string | null;
+  details: unknown;
+  source: OptionView["source"];
+};
+
+const OPTION_COLUMNS = "id, name, distance_mi, address, link, details, source";
+
+/** What a phone may see of an option: never its score. */
+function toView(row: OptionRow, game: GameRow, now: Date): OptionView {
+  const c = (row.details ?? {}) as Partial<Candidate>;
+  const card = c.card ?? { kind: "" };
+  const isEvent = row.source === "ticketmaster";
+  const image = isEvent
+    ? card.imageUrl
+      ? { src: card.imageUrl, illustrative: false }
+      : null
+    : cuisineImage(card.imageKeys ?? [], game.category === "bars" ? "bars" : "food");
+  return {
+    id: row.id,
+    name: row.name,
+    kind: card.kind || (isEvent ? "Event" : game.category === "bars" ? "Bar" : "Restaurant"),
+    distanceMi: Number(row.distance_mi),
+    address: row.address ?? null,
+    link: row.link ?? null,
+    openNow: isEvent ? null : isOpenNow(card.hours, now, game.time_zone),
+    image,
+    venue: card.venue ?? null,
+    startTime: card.startTime ?? null,
+    source: row.source,
+  };
+}
+
+/** The round being voted on: the current round, 0 for the final, or null. */
+export function votingRound(game: GameRow): number | null {
+  if (game.stage === "cards_and_voting") return game.current_round;
+  if (game.stage === "final_vote") return 0;
+  return null;
+}
+
+/**
+ * The options a phone sees for the game's stage. Cards and voting: this
+ * round's options. Round complete: the round's top 2. Final vote: every
+ * round's top 2. Results: the deciding round in order, with places (ties
+ * share one). Point totals never leave the server.
+ */
+export async function stageOptions(game: GameRow): Promise<OptionView[]> {
   const now = new Date();
-  return (data ?? []).map((row) => {
-    const c = (row.details ?? {}) as Partial<Candidate>;
-    const card = c.card ?? { kind: "" };
-    const isEvent = row.source === "ticketmaster";
-    const image = isEvent
-      ? card.imageUrl
-        ? { src: card.imageUrl, illustrative: false }
-        : null
-      : cuisineImage(card.imageKeys ?? [], game.category === "bars" ? "bars" : "food");
-    return {
-      id: row.id as string,
-      name: row.name as string,
-      kind: card.kind || (isEvent ? "Event" : game.category === "bars" ? "Bar" : "Restaurant"),
-      distanceMi: Number(row.distance_mi),
-      address: (row.address as string | null) ?? null,
-      link: (row.link as string | null) ?? null,
-      openNow: isEvent ? null : isOpenNow(card.hours, now, game.time_zone),
-      image,
-      venue: card.venue ?? null,
-      startTime: card.startTime ?? null,
-      source: row.source as OptionView["source"],
-    };
+  if (game.stage === "cards_and_voting") {
+    const { data, error } = await db()
+      .from("options")
+      .select(OPTION_COLUMNS)
+      .eq("game_id", game.id)
+      .eq("shown_in_round", game.current_round)
+      .order("score", { ascending: false });
+    if (error) throw error;
+    return ((data ?? []) as OptionRow[]).map((row) => toView(row, game, now));
+  }
+  if (game.stage !== "round_complete" && game.stage !== "final_vote" && game.stage !== "results") return [];
+
+  let query = db().from("round_results").select("option_id, round_no, place").eq("game_id", game.id);
+  if (game.stage === "round_complete") query = query.eq("round_no", game.current_round).eq("advanced", true);
+  if (game.stage === "final_vote") query = query.gt("round_no", 0).eq("advanced", true);
+  if (game.stage === "results") query = query.eq("round_no", game.rounds_total > 1 ? 0 : 1);
+  const { data: results, error } = await query.order("round_no").order("place");
+  if (error) throw error;
+  const rows = (results ?? []) as { option_id: string; round_no: number; place: number }[];
+  if (rows.length === 0) return [];
+
+  const { data, error: optionsError } = await db()
+    .from("options")
+    .select(OPTION_COLUMNS)
+    .eq("game_id", game.id)
+    .in("id", rows.map((r) => r.option_id));
+  if (optionsError) throw optionsError;
+  const byId = new Map(((data ?? []) as OptionRow[]).map((o) => [o.id, o]));
+  return rows.flatMap((r) => {
+    const row = byId.get(r.option_id);
+    if (!row) return [];
+    const view = toView(row, game, now);
+    if (game.stage === "final_vote") view.fromRound = r.round_no;
+    if (game.stage === "results") view.place = r.place;
+    return [view];
   });
+}
+
+export type VoteRow = { member_id: string; ranking: string[]; ready: boolean; submitted_at: string };
+
+export async function findVotes(gameId: string, round: number): Promise<VoteRow[]> {
+  const { data, error } = await db()
+    .from("votes")
+    .select("member_id, ranking, ready, submitted_at")
+    .eq("game_id", gameId)
+    .eq("round_no", round);
+  if (error) throw error;
+  return (data ?? []) as VoteRow[];
 }
 
 /**
@@ -200,8 +267,28 @@ export async function lobbyState(code: string, deviceHash: string): Promise<Lobb
     }
   }
   const mine = picks.find((p) => p.member_id === me.id);
-  const options =
-    currentGame && currentGame.stage !== "picks" && currentGame.stage !== "searching" ? await roundOptions(currentGame) : [];
+
+  let round = currentGame ? votingRound(currentGame) : null;
+  // Independent reads for this phone's request; run them together.
+  let [options, votes] = await Promise.all([
+    currentGame ? stageOptions(currentGame) : Promise.resolve([] as OptionView[]),
+    currentGame && round !== null ? findVotes(currentGame.id, round) : Promise.resolve([] as VoteRow[]),
+  ]);
+  if (currentGame && round !== null) {
+    if (lobby.is_demo) {
+      const demo = await runDemoVotes(currentGame.id, round, lobby.host_member_id, members, votes, options.map((o) => o.id));
+      demoPending = demoPending || demo.pending;
+      if (demo.changed) {
+        currentGame = (await findGame(currentGame.id)) ?? currentGame;
+        round = votingRound(currentGame);
+        [options, votes] = await Promise.all([
+          stageOptions(currentGame),
+          round === null ? Promise.resolve([]) : findVotes(currentGame.id, round),
+        ]);
+      }
+    }
+  }
+  const myVote = votes.find((v) => v.member_id === me.id);
 
   return {
     status: "ok",
@@ -226,12 +313,14 @@ export async function lobbyState(code: string, deviceHash: string): Promise<Lobb
     picksDone: picks.filter((p) => p.ready).map((p) => p.member_id),
     myPicks: mine
       ? {
-          no: side(mine.no_tag, mine.no_other),
+          no: mine.no_tag ? side(mine.no_tag, mine.no_other) : null,
           yes: mine.yes_tag ? side(mine.yes_tag, mine.yes_other) : null,
           ready: mine.ready,
         }
       : null,
     demoPending,
     options,
+    votesDone: votes.filter((v) => v.ready).map((v) => v.member_id),
+    myVote: myVote ? { ranking: myVote.ranking, ready: myVote.ready } : null,
   };
 }

@@ -74,8 +74,11 @@ export function memberPicks(rows: PickRow[], activeMembers?: ReadonlySet<string>
   const out: MemberPicks[] = [];
   for (const r of rows) {
     if (activeMembers && !activeMembers.has(r.member_id)) continue;
-    const no = r.ready ? pickValue(r.no_tag, r.no_other) : null;
-    if (no) out.push({ no, yes: pickValue(r.yes_tag, r.yes_other) });
+    // A member may leave either pick empty; one with neither moves no scores.
+    if (!r.ready) continue;
+    const no = pickValue(r.no_tag, r.no_other);
+    const yes = pickValue(r.yes_tag, r.yes_other);
+    if (no || yes) out.push({ no, yes });
   }
   return out;
 }
@@ -227,13 +230,16 @@ async function runSearch(gameId: string): Promise<void> {
       status.matches = result.options.length;
       await progress(gameId, status, claim.claim_token);
     }
-    // Still short: widen by 5 mi once. A full first page means more places
-    // exist nearby, so fetch the next page instead of the same nearest ones.
+    // Still short: widen by 5 mi once. Places already found may qualify at
+    // the wider radius (distance points are relative to it), so rescore them
+    // first and fetch only if the round is still short. A full first page
+    // means more places exist nearby, so fetch the next page, not the same.
     if (result.needsWidening && !failure && searches < MAX_SEARCHES_PER_ROUND) {
       radiusMi += WIDEN_BY_MI;
       status.widened_to = radiusMi;
       await progress(gameId, status, claim.claim_token);
-      await search({ lat: claim.lat, lng: claim.lng, radiusMi, offset: more ? fetched : 0 });
+      result = choose();
+      if (result.needsWidening) await search({ lat: claim.lat, lng: claim.lng, radiusMi, offset: more ? fetched : 0 });
     }
     status.matches = result.options.length;
 

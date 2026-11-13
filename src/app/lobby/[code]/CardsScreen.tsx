@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { ChevronLeft, ChevronRight, ClockIcon, ExternalIcon, MainButton, PillButton, PinIcon, Screen, StaticChip, Subtitle, Title } from "@/components/ui";
+import { ChevronLeft, ChevronRight, ClockIcon, ExternalIcon, MainButton, PinIcon, Screen, StaticChip, Subtitle, Title } from "@/components/ui";
 import { cardLink, kindChips, milesLabel, parseSeen, SEEN_PREFIX, seenStorageKey, swipeDirection, timeLabel, voteGate } from "@/lib/game/cards";
 import type { GameInfo, OptionView } from "@/lib/lobby-types";
 import styles from "./cards.module.css";
@@ -47,7 +47,7 @@ export function PlacesAttribution({ className }: { className?: string }) {
   );
 }
 
-function OptionCard({ option, demo }: { option: OptionView; demo: boolean }) {
+export function OptionCard({ option, demo }: { option: OptionView; demo: boolean }) {
   const link = cardLink(option);
   const start = timeLabel(option.startTime);
   const chips = kindChips(option.kind);
@@ -100,24 +100,15 @@ function OptionCard({ option, demo }: { option: OptionView; demo: boolean }) {
   );
 }
 
-/** Placeholder for the ranking screen (13), which arrives in milestone 6. */
-function VoteComingSoon({ game, onBack }: { game: GameInfo; onBack: () => void }) {
-  return (
-    <Screen footer={<PillButton full onClick={onBack}>Go to choices</PillButton>}>
-      <p className={styles.small}>{gameLabel(game)}</p>
-      <div className={styles.comingSoon}>
-        <Title>Ranking is next</Title>
-        <Subtitle>You&apos;ve seen every option. Dragging them into order arrives in the next update.</Subtitle>
-      </div>
-    </Screen>
-  );
-}
-
 type CardsProps = {
   game: GameInfo;
   options: OptionView[];
   notice?: React.ReactNode;
   demo?: boolean;
+  /** Open on the ranking screen (this phone already started ranking). */
+  startVoting?: boolean;
+  /** The ranking screen (13); `back` returns to the cards ("Go to choices"). */
+  renderVote: (back: () => void) => React.ReactNode;
 };
 
 // Screen 12: one option card at a time. Arrows and swipes only move between
@@ -133,6 +124,8 @@ function CardDeck({
   options,
   notice,
   demo = false,
+  startVoting = false,
+  renderVote,
   storageKey: key,
 }: CardsProps & { storageKey: string }) {
   const total = options.length;
@@ -140,7 +133,7 @@ function CardDeck({
   const [index, setIndex] = useState(0);
   // Restores what this phone already saw this round (after a reload).
   const [seen, setSeen] = useState<Set<string>>(() => loadSeen(key, ids));
-  const [voting, setVoting] = useState(false);
+  const [voting, setVoting] = useState(startVoting);
   const touchStart = useRef<{ x: number; y: number } | null>(null);
 
   const go = useCallback(
@@ -177,7 +170,7 @@ function CardDeck({
     return () => window.removeEventListener("keydown", onKey);
   }, [go, index, voting]);
 
-  if (voting) return <VoteComingSoon game={game} onBack={() => setVoting(false)} />;
+  if (voting) return <>{renderVote(() => setVoting(false))}</>;
 
   if (total === 0) {
     return (

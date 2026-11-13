@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { post } from "@/lib/client-api";
+import { serialRefresh, type SerialRefresh } from "@/lib/serial-refresh";
 import type { LobbyState } from "@/lib/lobby-types";
 import { realtimeClient } from "@/lib/realtime";
 
@@ -55,23 +56,42 @@ export function useLobby(code: string) {
   }, []);
 
   const lastRefreshAt = useRef(0);
+  const refresher = useRef<SerialRefresh | null>(null);
 
-  const refresh = useCallback(async () => {
-    lastRefreshAt.current = Date.now();
-    const res = await post<LobbyState>(`/api/lobbies/${code}/state`);
-    if (!res.ok) {
-      setError(res.message);
-      return;
-    }
-    setError(null);
-    const prev = stateRef.current;
-    if (prev) {
-      const change = describeChange(prev, res.data);
-      if (change) showNotice(change);
-    }
-    stateRef.current = res.data;
-    setState(res.data);
+  // Reloads run one at a time (heartbeat, pings, coming back online or to
+  // the tab can overlap), so an older response can't replace a newer one.
+  // A new one is made per lobby code and stopped when the page leaves it.
+  useEffect(() => {
+    const r = serialRefresh(
+      () => {
+        lastRefreshAt.current = Date.now();
+        return post<LobbyState>(`/api/lobbies/${code}/state`);
+      },
+      (res) => {
+        if (!res.ok) {
+          setError(res.message);
+          return;
+        }
+        setError(null);
+        const prev = stateRef.current;
+        if (prev) {
+          const change = describeChange(prev, res.data);
+          if (change) showNotice(change);
+        }
+        stateRef.current = res.data;
+        setState(res.data);
+      },
+    );
+    refresher.current = r;
+    return () => {
+      r.stop();
+      if (refresher.current === r) refresher.current = null;
+    };
   }, [code, showNotice]);
+
+  // Depends on the code so the effects below restart (and load) for a new lobby.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const refresh = useCallback(() => refresher.current?.run() ?? Promise.resolve(), [code]);
 
   // First load, heartbeat, and reload when the phone comes back.
   useEffect(() => {

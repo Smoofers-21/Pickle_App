@@ -269,9 +269,29 @@ export function ProgressBar({ value, max, label }: { value: number; max: number;
 }
 
 /** A member who is done (check mark) or still going (dashed). Screen 09. */
-export function StatusChip({ name, done, you, pendingText = "picking…" }: { name: string; done: boolean; you?: boolean; pendingText?: string }) {
+export function StatusChip({
+  name,
+  done,
+  you,
+  pendingText = "picking…",
+  onClick,
+  label,
+}: {
+  name: string;
+  done: boolean;
+  you?: boolean;
+  pendingText?: string;
+  /** Makes the chip a button (the host removing someone who's stuck). */
+  onClick?: () => void;
+  /** Accessible name when the chip is a button. */
+  label?: string;
+}) {
+  const Tag = onClick ? "button" : "span";
   return (
-    <span className={cx(styles.statusChip, you && done && styles.you, !done && styles.pending)}>
+    <Tag
+      {...(onClick ? { type: "button" as const, onClick, "aria-label": label } : {})}
+      className={cx(styles.statusChip, you && done && styles.you, !done && styles.pending)}
+    >
       {done ? (
         <span className={styles.checkCircle} aria-hidden="true">
           <CheckIcon />
@@ -284,7 +304,7 @@ export function StatusChip({ name, done, you, pendingText = "picking…" }: { na
         {you && " (you)"}
         {!done && ` · ${pendingText}`}
       </span>
-    </span>
+    </Tag>
   );
 }
 
