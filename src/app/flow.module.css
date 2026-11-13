@@ -17,6 +17,19 @@
   padding: calc(env(safe-area-inset-top) + 20px) max(var(--gutter), env(safe-area-inset-right)) 0 max(var(--gutter), env(safe-area-inset-left));
 }
 
+.changeLobby {
+  gap: 8px;
+}
+
+.changeLobby svg {
+  width: 20px;
+  height: 20px;
+}
+
+.movedCard {
+  margin-bottom: 20px;
+}
+
 .lobbyFrame > main {
   width: 100%;
   min-height: 0;

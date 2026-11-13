@@ -470,6 +470,28 @@ button.memberChip {
 
 /* ---------- Error card (screen 04) ---------- */
 
+.infoCard {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 18px 20px;
+  border-radius: 26px;
+  background: var(--fill);
+}
+
+.infoCard p {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+.infoIcon {
+  width: 24px;
+  height: 24px;
+  flex: none;
+  margin-top: 1px;
+}
+
 .errorCard {
   display: flex;
   align-items: flex-start;

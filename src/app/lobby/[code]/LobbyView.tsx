@@ -1,11 +1,12 @@
 "use client";
 
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import {
   ChipRow,
   CodeCard,
   ConfirmDialog,
+  InfoCard,
   Label,
   MainButton,
   MainLink,
@@ -14,6 +15,7 @@ import {
   PersonRemovedIcon,
   PillButton,
   PillLink,
+  RefreshIcon,
   Screen,
   ShareButton,
   SoftButton,
@@ -30,7 +32,8 @@ import { CardsScreen } from "./CardsScreen";
 import { NothingFoundScreen } from "./NothingFoundScreen";
 import { PicksScreen } from "./PicksScreen";
 import { RankScreen } from "./RankScreen";
-import { ResultsScreen, RoundCompleteScreen } from "./RoundCompleteScreen";
+import { ResultsScreen } from "./ResultsScreen";
+import { RoundCompleteScreen } from "./RoundCompleteScreen";
 import { SearchingScreen } from "./SearchingScreen";
 import { SetupScreen } from "./SetupScreen";
 import { useLobby } from "./useLobby";
@@ -38,13 +41,16 @@ import { WaitingScreen } from "./WaitingScreen";
 
 // Screens 05 (host), 06 (member), 07 (setup), 08 (picks), 09 (waiting for
 // picks), 10 (searching), 11 (nothing found), 12 (cards), 13 (rank), 14
-// (round complete), 15 (final vote), results until 16, 18 (host left notice)
-// and 19 (removed). Every active-member screen shares the top-right
-// Leave lobby button and its confirm dialog.
+// (round complete), 15 (final vote), 16 (results), 17 (new lobby after
+// Change lobby), 18 (host left notice) and 19 (removed). Every active-member
+// screen shares the top-right Leave lobby button and its confirm dialog,
+// except the host's results screen, which has Change lobby there instead.
 export function LobbyView() {
   const params = useParams<{ code: string }>();
   const code = cleanCodeInput(params.code ?? "");
   const router = useRouter();
+  // Arrived here by Change lobby (screen 17).
+  const moved = useSearchParams().get("moved") === "1";
   const { state, online, notice, dismissNotice, showNotice, error, leave, remove, refresh } = useLobby(code);
   const [confirmLeave, setConfirmLeave] = useState(false);
   const [leaving, setLeaving] = useState(false);
@@ -59,6 +65,9 @@ export function LobbyView() {
   const [changingVote, setChangingVote] = useState(false);
   const [addingDemo, setAddingDemo] = useState(false);
   const [changingCriteria, setChangingCriteria] = useState(false);
+  const [confirmChange, setConfirmChange] = useState(false);
+  const [changingLobby, setChangingLobby] = useState(false);
+  const [changeError, setChangeError] = useState<string | null>(null);
 
   // Activity can hide this page without destroying it. Invalidate any pending
   // leave so its late response cannot redirect a different visit or lobby.
@@ -75,6 +84,9 @@ export function LobbyView() {
       setToRemove(null);
       setSettingUp(false);
       setChangingCriteria(false);
+      setConfirmChange(false);
+      setChangingLobby(false);
+      setChangeError(null);
     };
   }, [code]);
 
@@ -95,6 +107,25 @@ export function LobbyView() {
     if (leaveIntent.current) finishLeaving(visit.current);
     else router.replace(`/join/${code}`);
   }, [state, code, router, finishLeaving]);
+
+  // The group moved to a new lobby: follow it.
+  useEffect(() => {
+    if (state?.status === "moved") router.replace(`/lobby/${state.code}?moved=1`);
+  }, [state, router]);
+
+  // "Everyone was moved here" is only for before the next game starts.
+  const hasGame = state?.status === "ok" && state.game !== null;
+  useEffect(() => {
+    if (moved && hasGame) router.replace(`/lobby/${code}`);
+  }, [moved, hasGame, code, router]);
+
+  if (state?.status === "moved") {
+    return (
+      <Screen>
+        <p className={styles.loading}>Moving to the new lobby…</p>
+      </Screen>
+    );
+  }
 
   if (!state || state.status === "not_member") {
     return (
@@ -132,6 +163,20 @@ export function LobbyView() {
     if (!res.ok) showNotice({ title: res.message });
     refresh();
   }
+  async function doChangeLobby() {
+    if (changingLobby) return;
+    setChangingLobby(true);
+    setChangeError(null);
+    const res = await post<{ code: string }>(`/api/lobbies/${code}/change`);
+    if (res.ok) {
+      router.replace(`/lobby/${res.data.code}?moved=1`);
+      return;
+    }
+    setChangingLobby(false);
+    setChangeError(res.message);
+    refresh();
+  }
+
   const hasDemo = members.some((m) => m.isDemo);
   const roomForDemo = members.length + 3 <= maxMembers;
 
@@ -215,7 +260,27 @@ export function LobbyView() {
         }}
         onCancel={() => setToRemove(null)}
       />
+      <ConfirmDialog
+        open={confirmChange}
+        title="Start a new lobby?"
+        body="Everyone here moves to a new code for the next game. These results and the old code go away."
+        confirmLabel={changingLobby ? "Moving…" : "Change lobby"}
+        pending={changingLobby}
+        error={changeError ?? undefined}
+        onConfirm={doChangeLobby}
+        onCancel={() => {
+          if (changingLobby) return;
+          setConfirmChange(false);
+          setChangeError(null);
+        }}
+      />
     </>
+  );
+
+  const movedCard = moved && (
+    <div className={styles.movedCard}>
+      <InfoCard>The last game ended. Everyone was moved here, and the old code no longer works.</InfoCard>
+    </div>
   );
 
   function renderScreen() {
@@ -285,7 +350,22 @@ export function LobbyView() {
           />
         );
       }
-      if (game.stage === "results") return <ResultsScreen options={options} notice={noticeBar} />;
+      if (game.stage === "results") {
+        return (
+          <ResultsScreen
+            options={options}
+            demo={lobby.isDemo}
+            notice={noticeBar}
+            footer={
+              !me.isHost && (
+                <p className={styles.note}>
+                  When {host?.name ?? "the host"} changes the lobby, everyone moves to a new code together.
+                </p>
+              )
+            }
+          />
+        );
+      }
 
       // Voting: a round's cards and ranking (12, 13), or the final vote (15).
       const final = game.stage === "final_vote";
@@ -348,20 +428,21 @@ export function LobbyView() {
         <Screen
           footer={
             <MainButton arrow onClick={() => setSettingUp(true)}>
-              Set up the game
+              {moved ? "Set up the next game" : "Set up the game"}
             </MainButton>
           }
         >
           {noticeBar}
           <div className={styles.lobbyHeader}>
-            <Title>Your lobby</Title>
+            <Title>{moved ? "New lobby" : "Your lobby"}</Title>
           </div>
-          <CodeCard code={lobby.code} />
+          {movedCard}
+          <CodeCard code={lobby.code} label={moved ? "New code" : "Code"} />
           <div className={styles.sectionHead}>
             <Label>Who&apos;s here</Label>
             <span className={styles.count}>
               {members.length} of {maxMembers}
-              {members.length > 1 && " · tap a name to remove"}
+              {moved ? " · open to latecomers" : members.length > 1 && " · tap a name to remove"}
             </span>
           </div>
           {chips}
@@ -384,6 +465,7 @@ export function LobbyView() {
           <p className={styles.small}>Lobby {lobby.code}</p>
           <Title>Waiting for {host?.name ?? "the host"} to start</Title>
         </div>
+        {movedCard}
         <StatusCard action={<ShareButton code={lobby.code} />}>The host is setting up the game</StatusCard>
         <div className={styles.sectionHead}>
           <Label>Who&apos;s here</Label>
@@ -399,16 +481,31 @@ export function LobbyView() {
   return (
     <div className={styles.lobbyFrame}>
       <div className={styles.lobbyActions}>
-        <PillButton
-          aria-haspopup="dialog"
-          disabled={leaving}
-          onClick={() => {
-            setLeaveError(null);
-            setConfirmLeave(true);
-          }}
-        >
-          {leaving ? "Leaving…" : "Leave lobby"}
-        </PillButton>
+        {game?.stage === "results" && me.isHost ? (
+          <PillButton
+            aria-haspopup="dialog"
+            className={styles.changeLobby}
+            disabled={changingLobby}
+            onClick={() => {
+              setChangeError(null);
+              setConfirmChange(true);
+            }}
+          >
+            <RefreshIcon />
+            {changingLobby ? "Moving…" : "Change lobby"}
+          </PillButton>
+        ) : (
+          <PillButton
+            aria-haspopup="dialog"
+            disabled={leaving}
+            onClick={() => {
+              setLeaveError(null);
+              setConfirmLeave(true);
+            }}
+          >
+            {leaving ? "Leaving…" : "Leave lobby"}
+          </PillButton>
+        )}
       </div>
       {renderScreen()}
       {dialogs}

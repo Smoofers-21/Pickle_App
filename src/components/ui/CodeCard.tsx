@@ -41,8 +41,8 @@ export function ShareButton({ code, onMessage }: { code: string; onMessage?: (te
   );
 }
 
-/** The lobby code with a grey copy button and a black share button (screen 05). */
-export function CodeCard({ code }: { code: string }) {
+/** The lobby code with a grey copy button and a black share button (screens 05 and 17). */
+export function CodeCard({ code, label = "Code" }: { code: string; label?: string }) {
   const [message, setMessage] = useState("");
 
   function flash(text: string) {
@@ -63,7 +63,7 @@ export function CodeCard({ code }: { code: string }) {
     <div>
       <div className={styles.codeCard}>
         <div className={styles.codeCardText}>
-          <span className={styles.label}>Code</span>
+          <span className={styles.label}>{label}</span>
           <span className={styles.code} aria-label={`Lobby code ${code.split("").join(" ")}`}>
             {code}
           </span>

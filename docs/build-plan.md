@@ -229,7 +229,7 @@ Each milestone ends with something you can try on your phone. Search uses sample
     - Drag to rank, points, tie-breaks, round complete, 2–3 rounds with all-new options, final vote.
     - **Changing a ranking un-readies you** (same rule as picks, decided Nov 10, 2026): going back from Submit to change a ranking takes you out of "done" on the server until you submit again, so the round can't end while someone is still changing their ranking. Done in one locked database step, so a last submit and a change can't race.
 
-    - Built Nov 12, 2026 (migration `20261112000001_voting.sql`): rankings are checked in the database (exactly that round's options, each once); points, 1st-place counts and places are stored in `round_results`; only active members' submitted rankings count, and leaving or being removed can end a round. The host continues from Round complete (next round's search, or the final vote). Hold a row or grab its handle to drag; arrow keys work on the handle; tapping a row shows its card. Demo friends rank a few seconds after the host. Until milestone 7, the results stage shows the top 3 with points.
+    - Built Nov 12, 2026 (migration `20261112000001_voting.sql`): rankings are checked in the database (exactly that round's options, each once); points, 1st-place counts and places are stored in `round_results`; only active members' submitted rankings count, and leaving or being removed can end a round. The host continues from Round complete (next round's search, or the final vote). Hold a row or grab its handle to drag; arrow keys work on the handle; tapping a row shows its card. Demo friends rank a few seconds after the host.
 
     - Test: a 2-round game with 3 people, including a forced tie.
     - **Pickle green outline** (decided Nov 11, 2026): the ranking list you're ordering (screens 13 and 15) uses the same green, \#4A7C44 (`--pickle`), for its outline, instead of black.
@@ -237,6 +237,8 @@ Each milestone ends with something you can try on your phone. Search uses sample
 7.  **Results and replay** (screens 16–17)
 
     - Top 3, directions in Apple or Google Maps, web search link, Change lobby moving everyone to a new code. Results with place data show the same Geoapify / OpenStreetMap attribution as the cards.
+
+    - Built Nov 13, 2026 (migration `20261113000001_change_lobby.sql`): the winner (or every option tied for 1st) gets a large card with Directions and Search web; 2nd and 3rd are rows with round Directions and Search buttons. Directions open Apple Maps on iPhone and iPad and Google Maps elsewhere, using only the place's name and address (or an event's venue). Only the host has Change lobby, after a confirm, so nobody is pulled off the results while reading them; everyone still in the lobby moves to a new code with the same host, the finished game is deleted, and the old code stops working. A phone that opens the old code is sent to the new one only if it is a member there.
 
     - Test: full game end to end, then start a second game.
 

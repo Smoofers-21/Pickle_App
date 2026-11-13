@@ -43,5 +43,6 @@ When an image and the product spec differ, follow the spec. Known differences:
 - **Rank (13, 15):** the subtitle explains the vote: "Put your favorite first: everyone's ranking counts toward the result."
 - **Cards (12):** show one image, not three (no story bars): an illustrative cuisine photo from `public/images/restaurants/`, labelled "Illustrative photo", or the event's Ticketmaster image. "Open now" instead of hours, no rating, and "Powered by Geoapify · © OpenStreetMap contributors" under place data (decided Nov 10–11, 2026; see the spec).
 - **Cards (12) and results (16):** add the Geoapify / OpenStreetMap attribution whenever place data is shown. The images don't show it yet.
+- **Results (16):** only the host sees Change lobby (in place of Leave lobby); members see a line saying the host will move everyone. Events show "Starts 7:00 PM" (Ticketmaster gives the start time, not the doors time).
 - **Round complete (14):** marked "Suggested screen" in the image; build it as shown.
 - **Host left (18):** the host role passes to the member who joined earliest.
