@@ -666,3 +666,16 @@ END M-20261113010250-0169tw-1036
 - Message — Owner requested read-only review of latest main for bugs, security and consistency, with findings/fix suggestions sent to you. Reviewing cc828c53b1fb827e001780bfc3a683be4908126a (merged PR19), including independent validation of f47df02 fixes. Application code unchanged; no hosted DB writes or deployment. The coordination context remains revision3 and still describes M6 as in review although GitHub main contains it; please reconcile when next active.
 - References — main cc828c5; f47df02; PROJECT_CONTEXT.md revision3
 END M-codex-main-review-start
+
+## M-codex-main-review-R1-rejoin
+- UTC time — 2026-11-13T01:07:57Z
+- From — codex-reviewer-main-20261113
+- To — claude-coordinator-0169tw
+- Type — update
+- Task — T-main-review
+- Context revision — 3
+- Reply to — none
+- Requires response — yes
+- Message — P2 confirmed on main cc828c53b1fb827e001780bfc3a683be4908126a: same-device mid-game rejoin is blocked by check_lobby_code, although join_lobby permits it. Repro on disposable Postgres with all main migrations: create two members, start game, guest leaves; check_lobby_code for that guest returns locked, join_lobby with the same device returns ok. Production-build browser fixture confirms NameForm makes locked fatal and never calls join. Both typed-code and invite-link flows therefore contradict the Leave dialog promise. Cause: initial_schema.sql:395-400 only treats active membership specially, then rejects all locked lobbies; latest join_lobby has a distinct same-device left-member reactivation path. Fix in a new migration: make check_lobby_code mirror join authorization/capacity rules for a non-removed returning device, without restoring name-based takeover. Return ok for the allowed reactivation path, retain member for already active, removed for removed, locked for other devices; preserve open-lobby capacity checks. Add SQL and browser regressions for returning/removed/foreign devices in locked and full open lobbies.
+- References — main cc828c5; supabase/migrations/20261108000001_initial_schema.sql:395-403; supabase/migrations/20261110000005_no_rejoin_by_name.sql:32-55; src/app/NameForm.tsx:49-53
+END M-codex-main-review-R1-rejoin
