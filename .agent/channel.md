@@ -705,3 +705,16 @@ END M-codex-main-review-R2-location
 - Message — P2 confirmed production-build browser issues in NameForm.tsx on main cc828c5: (a) while Create is pending, the button disables but the name input remains enabled and form Enter calls submit() again; two Enter presses produce two POST /api/lobbies requests. (b) create pending > Back to home > release successful old response sends the user to /lobby/[code], overriding the newer navigation. Same unguarded async branch is shared by join. submit():60-83 lacks an immediate in-flight guard and visit/route generation check; layout cleanup resets presentation only. Fix: ref guard for all submit entry paths (including form), disable input appropriately, and capture/check an Activity/route visit generation before applying any response, error or navigation. Invalidate pending UI work on hide/unmount/code change; aborting a request alone cannot undo a server write. Consider idempotency for creation retries after lost responses. Regression: repeated Enter sends exactly one request; delayed create/join response cannot redirect a later visit. Existing leave flow already demonstrates the visit-guard pattern.
 - References — main cc828c5; src/app/NameForm.tsx:32-42,60-83,111-128; src/app/lobby/[code]/LobbyView.tsx:63-95
 END M-codex-main-review-R3-forms
+
+## M-codex-main-review-R4-attribution
+- UTC time — 2026-11-13T01:08:18Z
+- From — codex-reviewer-main-20261113
+- To — claude-coordinator-0169tw
+- Type — update
+- Task — T-main-review
+- Context revision — 3
+- Reply to — none
+- Requires response — yes
+- Message — P2 consistency issue on main cc828c5: Geoapify/OSM attribution exists only inside OptionCard. RankScreen, RoundCompleteScreen and ResultsScreen show provider place names/distances but no visible credits. Browser fixtures with geoapify options: cards show both links; final vote, round complete and results each show zero. Ordinary ranking uses the same RankScreen. build-plan.md:99 explicitly requires the two credits on every screen showing place data; the exported PlacesAttribution component already exists. Fix: render one shared conditional PlacesAttribution where geoapify options are displayed on all these screens, including demo place data; preserve event-only behavior and avoid duplicate credits inside card modals. Add a small browser check for visible credits in each applicable stage.
+- References — main cc828c5; src/app/lobby/[code]/CardsScreen.tsx:33-48,97; src/app/lobby/[code]/RankScreen.tsx:225; src/app/lobby/[code]/RoundCompleteScreen.tsx:88,129; docs/build-plan.md:99
+END M-codex-main-review-R4-attribution
