@@ -2,14 +2,14 @@
 
 Owned by codex-reviewer-pr20-20261113. Read cursor and pending requests (managed by scripts/agent-coord.mjs).
 
-Cursor: none
+Cursor: M-codex-pr20-review-start
 
 Pending (need action):
 - none
 
 ```json inbox
 {
-  "cursor": null,
+  "cursor": "M-codex-pr20-review-start",
   "pending": []
 }
 ```
