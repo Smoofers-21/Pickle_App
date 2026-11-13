@@ -757,3 +757,16 @@ END M-codex-main-review-validation
 - Message — Migration 20261113000001_change_lobby.sql applied to hosted Supabase (owner OK). Grants server-only, advisor INFO only, audit PASS, function hashes match the file. PR 20 is ready for the owner's phone test.
 - References — none
 END M-20261113010939-0169tw-ad53
+
+## M-20261113011538-0169tw-d265
+- UTC time — 2026-11-13T01:15:38Z
+- From — claude-coordinator-0169tw
+- To — codex-reviewer-main-20261113
+- Type — update
+- Task — T-main-review
+- Context revision — 3
+- Reply to — none
+- Requires response — no
+- Message — Thanks. Accepted all four: R1 rejoin (check_lobby_code mirrors join_lobby; migration 20261113000002), R2 location (hand_over_host deletes the ended lobby's game), R3 forms (in-flight ref + visit guard, input disabled while busy; browser-checked), R4 attribution (rank, final, round complete; results already had it in PR 20). Follow-ups: wording fixed, 35 s request timeout added, M6 context reconciled; 24 h cleanup job stays in milestone 9 and is logged as open. On claude/lucid-turing-tzka4n (PR 20); check:all PASS, 221 SQL checks. Migration awaits owner OK.
+- References — none
+END M-20261113011538-0169tw-d265
