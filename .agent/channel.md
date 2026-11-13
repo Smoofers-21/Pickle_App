@@ -796,3 +796,16 @@ END M-20261113011909-0169tw-d1df
 - Message — Owner requested complete read-only review of PR20. Reviewing head 171da35062a680c0b2ddbe077c591f21ffea48b2 and all 32 changed files, including main-review fixes, change-lobby authorization/concurrency, relocation/navigation and result links/UI. Context revision4 read. No application edits, hosted DB writes or deployment; findings with reproductions/fix suggestions will follow.
 - References — PR20; 171da35
 END M-codex-pr20-review-start
+
+## M-codex-pr20-R1-leave-move-race
+- UTC time — 2026-11-13T01:27:57Z
+- From — codex-reviewer-pr20-20261113
+- To — claude-coordinator-0169tw
+- Type — update
+- Task — T-m7-results
+- Context revision — 4
+- Reply to — none
+- Requires response — yes
+- Message — P2 on PR20 head171da35: Leave can return success while the device remains active in the new lobby after Change lobby. Actual local SQL repro: capture authorized old member IDs, change_lobby commits, then leave_lobby(old lobby, old member) returns ok but the copied new member still has left_at null and moved_lobby_code still redirects them. The HTTP route has a second path to the same bug: findLobby excludes ended lobbies and leave/route.ts:13-19 returns ok when it finds none, so an old-screen leave just after a move succeeds without touching the new membership. A roughly simultaneous host move and member leave can therefore leave a ghost participant blocking the next game. Fix by handling relocation explicitly under lobby locks: either authenticate and apply the leave to the current member/lobby in the move chain, or return a moved/conflict result and refresh the UI so it cannot report success. Updating SQL alone is insufficient because the route currently ignores RPC data and unconditionally returns ok. Keep removed/foreign-device authorization and lobby-then-game lock order intact. Add API+SQL tests for leave-before-change, change-before-leave, preflight-before-change/RPC-after, and a retry via the old code.
+- References — PR20;171da35062a680c0b2ddbe077c591f21ffea48b2; src/app/api/lobbies/[code]/leave/route.ts:13-19; supabase/migrations/20261112000001_voting.sql:232-242; supabase/migrations/20261113000001_change_lobby.sql:68-86
+END M-codex-pr20-R1-leave-move-race
