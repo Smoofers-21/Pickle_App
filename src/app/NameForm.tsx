@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import {
   BackButton,
   CodeChip,
@@ -31,11 +31,20 @@ export function NameForm({ code }: { code?: string }) {
   const [name, setName] = useState("");
   const [busy, setBusy] = useState(false);
   const [problem, setProblem] = useState<Problem | null>(null);
+  // One create or join at a time, from the button or the keyboard's Go.
+  const inFlight = useRef(false);
+  // Which showing of this page a request belongs to.
+  const visit = useRef(0);
 
   // Next.js keeps this page alive (hidden) after you leave it. Start fresh
-  // each time it's shown again, instead of a stuck "Creating…" button.
+  // each time it's shown again, instead of a stuck "Creating…" button, and
+  // ignore answers to requests from an earlier showing: a slow "Create"
+  // must not pull you back into a lobby after you tapped Back.
   useLayoutEffect(() => {
+    visit.current += 1;
     return () => {
+      visit.current += 1;
+      inFlight.current = false;
       setName("");
       setBusy(false);
       setProblem(null);
@@ -58,15 +67,20 @@ export function NameForm({ code }: { code?: string }) {
   }, [code, router]);
 
   async function submit() {
+    if (inFlight.current) return;
     const clean = cleanName(name);
     if (!clean) {
       setProblem(joinError("bad_name", ""));
       return;
     }
+    inFlight.current = true;
+    const thisVisit = visit.current;
+    const stale = () => visit.current !== thisVisit;
     setBusy(true);
     setProblem(null);
     if (code) {
       const res = await post<{ name: string; renamed: boolean }>(`/api/lobbies/${code}/join`, { name: clean });
+      if (stale()) return;
       if (res.ok) {
         router.push(`/lobby/${code}${res.data.renamed ? "?renamed=1" : ""}`);
         return;
@@ -74,12 +88,14 @@ export function NameForm({ code }: { code?: string }) {
       setProblem({ ...joinError(res.error, res.message), fatal: ["not_found", "full", "locked", "removed"].includes(res.error) });
     } else {
       const res = await post<{ code: string }>("/api/lobbies", { name: clean });
+      if (stale()) return;
       if (res.ok) {
         router.push(`/lobby/${res.data.code}`);
         return;
       }
       setProblem(joinError(res.error, res.message));
     }
+    inFlight.current = false;
     setBusy(false);
   }
 
@@ -124,7 +140,7 @@ export function NameForm({ code }: { code?: string }) {
           autoComplete="nickname"
           autoCapitalize="words"
           enterKeyHint="go"
-          disabled={fatal}
+          disabled={fatal || busy}
           autoFocus
         />
         {code && <Hint>Rejoining? Use the same phone and browser to get your spot back.</Hint>}

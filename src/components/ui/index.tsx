@@ -3,7 +3,7 @@
 
 import Link from "next/link";
 import type { ButtonHTMLAttributes, ReactNode } from "react";
-import { ArrowRight, CheckIcon, ChevronDown, ChevronLeft, PlusIcon } from "./icons";
+import { ArrowRight, CheckIcon, ChevronDown, ChevronLeft, InfoIcon, PlusIcon } from "./icons";
 import styles from "./ui.module.css";
 
 export { CodeCard, ShareButton } from "./CodeCard";
@@ -197,6 +197,16 @@ export function StatusCard({ children, action }: { children: ReactNode; action?:
       <span className={styles.spinner} aria-hidden="true" />
       <span className={styles.statusText}>{children}</span>
       {action}
+    </div>
+  );
+}
+
+/** Grey box with a circled "!" for something to know (screen 17). */
+export function InfoCard({ children }: { children: ReactNode }) {
+  return (
+    <div className={styles.infoCard} role="status">
+      <InfoIcon className={styles.infoIcon} />
+      <p>{children}</p>
     </div>
   );
 }

@@ -174,7 +174,7 @@ The results screen shows the top 3 options in order, with no point totals or nam
 
 - **Link:** opens a web search for the place or event.
 
-- **Change lobby:** a button in the corner lets the group play again with new criteria. Everyone moves to a new lobby code automatically.
+- **Change lobby:** a button in the corner lets the host start the group's next game with new criteria. Everyone still in the lobby moves to a new lobby code automatically, with the same host; the old code stops working.
 
 - **Nothing carries over:** a new game starts fresh, with no saved picks, history or excluded results.
 

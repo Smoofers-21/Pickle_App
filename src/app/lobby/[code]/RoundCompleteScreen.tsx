@@ -3,9 +3,9 @@
 import { useState } from "react";
 import { MainButton, Screen, Subtitle, Title } from "@/components/ui";
 import { milesLabel } from "@/lib/game/cards";
-import { ordinal } from "@/lib/game/ranking";
 import { post } from "@/lib/client-api";
 import type { GameInfo, OptionView } from "@/lib/lobby-types";
+import { PlacesAttribution } from "./CardsScreen";
 import styles from "./vote.module.css";
 
 function OptionRow({ option, children }: { option: OptionView; children?: React.ReactNode }) {
@@ -26,8 +26,8 @@ function OptionRow({ option, children }: { option: OptionView; children?: React.
   );
 }
 
-// Screen 14: the round's top 2 move on to the final. Points stay hidden
-// until the end. The host starts the next round (or the final vote).
+// Screen 14: the round's top 2 move on to the final. Points are never
+// shown. The host starts the next round (or the final vote).
 export function RoundCompleteScreen({
   code,
   game,
@@ -82,7 +82,7 @@ export function RoundCompleteScreen({
       <p className={styles.top}>Round {game.currentRound} complete</p>
       <div className={styles.head}>
         <Title>{options.length === 1 ? "1 option goes" : `${options.length} options go`} to the final</Title>
-        <Subtitle>Points stay hidden until the end.</Subtitle>
+        <Subtitle>The final vote decides the winner.</Subtitle>
       </div>
       <p className={styles.label}>Moving on</p>
       <ul className={styles.list}>
@@ -90,6 +90,7 @@ export function RoundCompleteScreen({
           <OptionRow key={o.id} option={o} />
         ))}
       </ul>
+      {options.some((o) => o.source === "geoapify") && <PlacesAttribution className={styles.attribution} />}
       <div className={styles.next}>
         <p className={styles.label} style={{ margin: 0 }}>
           Next
@@ -100,39 +101,6 @@ export function RoundCompleteScreen({
             : `Round ${game.currentRound + 1} of ${game.roundsTotal}: same criteria, all-new options.`}
         </p>
       </div>
-    </Screen>
-  );
-}
-
-/** "Bella Pasta wins", or "Bella Pasta and Sushi Zen tie for 1st". */
-function winnerTitle(options: OptionView[]): string {
-  const winners = options.filter((o) => o.place === 1);
-  if (winners.length === 0) return "The votes are in";
-  if (winners.length === 1) return `${winners[0].name} wins`;
-  const names = winners.map((o) => o.name);
-  return `${names.slice(0, -1).join(", ")} and ${names[names.length - 1]} tie for 1st`;
-}
-
-// The top 3 in order, with tied options sharing a place (1st, 1st, 3rd) and
-// no point totals (product spec, Results), until milestone 7's results
-// screen (16) adds directions, a web search link and Change lobby.
-export function ResultsScreen({ options, notice }: { options: OptionView[]; notice?: React.ReactNode }) {
-  const top = options.filter((o) => (o.place ?? Infinity) <= 3);
-  return (
-    <Screen>
-      {notice}
-      <p className={styles.top}>Results</p>
-      <div className={styles.head}>
-        <Title>{winnerTitle(options)}</Title>
-        <Subtitle>Directions and the full results screen arrive in the next update.</Subtitle>
-      </div>
-      <ol className={styles.list}>
-        {top.map((o) => (
-          <OptionRow key={o.id} option={o}>
-            <span className={styles.points}>{o.place ? ordinal(o.place) : ""}</span>
-          </OptionRow>
-        ))}
-      </ol>
     </Screen>
   );
 }
