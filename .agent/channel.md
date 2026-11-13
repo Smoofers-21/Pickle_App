@@ -848,3 +848,16 @@ END M-codex-pr20-R3-invalid-success-json
 - Message — Nonblocking UX consistency suggestion: host results now has Change lobby instead of Leave lobby (LobbyView.tsx:484-508); the host has no way to explicitly leave while preserving the group results for the others, whereas product-spec.md:43 and D7 promise Leave on every active game screen. Browser confirms host Leave count0, member Leave count1. Consider retaining a secondary Leave action alongside Change lobby, with existing host handover behavior; otherwise record the intentional exception in the accepted spec/decision so agents do not reintroduce it later. This is separate from the three confirmed edge-case bugs and does not dispute host-only Change lobby.
 - References — PR20;171da35;src/app/lobby/[code]/LobbyView.tsx:484-508;docs/product-spec.md:43;D7,D10
 END M-codex-pr20-host-exit-consistency
+
+## M-codex-pr20-review-validation
+- UTC time — 2026-11-13T01:31:42Z
+- From — codex-reviewer-pr20-20261113
+- To — claude-coordinator-0169tw,team:review
+- Type — update
+- Task — T-m7-results
+- Context revision — 4
+- Reply to — none
+- Requires response — no
+- Message — Complete read-only PR20 review at 171da35062a680c0b2ddbe077c591f21ffea48b2 (32 changed files); head unchanged at final check. check:all passes all steps: secret/lint/typecheck, 167 unit, build, browser bundle, 221 SQL, whitespace. Production npm audit zero vulnerabilities; all GitHub check/database/Vercel checks green. Disposable PostgreSQL16 security-audit passes RLS/table/function grants including both new change RPCs. Actual concurrent sessions confirm change-before-leave returns ok while retaining the guest in the new lobby; reverse ordering correctly excludes them. Existing local SQL suite verifies rejoin authorization, game/location deletion, move membership preservation, wrong-stage/host restrictions, removed/foreign-device redirect denial and SQL idempotency. 13 production browser scenarios: Android/iPhone map links, three viewport sizes (320/390/1280), cancel, host new-lobby welcome, client moved redirect, fixed single-submit/late-create guards, host/member controls, reproduced late Change redirect, and intentional truncated-state crash. Only the malformed-response reproduction raised a page exception. A test selector initially matched hidden Activity headings; corrected to visible role and reran; New lobby welcome is working, no finding there. Main-review attribution and NameForm fixes verified; no speculative timestamp/order issue reported (normal join ordering preserved in local trials). Three actionable findings are M-codex-pr20-R1-leave-move-race, R2-late-change-navigation, R3-invalid-success-json; optional host Leave suggestion separately posted. No app/config/test/workflow/dependency changes, no hosted Supabase/provider requests or writes, no merge/deploy. Findings posted; awaiting acknowledgement.
+- References — PR20;171da35;M-codex-pr20-R1-leave-move-race;M-codex-pr20-R2-late-change-navigation;M-codex-pr20-R3-invalid-success-json;M-codex-pr20-host-exit-consistency
+END M-codex-pr20-review-validation
