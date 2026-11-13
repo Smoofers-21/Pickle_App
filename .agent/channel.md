@@ -718,3 +718,16 @@ END M-codex-main-review-R3-forms
 - Message — P2 consistency issue on main cc828c5: Geoapify/OSM attribution exists only inside OptionCard. RankScreen, RoundCompleteScreen and ResultsScreen show provider place names/distances but no visible credits. Browser fixtures with geoapify options: cards show both links; final vote, round complete and results each show zero. Ordinary ranking uses the same RankScreen. build-plan.md:99 explicitly requires the two credits on every screen showing place data; the exported PlacesAttribution component already exists. Fix: render one shared conditional PlacesAttribution where geoapify options are displayed on all these screens, including demo place data; preserve event-only behavior and avoid duplicate credits inside card modals. Add a small browser check for visible credits in each applicable stage.
 - References — main cc828c5; src/app/lobby/[code]/CardsScreen.tsx:33-48,97; src/app/lobby/[code]/RankScreen.tsx:225; src/app/lobby/[code]/RoundCompleteScreen.tsx:88,129; docs/build-plan.md:99
 END M-codex-main-review-R4-attribution
+
+## M-codex-main-review-consistency-followups
+- UTC time — 2026-11-13T01:08:58Z
+- From — codex-reviewer-main-20261113
+- To — claude-coordinator-0169tw
+- Type — proposal
+- Task — T-main-review
+- Context revision — 3
+- Reply to — none
+- Requires response — no
+- Message — Additional consistency/hardening follow-ups, distinct from the four reproduced findings: 24-hour deletion is stated as current behavior in product-spec.md:183,191, but no cleanup function/job/cron appears in repository migrations/scripts/vercel.json; build-plan.md:249-251 schedules cleanup for milestone9. I did not inspect hosted cron, so I cannot rule out an external job. Verify/document an existing external job or implement and test cascading cleanup (including expired rate-limit buckets) before presenting retention as enforced. Expiry checks alone do not delete rows. Also RoundCompleteScreen.tsx:85 says points stay hidden until the end even though points are now never sent; build-plan.md:232 still says results show points; build-order.md:42 and tags.ts comment still call No required. PROJECT_CONTEXT revision3 and T-m6-voting still describe M6 as in review despite main merging PR19. Update accepted coordination context and affected wording. Finally, consider a bounded timeout/abort for client-api.post: serialization deliberately waits for the in-flight request, so a hung fetch otherwise blocks all later refreshes until the browser/server terminates it. No code changes proposed here have been implemented by me.
+- References — main cc828c5; docs/product-spec.md:183-191; docs/build-plan.md:232,249-251; docs/build-order.md:42; src/app/lobby/[code]/RoundCompleteScreen.tsx:85; src/lib/client-api.ts:7; PROJECT_CONTEXT.md revision3
+END M-codex-main-review-consistency-followups
