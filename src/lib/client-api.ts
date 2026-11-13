@@ -3,6 +3,13 @@
 
 export type ApiResult<T> = { ok: true; data: T } | { ok: false; error: string; message: string };
 
+/**
+ * Longest wait for one request. The slowest route (a lobby refresh that runs
+ * a search) is capped at 30 seconds on the server; a request that hangs
+ * longer would otherwise hold up every later lobby refresh.
+ */
+const TIMEOUT_MS = 35_000;
+
 export async function post<T>(path: string, body: unknown = {}, method: "POST" | "DELETE" = "POST"): Promise<ApiResult<T>> {
   try {
     const res = await fetch(path, {
@@ -10,6 +17,7 @@ export async function post<T>(path: string, body: unknown = {}, method: "POST" |
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
       cache: "no-store",
+      signal: AbortSignal.timeout(TIMEOUT_MS),
     });
     const data = await res.json().catch(() => ({}));
     if (!res.ok) {

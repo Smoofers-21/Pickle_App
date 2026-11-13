@@ -6,7 +6,7 @@ import { milesLabel } from "@/lib/game/cards";
 import { dropIndex, moveItem, ordinal, shiftFor, startingOrder } from "@/lib/game/ranking";
 import { post } from "@/lib/client-api";
 import type { GameInfo, OptionView } from "@/lib/lobby-types";
-import { OptionCard } from "./CardsScreen";
+import { OptionCard, PlacesAttribution } from "./CardsScreen";
 import { gameLabel } from "./gameLabel";
 import styles from "./vote.module.css";
 
@@ -347,6 +347,7 @@ export function RankScreen({
           );
         })}
       </ol>
+      {options.some((o) => o.source === "geoapify") && <PlacesAttribution className={styles.attribution} />}
       <p className={styles.srOnly} aria-live="polite">
         {announce}
       </p>

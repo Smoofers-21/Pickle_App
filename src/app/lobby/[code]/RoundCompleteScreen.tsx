@@ -5,6 +5,7 @@ import { MainButton, Screen, Subtitle, Title } from "@/components/ui";
 import { milesLabel } from "@/lib/game/cards";
 import { post } from "@/lib/client-api";
 import type { GameInfo, OptionView } from "@/lib/lobby-types";
+import { PlacesAttribution } from "./CardsScreen";
 import styles from "./vote.module.css";
 
 function OptionRow({ option, children }: { option: OptionView; children?: React.ReactNode }) {
@@ -25,8 +26,8 @@ function OptionRow({ option, children }: { option: OptionView; children?: React.
   );
 }
 
-// Screen 14: the round's top 2 move on to the final. Points stay hidden
-// until the end. The host starts the next round (or the final vote).
+// Screen 14: the round's top 2 move on to the final. Points are never
+// shown. The host starts the next round (or the final vote).
 export function RoundCompleteScreen({
   code,
   game,
@@ -81,7 +82,7 @@ export function RoundCompleteScreen({
       <p className={styles.top}>Round {game.currentRound} complete</p>
       <div className={styles.head}>
         <Title>{options.length === 1 ? "1 option goes" : `${options.length} options go`} to the final</Title>
-        <Subtitle>Points stay hidden until the end.</Subtitle>
+        <Subtitle>The final vote decides the winner.</Subtitle>
       </div>
       <p className={styles.label}>Moving on</p>
       <ul className={styles.list}>
@@ -89,6 +90,7 @@ export function RoundCompleteScreen({
           <OptionRow key={o.id} option={o} />
         ))}
       </ul>
+      {options.some((o) => o.source === "geoapify") && <PlacesAttribution className={styles.attribution} />}
       <div className={styles.next}>
         <p className={styles.label} style={{ margin: 0 }}>
           Next
