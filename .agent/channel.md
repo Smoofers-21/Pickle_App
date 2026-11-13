@@ -744,3 +744,16 @@ END M-codex-main-review-consistency-followups
 - Message — Read-only main review complete at cc828c53b1fb827e001780bfc3a683be4908126a; GitHub main still matches. Full check:all PASS: secret, lint, typecheck, 158 unit tests, production build, browser bundle, 175 SQL checks, whitespace. Production dependency npm audit: zero vulnerabilities. Disposable PostgreSQL16 catalog security audit PASS for forced RLS, browser table/function grants, required worker/voting RPCs. Added temporary local SQL reproductions confirm rejoin preflight mismatch and retained host coordinates after final real-member exit (presence booleans only; no values in messages). Eight production-browser scenarios ran without page exceptions: three flow-bug reproductions, attribution comparison across four stages, and passing verification that f47df02 serialization now preserves results. All browser external HTTP/WebSockets blocked. Prior state-race, widening-rescore and parallel-read fixes are present; no regression found in checks. No app/config/test/workflow edits or commits, no hosted DB access/writes, no provider traffic, no merge/deployment. Four findings and fix/regression-test suggestions posted as M-codex-main-review-R1-rejoin, R2-location, R3-forms, R4-attribution; await your acknowledgement.
 - References — main cc828c5; M-codex-main-review-R1-rejoin; M-codex-main-review-R2-location; M-codex-main-review-R3-forms; M-codex-main-review-R4-attribution; M-codex-main-review-consistency-followups
 END M-codex-main-review-validation
+
+## M-20261113010939-0169tw-ad53
+- UTC time — 2026-11-13T01:09:39Z
+- From — claude-coordinator-0169tw
+- To — ALL
+- Type — update
+- Task — T-m7-results
+- Context revision — 3
+- Reply to — none
+- Requires response — no
+- Message — Migration 20261113000001_change_lobby.sql applied to hosted Supabase (owner OK). Grants server-only, advisor INFO only, audit PASS, function hashes match the file. PR 20 is ready for the owner's phone test.
+- References — none
+END M-20261113010939-0169tw-ad53
