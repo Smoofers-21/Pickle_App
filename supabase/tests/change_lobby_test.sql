@@ -99,3 +99,35 @@ begin
     and not has_function_privilege('authenticated', 'public.moved_lobby_code(text, text)', 'EXECUTE')
     and has_function_privilege('service_role', 'public.moved_lobby_code(text, text)', 'EXECUTE'), 'moved_lobby_code is server-only');
 end $$;
+
+-- Leave racing Change lobby (Codex's PR 20 review): a leave that lands on
+-- the old lobby after the move says "moved" instead of a false success.
+do $$
+declare
+  r jsonb; v_lobby uuid; v_host uuid; v_a uuid; v_game uuid; v_new uuid;
+begin
+  r := public.create_lobby('LMXX23', 'Host', 'dev-mh');
+  v_lobby := (r->>'lobby_id')::uuid; v_host := (r->>'member_id')::uuid;
+  v_a := (public.join_lobby('LMXX23', 'Ana', 'dev-ma')->>'member_id')::uuid;
+  v_game := (public.start_game(v_lobby, v_host, 'food', null, 5, 'all', 'either', 1::smallint, 40.0, -74.0, 'America/New_York')->>'game_id')::uuid;
+  update public.games set stage = 'results' where id = v_game;
+
+  -- Change first, then Ana's leave reaches the old lobby.
+  perform public.change_lobby(v_lobby, v_host, 'LMYY23');
+  select id into v_new from public.lobbies where code = 'LMYY23';
+  perform pg_temp.check(public.leave_lobby(v_lobby, v_a)->>'status' = 'moved', 'a leave after the move says moved');
+  perform pg_temp.check(public.moved_lobby_code('LMXX23', 'dev-ma') = 'LMYY23', 'so the server can follow her to the new lobby');
+  r := public.leave_lobby(v_new, (select id from public.members where lobby_id = v_new and device_token_hash = 'dev-ma'));
+  perform pg_temp.check(r->>'status' = 'ok', 'and leave it there');
+  perform pg_temp.check(not exists (select 1 from public.members where lobby_id = v_new and device_token_hash = 'dev-ma' and left_at is null), 'no ghost left in the new lobby');
+
+  -- Leave first, then the change: she simply doesn't move.
+  r := public.create_lobby('LMZZ23', 'Host', 'dev-mh2');
+  v_lobby := (r->>'lobby_id')::uuid; v_host := (r->>'member_id')::uuid;
+  v_a := (public.join_lobby('LMZZ23', 'Ana', 'dev-ma2')->>'member_id')::uuid;
+  v_game := (public.start_game(v_lobby, v_host, 'food', null, 5, 'all', 'either', 1::smallint, 40.0, -74.0, 'America/New_York')->>'game_id')::uuid;
+  update public.games set stage = 'results' where id = v_game;
+  perform pg_temp.check(public.leave_lobby(v_lobby, v_a)->>'status' = 'ok', 'a leave before the move is a normal leave');
+  perform public.change_lobby(v_lobby, v_host, 'LMWW23');
+  perform pg_temp.check((select count(*) from public.members m join public.lobbies l on l.id = m.lobby_id where l.code = 'LMWW23') = 1, 'and she is not moved');
+end $$;

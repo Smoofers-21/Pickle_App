@@ -43,8 +43,8 @@ import { WaitingScreen } from "./WaitingScreen";
 // picks), 10 (searching), 11 (nothing found), 12 (cards), 13 (rank), 14
 // (round complete), 15 (final vote), 16 (results), 17 (new lobby after
 // Change lobby), 18 (host left notice) and 19 (removed). Every active-member
-// screen shares the top-right Leave lobby button and its confirm dialog,
-// except the host's results screen, which has Change lobby there instead.
+// screen shares the top-right Leave lobby button and its confirm dialog; on
+// the results screen the host also has Change lobby.
 export function LobbyView() {
   const params = useParams<{ code: string }>();
   const code = cleanCodeInput(params.code ?? "");
@@ -68,6 +68,7 @@ export function LobbyView() {
   const [confirmChange, setConfirmChange] = useState(false);
   const [changingLobby, setChangingLobby] = useState(false);
   const [changeError, setChangeError] = useState<string | null>(null);
+  const changingRef = useRef(false);
 
   // Activity can hide this page without destroying it. Invalidate any pending
   // leave so its late response cannot redirect a different visit or lobby.
@@ -84,6 +85,7 @@ export function LobbyView() {
       setToRemove(null);
       setSettingUp(false);
       setChangingCriteria(false);
+      changingRef.current = false;
       setConfirmChange(false);
       setChangingLobby(false);
       setChangeError(null);
@@ -164,16 +166,21 @@ export function LobbyView() {
     refresh();
   }
   async function doChangeLobby() {
-    if (changingLobby) return;
+    if (changingRef.current) return;
+    changingRef.current = true;
+    const currentVisit = visit.current;
     setChangingLobby(true);
     setChangeError(null);
     const res = await post<{ code: string }>(`/api/lobbies/${code}/change`);
-    if (res.ok) {
+    // A late answer must not move a page you've since left.
+    if (visit.current !== currentVisit) return;
+    if (res.ok && typeof res.data?.code === "string") {
       router.replace(`/lobby/${res.data.code}?moved=1`);
       return;
     }
+    changingRef.current = false;
     setChangingLobby(false);
-    setChangeError(res.message);
+    setChangeError(res.ok ? "Something went wrong. Try again." : res.message);
     refresh();
   }
 
@@ -482,6 +489,17 @@ export function LobbyView() {
     <div className={styles.lobbyFrame}>
       <div className={styles.lobbyActions}>
         {game?.stage === "results" && me.isHost ? (
+          <>
+          <PillButton
+            aria-haspopup="dialog"
+            disabled={leaving || changingLobby}
+            onClick={() => {
+              setLeaveError(null);
+              setConfirmLeave(true);
+            }}
+          >
+            {leaving ? "Leaving…" : "Leave"}
+          </PillButton>
           <PillButton
             aria-haspopup="dialog"
             className={styles.changeLobby}
@@ -494,6 +512,7 @@ export function LobbyView() {
             <RefreshIcon />
             {changingLobby ? "Moving…" : "Change lobby"}
           </PillButton>
+          </>
         ) : (
           <PillButton
             aria-haspopup="dialog"
