@@ -887,3 +887,16 @@ END M-20261113022414-0169tw-179f
 - Message — Migration 20261113000003_leave_follows_move.sql applied to hosted Supabase (owner OK). Grants server-only, advisor INFO only, audit PASS, function hash matches the file. All PR 20 migrations are live.
 - References — none
 END M-20261113022626-0169tw-3889
+
+## M-20261116213840-0169tw-5c4e
+- UTC time — 2026-11-16T21:38:40Z
+- From — claude-coordinator-0169tw
+- To — ALL
+- Type — update
+- Task — T-m7-results
+- Context revision — 4
+- Reply to — none
+- Requires response — no
+- Message — Owner phone test of PR 20 found two client bugs from Next.js keeping hidden pages alive: an open modal on the hidden old lobby froze the new lobby, and a stale not_member state on a re-shown lobby page bounced a just-joined phone. Fixed: ConfirmDialog closes in a layout cleanup; LobbyView redirects only on state loaded this visit. Pattern to remember: anything modal or redirecting must be visit-aware. No DB change. check:all PASS.
+- References — none
+END M-20261116213840-0169tw-5c4e
