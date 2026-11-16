@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useLayoutEffect, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { BackButton, CodeBoxes, ErrorCard, Label, MainButton, Screen, Subtitle, Title } from "@/components/ui";
 import { post } from "@/lib/client-api";
 import { joinError } from "@/lib/join-messages";
@@ -15,12 +15,20 @@ export default function JoinCodePage() {
   const [code, setCode] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<{ title: string; body: string } | null>(null);
+  // One check at a time (the button, Enter and typing the last box can all fire).
+  const inFlight = useRef(false);
+  // Which showing of this page a check belongs to.
+  const visit = useRef(0);
 
   // Next.js keeps this page alive (hidden) after you leave it. Start fresh
   // each time it's shown again, instead of restoring the old code or a stuck
-  // "Checking…" button.
+  // "Checking…" button, and ignore answers to checks from an earlier showing:
+  // a slow check must not pull you into a lobby after you tapped Back.
   useLayoutEffect(() => {
+    visit.current += 1;
     return () => {
+      visit.current += 1;
+      inFlight.current = false;
       setCode("");
       setBusy(false);
       setError(null);
@@ -28,10 +36,13 @@ export default function JoinCodePage() {
   }, []);
 
   async function submit(value = code) {
-    if (value.length !== CODE_LENGTH || busy) return;
+    if (value.length !== CODE_LENGTH || inFlight.current) return;
+    inFlight.current = true;
+    const thisVisit = visit.current;
     setBusy(true);
     setError(null);
     const res = await post<{ result: CodeCheck }>(`/api/lobbies/${value}/check`);
+    if (visit.current !== thisVisit) return;
     if (!res.ok) {
       setError(joinError(res.error, res.message));
     } else if (res.data.result === "ok") {
@@ -43,6 +54,7 @@ export default function JoinCodePage() {
     } else {
       setError(joinError(res.data.result, ""));
     }
+    inFlight.current = false;
     setBusy(false);
   }
 

@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { post } from "@/lib/client-api";
 import { serialRefresh, type SerialRefresh } from "@/lib/serial-refresh";
+import { isLobbyState } from "@/lib/lobby-state-check";
 import type { LobbyState } from "@/lib/lobby-types";
 import { realtimeClient } from "@/lib/realtime";
 
@@ -16,15 +17,6 @@ const HEARTBEAT_MS = 30_000;
  */
 const PING_MIN_GAP_MS = 2_000;
 const PING_DEBOUNCE_MS = 150;
-
-/** Enough of a lobby state to draw a screen from, so a broken answer can't crash the page. */
-function looksLikeState(s: unknown): s is LobbyState {
-  if (!s || typeof s !== "object") return false;
-  const v = s as Record<string, unknown>;
-  if (v.status === "ok") return Array.isArray(v.members) && Array.isArray(v.options) && !!v.me && !!v.lobby;
-  if (v.status === "removed" || v.status === "moved") return typeof v.code === "string";
-  return v.status === "not_member" || v.status === "not_found";
-}
 
 /** Works out what changed between two lobby states, for the black notice. */
 function describeChange(prev: LobbyState, next: LobbyState): Omit<NoticeText, "id"> | null {
@@ -91,7 +83,7 @@ export function useLobby(code: string) {
           setError(res.message);
           return;
         }
-        if (!looksLikeState(res.data)) {
+        if (!isLobbyState(res.data)) {
           setError("Something went wrong. Try again.");
           return;
         }
