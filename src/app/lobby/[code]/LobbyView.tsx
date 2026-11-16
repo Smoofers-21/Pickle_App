@@ -51,7 +51,7 @@ export function LobbyView() {
   const router = useRouter();
   // Arrived here by Change lobby (screen 17).
   const moved = useSearchParams().get("moved") === "1";
-  const { state, online, notice, dismissNotice, showNotice, error, leave, remove, refresh } = useLobby(code);
+  const { state, isFresh, online, notice, dismissNotice, showNotice, error, leave, remove, refresh } = useLobby(code);
   const [confirmLeave, setConfirmLeave] = useState(false);
   const [leaving, setLeaving] = useState(false);
   const [leaveError, setLeaveError] = useState<string | null>(null);
@@ -104,16 +104,18 @@ export function LobbyView() {
     router.push("/");
   }, [router]);
 
+  // Redirect only on an answer loaded during this visit: a page shown again
+  // reloads first, so "not a member" from before you joined can't bounce you.
   useEffect(() => {
-    if (state?.status !== "not_member") return;
+    if (state?.status !== "not_member" || !isFresh()) return;
     if (leaveIntent.current) finishLeaving(visit.current);
     else router.replace(`/join/${code}`);
-  }, [state, code, router, finishLeaving]);
+  }, [state, code, router, finishLeaving, isFresh]);
 
   // The group moved to a new lobby: follow it.
   useEffect(() => {
-    if (state?.status === "moved") router.replace(`/lobby/${state.code}?moved=1`);
-  }, [state, router]);
+    if (state?.status === "moved" && isFresh()) router.replace(`/lobby/${state.code}?moved=1`);
+  }, [state, router, isFresh]);
 
   // "Everyone was moved here" is only for before the next game starts.
   const hasGame = state?.status === "ok" && state.game !== null;
