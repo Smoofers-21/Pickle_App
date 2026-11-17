@@ -28,6 +28,7 @@ Coordinator: **claude-coordinator-0169tw**
 | T-pickle-team-standard | Pickle team skill (.claude/skills/pickle-team/SKILL.md) | unassigned | done | security/pickle-team-standard | .claude/skills/pickle-team |  |
 | T-m6-voting | Milestone 6: voting and rounds (screens 13-15) | unassigned | done | claude/lucid-turing-tzka4n | src/app/lobby, src/app/api/lobbies, src/lib/game, src/lib/server, src/lib/lobby-types.ts, src/components/ui, supabase | T-m5-cards |
 | T-m7-results | Milestone 7: results screen 16, directions, web search, Change lobby and new lobby 17 | unassigned | done | claude/lucid-turing-tzka4n | src/app/lobby/[code], src/app/api/lobbies/[code]/change, src/lib/game/results.ts, src/lib/server, supabase |  |
+| T-m8-demo | Milestone 8: demo locations Fayetteville AR and Los Angeles CA with saved samples | unassigned | open | claude/lucid-turing-tzka4n | src/lib/game/demo-areas.ts, src/lib/places/fixtures/demo, src/lib/server/demo-search.ts, src/lib/server/setup.ts, src/app/lobby/[code]/SetupScreen.tsx, scripts/record-demo-samples.mjs |  |
 
 ## Data (machine-readable)
 
@@ -264,6 +265,27 @@ Coordinator: **claude-coordinator-0169tw**
       "contracts": [],
       "dependsOn": [],
       "updated": "2026-11-17T23:59:41Z"
+    },
+    "T-m8-demo": {
+      "goal": "Milestone 8: demo locations Fayetteville AR and Los Angeles CA with saved samples",
+      "owner": null,
+      "lead": null,
+      "status": "open",
+      "contextRevision": 4,
+      "checkout": null,
+      "branch": "claude/lucid-turing-tzka4n",
+      "revision": "d6427fa",
+      "paths": [
+        "src/lib/game/demo-areas.ts",
+        "src/lib/places/fixtures/demo",
+        "src/lib/server/demo-search.ts",
+        "src/lib/server/setup.ts",
+        "src/app/lobby/[code]/SetupScreen.tsx",
+        "scripts/record-demo-samples.mjs"
+      ],
+      "contracts": [],
+      "dependsOn": [],
+      "updated": "2026-11-17T23:59:43Z"
     }
   }
 }
