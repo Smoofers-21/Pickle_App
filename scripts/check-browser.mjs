@@ -146,6 +146,32 @@ const checks = {
     if (creates !== 1) throw new Error(`${creates} create requests`);
   },
 
+  async "a demo host picks a demo location instead of sharing theirs"(page) {
+    let sent = null;
+    await page.route("**/api/lobbies/JJJJJJ/state", (r) =>
+      reply(r, { ...lobby("JJJJJJ", host), lobby: { id: "l-J", code: "JJJJJJ", status: "open", isDemo: true } }),
+    );
+    await page.route("**/api/lobbies/JJJJJJ/start", (r) => {
+      sent = r.request().postDataJSON();
+      return reply(r, { status: "ok" });
+    });
+    await page.addInitScript(() => {
+      navigator.geolocation.getCurrentPosition = () => {
+        throw new Error("asked for the phone's location");
+      };
+    });
+    await page.goto(`${BASE}/lobby/JJJJJJ`);
+    await page.getByRole("button", { name: /Set up the game/ }).click();
+    const select = page.getByLabel("Demo location");
+    const choices = await select.locator("option").allTextContents();
+    if (choices.join("|") !== "Fayetteville, AR|Los Angeles, CA") throw new Error(`choices: ${choices}`);
+    await select.selectOption("los_angeles");
+    await page.getByRole("button", { name: "Food" }).click();
+    await page.getByRole("button", { name: /Start game/ }).click();
+    await page.waitForTimeout(800);
+    if (!sent || sent.demoArea !== "los_angeles" || "lat" in sent) throw new Error(`sent ${JSON.stringify(sent)}`);
+  },
+
   async "broken or contract-breaking state answers show an error, not a crash"(page) {
     const bodies = ['{"status":"ok","me":', JSON.stringify({ ...lobby("HHHHHH", host), members: [null] })];
     for (const body of bodies) {

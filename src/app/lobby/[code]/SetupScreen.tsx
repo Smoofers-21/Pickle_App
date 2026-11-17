@@ -16,6 +16,7 @@ import {
 import { post } from "@/lib/client-api";
 import type { GameInfo } from "@/lib/lobby-types";
 import { dateLabel, DEFAULT_SETUP, shortDate, EVENT_DAYS_AHEAD, localDate, RADIUS_OPTIONS, ROUND_OPTIONS, type Setup } from "@/lib/game/setup";
+import { DEFAULT_DEMO_AREA, DEMO_AREAS, demoArea, type DemoArea } from "@/lib/game/demo-areas";
 import { CATEGORY_LABELS, type Category } from "@/lib/game/tags";
 import styles from "../../flow.module.css";
 
@@ -36,6 +37,17 @@ function getLocation(): Promise<{ lat: number; lng: number }> {
   });
 }
 
+const DEMO_AREA_KEY = "pickle:demo-area";
+
+/** The demo location this phone picked last time, or the default. */
+function savedDemoArea(): DemoArea["key"] {
+  try {
+    return demoArea(window.localStorage.getItem(DEMO_AREA_KEY))?.key ?? DEFAULT_DEMO_AREA;
+  } catch {
+    return DEFAULT_DEMO_AREA;
+  }
+}
+
 /** The phone's time zone (for "open now"), if the browser knows it. */
 function timeZone(): string | null {
   try {
@@ -47,7 +59,19 @@ function timeZone(): string | null {
 
 // Screen 07: the host sets up the game. With `change`, the host is changing
 // the criteria after nothing was found (screen 11), starting from the game's.
-export function SetupScreen({ code, onBack, change }: { code: string; onBack: () => void; change?: GameInfo }) {
+// In a demo lobby (`demo`) the host picks a demo location instead of sharing
+// the phone's: the game then uses the saved sample places around it.
+export function SetupScreen({
+  code,
+  onBack,
+  change,
+  demo = false,
+}: {
+  code: string;
+  onBack: () => void;
+  change?: GameInfo;
+  demo?: boolean;
+}) {
   const today = localDate();
   const [setup, setSetup] = useState<Setup>(
     change
@@ -61,6 +85,7 @@ export function SetupScreen({ code, onBack, change }: { code: string; onBack: ()
         }
       : { ...DEFAULT_SETUP, eventDate: today },
   );
+  const [area, setArea] = useState<DemoArea["key"]>(savedDemoArea);
   const [busy, setBusy] = useState(false);
   const [problem, setProblem] = useState<{ title: string; body: string } | null>(null);
   const set = <K extends keyof Setup>(key: K, value: Setup[K]) => setSetup((s) => ({ ...s, [key]: value }));
@@ -69,9 +94,18 @@ export function SetupScreen({ code, onBack, change }: { code: string; onBack: ()
     if (!setup.category) return;
     setBusy(true);
     setProblem(null);
-    let location: { lat: number; lng: number };
+    let location: { lat: number; lng: number } | { demoArea: DemoArea["key"] };
     try {
-      location = await getLocation();
+      if (demo) {
+        location = { demoArea: area };
+        try {
+          window.localStorage.setItem(DEMO_AREA_KEY, area);
+        } catch {
+          // Only a convenience for next time.
+        }
+      } else {
+        location = await getLocation();
+      }
     } catch (err) {
       const denied = (err as GeolocationPositionError | undefined)?.code === 1;
       setProblem({
@@ -116,6 +150,24 @@ export function SetupScreen({ code, onBack, change }: { code: string; onBack: ()
       <Title>{change ? "Change criteria" : "Set up the game"}</Title>
 
       <div className={styles.setupGroups}>
+        {demo && (
+          <div className={styles.group}>
+            <SelectField
+              id="demo-area"
+              label="Demo location"
+              value={area}
+              onChange={(e) => setArea(demoArea(e.target.value)?.key ?? DEFAULT_DEMO_AREA)}
+            >
+              {DEMO_AREAS.map((a) => (
+                <option key={a.key} value={a.key}>
+                  {a.label}
+                </option>
+              ))}
+            </SelectField>
+            <Hint>Demo games use saved sample places around here, not your location.</Hint>
+          </div>
+        )}
+
         <div className={styles.group}>
           <Label>Category</Label>
           <ChipRow>
@@ -143,7 +195,7 @@ export function SetupScreen({ code, onBack, change }: { code: string; onBack: ()
         )}
 
         <div className={styles.group}>
-          <Label>Radius from you</Label>
+          <Label>{demo ? "Radius from the demo spot" : "Radius from you"}</Label>
           <ChipRow>
             {RADIUS_OPTIONS.map((r) => (
               <Chip large key={r} selected={setup.radiusMi === r} onClick={() => set("radiusMi", r)}>

@@ -1,18 +1,25 @@
 import "server-only";
+import { nearestDemoArea } from "@/lib/game/demo-areas";
 import type { Category } from "@/lib/game/tags";
-import food from "@/lib/places/fixtures/geoapify-food-sample.json";
-import bars from "@/lib/places/fixtures/geoapify-bars-sample.json";
-import events from "@/lib/places/fixtures/ticketmaster-sample.json";
+import { DEMO_SAMPLES } from "@/lib/places/fixtures/demo";
 import { parseGeoapify } from "@/lib/places/geoapify-parse";
+import type { PlacesPage, SearchArea } from "@/lib/places/provider";
 import { parseTicketmaster } from "@/lib/places/ticketmaster-parse";
-import type { PlacesPage } from "@/lib/places/provider";
 
-/** Stable saved samples for the documented demo mode; never consumes API quota. */
-export function demoSearch(category: Category, eventDate: string | null): PlacesPage {
-  const candidates = category === "events"
-    ? parseTicketmaster(events).candidates.map((c) => ({ ...c, eventDate }))
-    : parseGeoapify(category === "bars" ? bars : food, category, { lat: 30.2672, lng: -97.7431 }, {
-      now: new Date("2026-11-12T01:00:00Z"), timeZone: "America/Chicago",
-    });
+/**
+ * Demo mode's search: the saved sample for the demo area the host picked
+ * (the game's center is that area's center), so demo games show real local
+ * places without calling the APIs or spending credits.
+ */
+export function demoSearch(category: Category, eventDate: string | null, center: Pick<SearchArea, "lat" | "lng">, now = new Date()): PlacesPage {
+  const area = nearestDemoArea(center.lat, center.lng);
+  const sample = DEMO_SAMPLES[area.key];
+  const candidates =
+    category === "events"
+      ? parseTicketmaster(sample.events).candidates.map((c) => ({ ...c, eventDate }))
+      : parseGeoapify(category === "bars" ? sample.bars : sample.food, category, { lat: area.lat, lng: area.lng }, {
+          now,
+          timeZone: area.timeZone,
+        });
   return { candidates, more: false, consumed: candidates.length };
 }

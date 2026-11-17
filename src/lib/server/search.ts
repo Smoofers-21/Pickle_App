@@ -131,7 +131,7 @@ async function saveOptions(gameId: string, candidates: Candidate[], token: strin
 
 /** One provider search, after reserving its cost in the shared daily budget. */
 async function fetchPage(gameId: string, claim: Claim, area: SearchArea): Promise<PlacesPage> {
-  if (claim.is_demo) return demoSearch(claim.category, claim.event_date);
+  if (claim.is_demo) return demoSearch(claim.category, claim.event_date, area);
   const provider = claim.category === "events" ? "ticketmaster" : "geoapify";
   const units = provider === "geoapify" ? geoapify.creditsPerSearch() : 1;
   const { data: reserved, error } = await db().rpc("reserve_search_units", {
