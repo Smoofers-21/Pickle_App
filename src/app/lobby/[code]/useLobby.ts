@@ -1,8 +1,9 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { post } from "@/lib/client-api";
 import { serialRefresh, type SerialRefresh } from "@/lib/serial-refresh";
+import { isLobbyState } from "@/lib/lobby-state-check";
 import type { LobbyState } from "@/lib/lobby-types";
 import { realtimeClient } from "@/lib/realtime";
 
@@ -56,6 +57,16 @@ export function useLobby(code: string) {
   }, []);
 
   const lastRefreshAt = useRef(0);
+  // Whether `state` was loaded since this page was last shown. A page you
+  // leave stays alive but hidden; when it's shown again, its old state
+  // (say "not a member", from before you joined) must not drive redirects.
+  const fresh = useRef(false);
+  useLayoutEffect(() => {
+    fresh.current = false;
+    return () => {
+      fresh.current = false;
+    };
+  }, [code]);
   const refresher = useRef<SerialRefresh | null>(null);
 
   // Reloads run one at a time (heartbeat, pings, coming back online or to
@@ -72,6 +83,10 @@ export function useLobby(code: string) {
           setError(res.message);
           return;
         }
+        if (!isLobbyState(res.data)) {
+          setError("Something went wrong. Try again.");
+          return;
+        }
         setError(null);
         const prev = stateRef.current;
         if (prev) {
@@ -79,6 +94,7 @@ export function useLobby(code: string) {
           if (change) showNotice(change);
         }
         stateRef.current = res.data;
+        fresh.current = true;
         setState(res.data);
       },
     );
@@ -181,5 +197,8 @@ export function useLobby(code: string) {
     [code, refresh, showNotice],
   );
 
-  return { state, online, notice, dismissNotice: () => setNotice(null), showNotice, error, leave, remove, refresh };
+  /** True once `state` was loaded during this visit (safe to redirect on). */
+  const isFresh = useCallback(() => fresh.current, []);
+
+  return { state, isFresh, online, notice, dismissNotice: () => setNotice(null), showNotice, error, leave, remove, refresh };
 }

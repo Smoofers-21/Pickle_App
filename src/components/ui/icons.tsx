@@ -110,3 +110,37 @@ export const ExternalIcon = (p: IconProps) => (
     <path d="M18 14v4a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h4" />
   </svg>
 );
+
+/** Change lobby (screen 16). */
+export const RefreshIcon = (p: IconProps) => (
+  <svg {...base} {...p}>
+    <path d="M20 11a8 8 0 0 0-14.6-4.5L4 8" />
+    <path d="M4 3v5h5" />
+    <path d="M4 13a8 8 0 0 0 14.6 4.5L20 16" />
+    <path d="M20 21v-5h-5" />
+  </svg>
+);
+
+/** Directions (screen 16). */
+export const NavigateIcon = (p: IconProps) => (
+  <svg {...base} {...p}>
+    <path d="M20 4 3.5 10.6l7.1 2.8 2.8 7.1z" />
+  </svg>
+);
+
+/** Search the web (screen 16). */
+export const SearchIcon = (p: IconProps) => (
+  <svg {...base} {...p}>
+    <circle cx="10.5" cy="10.5" r="6.5" />
+    <path d="m20 20-4.8-4.8" />
+  </svg>
+);
+
+/** A circled "!" for a grey information box (screen 17). */
+export const InfoIcon = (p: IconProps) => (
+  <svg {...base} {...p}>
+    <circle cx="12" cy="12" r="9" />
+    <path d="M12 7.5v5.5" />
+    <path d="M12 16.5h.01" />
+  </svg>
+);

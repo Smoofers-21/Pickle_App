@@ -10,7 +10,7 @@ step() {
   local name="$1"; shift
   local log; log="$(mktemp)"
   if "$@" >"$log" 2>&1; then
-    local detail; detail="$(grep -E 'Tests +[0-9]+ passed|SQL checks passed|check passed|No secrets' "$log" | tail -1 | sed -E 's/^ +//')"
+    local detail; detail="$(grep -E 'Tests +[0-9]+ passed|SQL checks passed|check passed|checks skipped|No secrets' "$log" | tail -1 | sed -E 's/^ +//')"
     results+=("PASS  $name${detail:+  ($detail)}")
     rm -f "$log"
   else
@@ -28,6 +28,7 @@ step "typecheck"      npm run --silent typecheck
 step "unit tests"     npm test --silent
 step "build"          npm run --silent build
 step "bundle check"   npm run --silent check:bundle
+step "browser"        npm run --silent check:browser
 step "SQL tests"      bash scripts/check-sql.sh
 step "whitespace"     git diff --check HEAD
 

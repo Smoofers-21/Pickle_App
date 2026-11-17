@@ -7,6 +7,7 @@ import {
   ChipRow,
   CodeCard,
   ErrorCard,
+  InfoCard,
   MainButton,
   MemberChip,
   Notice,
@@ -86,6 +87,7 @@ export function KitDemo() {
       <section className={styles.section}>
         <h2>Notices and errors</h2>
         <ErrorCard title="Code not found">This code doesn&apos;t exist or has expired. Check it with the host.</ErrorCard>
+        <InfoCard>The last game ended. Everyone was moved here, and the old code no longer works.</InfoCard>
         <PillButton onClick={() => setNotice((n) => !n)}>{notice ? "Hide notice" : "Show notice"}</PillButton>
         {notice && <Notice title="Alex left. You're now the host." body="The game continues where it left off." />}
       </section>

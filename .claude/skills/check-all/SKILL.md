@@ -1,6 +1,6 @@
 ---
 name: check-all
-description: Run every check in the Pickle repo (secret check, lint, typecheck, unit tests, build, browser-bundle key check, all SQL migrations and tests on a fresh local Postgres, whitespace) with one command. Use before every commit or push, before saying work is done, and when reviewing another agent's branch.
+description: Run every check in the Pickle repo (secret check, lint, typecheck, unit tests, build, browser-bundle key check, browser regressions, all SQL migrations and tests on a fresh local Postgres, whitespace) with one command. Use before every commit or push, before saying work is done, and when reviewing another agent's branch.
 ---
 
 # Run every check
@@ -20,6 +20,7 @@ its output:
 | unit tests | `npm test` |
 | build | `npm run build` |
 | bundle check | `npm run check:bundle` (no key names, values or API hosts in browser code; needs the build) |
+| browser | `npm run check:browser` (production build in Chromium with mocked API answers: hidden-page dialogs and redirects, late answers after Back, one Create per tap, broken answers show an error; skips with a note where Playwright is missing; needs the build) |
 | SQL tests | `npm run check:sql`: stubs, every migration in order, every `supabase/tests/*_test.sql`, on a throwaway local database |
 | whitespace | `git diff --check HEAD` |
 

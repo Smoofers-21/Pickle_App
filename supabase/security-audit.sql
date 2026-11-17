@@ -30,7 +30,8 @@ begin
     'public.start_game(uuid,uuid,text,date,numeric,text,text,smallint,double precision,double precision,text)',
     'public.submit_vote(uuid,uuid,smallint,uuid[])', 'public.unready_vote(uuid,uuid,smallint)',
     'public.advance_after_votes(uuid)', 'public.continue_after_round(uuid,uuid)',
-    'public.tally_round(public.games,smallint)', 'public.ballot_options(uuid,smallint)'] loop
+    'public.tally_round(public.games,smallint)', 'public.ballot_options(uuid,smallint)',
+    'public.change_lobby(uuid,uuid,text)', 'public.moved_lobby_code(text,text)'] loop
     f:=to_regprocedure(signature);
     if f is null then raise exception 'Missing required RPC: %',signature; end if;
   end loop;
@@ -63,6 +64,6 @@ begin
     or to_regprocedure('public.finish_search(uuid,text,jsonb,jsonb)') is not null then
     raise exception 'Unfenced search RPC overload remains';
   end if;
-  raise notice 'PASS: required schema/RPCs, provider source, forced RLS, browser grants, worker signatures and voting';
+  raise notice 'PASS: required schema/RPCs, provider source, forced RLS, browser grants, worker signatures, voting and change lobby';
 end $$;
 rollback;

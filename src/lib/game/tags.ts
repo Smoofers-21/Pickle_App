@@ -77,7 +77,7 @@ export const TAGS: Record<Category, TagDef[]> = {
 
 export const CATEGORY_LABELS: Record<Category, string> = { food: "Food", bars: "Bars", events: "Events" };
 
-/** The picks screen's labels: the required No and the optional Yes (decided Nov 12, 2026). */
+/** The picks screen's labels for the No and the Yes; both picks are optional (decided Nov 12, 2026). */
 export function pickLabels(category: Category): { no: string; yes: string } {
   return { no: category === "events" ? "Not my ideal event" : "Not my ideal place", yes: "I’d like to go" };
 }

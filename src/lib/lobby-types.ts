@@ -91,6 +91,8 @@ export type LobbyState =
       myVote: { ranking: string[]; ready: boolean } | null;
     }
   | { status: "removed"; code: string }
+  /** The group moved to a new lobby (Change lobby) and this phone is in it. */
+  | { status: "moved"; code: string }
   | { status: "not_member" }
   | { status: "not_found" };
 

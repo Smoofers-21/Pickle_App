@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useRef } from "react";
+import { useEffect, useId, useLayoutEffect, useRef } from "react";
 import styles from "./ui.module.css";
 
 /** A small confirm box, for removing a member or leaving the lobby. */
@@ -34,6 +34,16 @@ export function ConfirmDialog({
     if (open && !dialog.open) dialog.showModal();
     if (!open && dialog.open) dialog.close();
   }, [open]);
+
+  // Next.js keeps a page you've left alive but hidden. An open modal there
+  // would still block every tap on the page you're now on, so close it as
+  // soon as this page is hidden (layout cleanups run right away).
+  useLayoutEffect(() => {
+    const dialog = ref.current;
+    return () => {
+      if (dialog?.open) dialog.close();
+    };
+  }, []);
 
   return (
     <dialog

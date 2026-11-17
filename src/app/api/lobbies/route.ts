@@ -1,14 +1,8 @@
-import { randomInt } from "node:crypto";
-import { CODE_ALPHABET, CODE_LENGTH, cleanName } from "@/lib/lobby-rules";
+import { cleanName } from "@/lib/lobby-rules";
 import { fail, ok, route, tooMany } from "@/lib/server/api";
+import { newLobbyCode } from "@/lib/server/codes";
 import { allow, LIMITS } from "@/lib/server/rate-limit";
 import { db } from "@/lib/server/supabase";
-
-function newCode(): string {
-  let code = "";
-  for (let i = 0; i < CODE_LENGTH; i++) code += CODE_ALPHABET[randomInt(CODE_ALPHABET.length)];
-  return code;
-}
 
 // Create a lobby: the person creating it becomes the host.
 export const POST = route(async ({ request, body, device }) => {
@@ -17,7 +11,7 @@ export const POST = route(async ({ request, body, device }) => {
   if (!(await allow(request, device.hash, LIMITS.create))) return tooMany();
 
   for (let attempt = 0; attempt < 5; attempt++) {
-    const code = newCode();
+    const code = newLobbyCode();
     const { data, error } = await db().rpc("create_lobby", {
       p_code: code,
       p_name: name,

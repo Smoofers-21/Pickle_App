@@ -227,7 +227,12 @@ export async function findVotes(gameId: string, round: number): Promise<VoteRow[
  */
 export async function lobbyState(code: string, deviceHash: string): Promise<LobbyState> {
   const lobby = await findLobby(code);
-  if (!lobby || lobby.status === "ended") return { status: "not_found" };
+  if (!lobby || lobby.status === "ended") {
+    // After Change lobby, the old code sends its members to the new one.
+    const { data: movedTo, error } = await db().rpc("moved_lobby_code", { p_code: code, p_device_hash: deviceHash });
+    if (error) throw error;
+    return typeof movedTo === "string" ? { status: "moved", code: movedTo } : { status: "not_found" };
+  }
 
   const me = await findMe(lobby.id, deviceHash);
   if (!me || me.left_at) return { status: "not_member" };
