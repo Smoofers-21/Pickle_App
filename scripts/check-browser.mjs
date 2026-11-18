@@ -203,6 +203,83 @@ const checks = {
     await page.getByRole("button", { name: /Ana/ }).waitFor();
   },
 
+  async "a failed load after joining through the lobby link offers Try again"(page) {
+    // The page keeps its old "not a member" answer from before joining; a
+    // failed load afterwards must still be reported (Codex, PR 27).
+    let joined = false;
+    let fail = true;
+    await page.route("**/api/lobbies/NNNNNN/*", (r) => {
+      const what = new URL(r.request().url()).pathname.split("/").pop();
+      if (what === "check") return reply(r, { result: "ok" });
+      if (what === "join") {
+        joined = true;
+        return reply(r, { name: "Ana", renamed: false, memberId: "m2" });
+      }
+      if (!joined) return reply(r, { status: "not_member" });
+      return fail ? r.abort("internetdisconnected") : reply(r, lobby("NNNNNN", ana));
+    });
+    await page.goto(`${BASE}/lobby/NNNNNN`);
+    await page.waitForURL("**/join/NNNNNN");
+    await page.locator("#name:visible").fill("Ana");
+    await page.locator("#name:visible").press("Enter");
+    await page.waitForURL("**/lobby/NNNNNN");
+    await page.getByRole("button", { name: "Try again" }).waitFor();
+    fail = false;
+    await page.getByRole("button", { name: "Try again" }).click();
+    await page.getByText("Waiting for Host to start").waitFor();
+  },
+
+  async "a slow load after joining through the lobby link says so"(page) {
+    let joined = false;
+    const state = held();
+    await page.route("**/api/lobbies/PPPPPP/*", (r) => {
+      const what = new URL(r.request().url()).pathname.split("/").pop();
+      if (what === "check") return reply(r, { result: "ok" });
+      if (what === "join") {
+        joined = true;
+        return reply(r, { name: "Ana", renamed: false, memberId: "m2" });
+      }
+      return joined ? state.handler(r) : reply(r, { status: "not_member" });
+    });
+    await page.goto(`${BASE}/lobby/PPPPPP`);
+    await page.waitForURL("**/join/PPPPPP");
+    await page.locator("#name:visible").fill("Ana");
+    await page.locator("#name:visible").press("Enter");
+    await page.waitForURL("**/lobby/PPPPPP");
+    await page.getByText(/Your connection may be slow/).waitFor({ timeout: 10_000 });
+    state.release(lobby("PPPPPP", ana));
+    await page.getByText("Waiting for Host to start").waitFor();
+  },
+
+  async "the No connection bar shows on picks and setup, and drafts survive"(page) {
+    const picks = { ...lobby("QQQQQQ", host), game: { ...results("QQQQQQ", host).game, stage: "picks" }, options: [] };
+    let body = picks;
+    await page.route("**/api/lobbies/QQQQQQ/state", (r) => reply(r, body));
+    const bar = page.getByText("Showing the last update. Trying again…");
+    const offlineAndBack = async () => {
+      await page.context().setOffline(true);
+      await bar.waitFor();
+      await page.context().setOffline(false);
+      await bar.waitFor({ state: "detached", timeout: 8000 });
+    };
+
+    // Picks: a chosen tag stays chosen.
+    await page.goto(`${BASE}/lobby/QQQQQQ`);
+    const italian = page.getByRole("button", { name: "Italian", exact: true }).first();
+    await italian.click();
+    await offlineAndBack();
+    if ((await italian.getAttribute("aria-pressed")) !== "true") throw new Error("the picks draft was lost");
+
+    // Host setup: the chosen category stays chosen.
+    body = lobby("QQQQQQ", host);
+    await page.reload();
+    await page.getByRole("button", { name: /Set up the game/ }).click();
+    const food = page.getByRole("button", { name: "Food" });
+    await food.click();
+    await offlineAndBack();
+    if ((await food.getAttribute("aria-pressed")) !== "true") throw new Error("the setup draft was lost");
+  },
+
   async "broken or contract-breaking state answers show an error, not a crash"(page) {
     const bodies = ['{"status":"ok","me":', JSON.stringify({ ...lobby("HHHHHH", host), members: [null] })];
     for (const body of bodies) {

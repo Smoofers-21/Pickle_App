@@ -28,9 +28,9 @@ Milestone 9's pass through every rule in [Security and privacy](build-plan.md#se
 |---|---|---|
 | Only a name, a random device token (hashed), picks and votes are stored | Done | `supabase/migrations/20261108000001_initial_schema.sql`; no email, phone or account columns |
 | IP addresses never written to the database | Done | Rate limits by IP live in server memory only; the database buckets hold a device hash (`src/lib/server/rate-limit.ts`) |
-| Log messages never contain IPs, keys, locations or member data | Done | `npm run check:logs` (new in milestone 9): every log call may print only fixed text, the request path and an error's name and code |
+| Log messages never contain IPs, keys, locations or member data | Done | `npm run check:logs` (new in milestone 9): every `console.method(...)` call in `src/` may print only fixed text, the request path and an error's name and code, and any other use of `console` fails. It reads source text, so it guards against mistakes, not deliberate tricks; code review covers the rest |
 | Host's location rounded to about 100 m, never shown, deleted after the last search | Done | Rounded to 3 decimals in `src/lib/server/setup.ts`; deleted by `finish_search` and with the game (`search_test.sql`); demo games never send it |
-| Daily cleanup of lobbies and everything in them after 24 hours | Done (milestone 9) | `cleanup_old_data()` runs every hour through pg_cron (`20261118000001_cleanup_job.sql`, `cleanup_test.sql`); the audit checks the job is scheduled |
+| Cleanup of lobbies and everything in them after 24 hours | Done (milestone 9) | Lobbies stop working at 24 hours; `cleanup_old_data()` deletes them within the next hour through pg_cron (`20261118000001_cleanup_job.sql`, `cleanup_test.sql`). The audit checks the job's schedule, database, role and command |
 | No ad trackers; analytics only from a privacy-focused tool | Done | Only Vercel Web Analytics, in production (no cookies, no stored IPs). It sends page views only, with lobby codes replaced by `[code]` (`src/lib/analytics.ts`); it records nothing until the owner turns it on in Vercel. The content security policy blocks every outside script |
 
 ## Website

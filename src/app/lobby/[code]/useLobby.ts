@@ -70,10 +70,16 @@ export function useLobby(code: string) {
   // leave stays alive but hidden; when it's shown again, its old state
   // (say "not a member", from before you joined) must not drive redirects.
   const fresh = useRef(false);
+  // The same, for rendering: an old answer from before this visit (say "not
+  // a member") is not a screen to show, so a failed or slow load during this
+  // visit must still be reported (Codex, PR 27).
+  const [loaded, setLoaded] = useState(false);
   useLayoutEffect(() => {
     fresh.current = false;
     return () => {
       fresh.current = false;
+      setLoaded(false);
+      setError(null);
     };
   }, [code]);
   const refresher = useRef<SerialRefresh | null>(null);
@@ -104,6 +110,7 @@ export function useLobby(code: string) {
         }
         stateRef.current = res.data;
         fresh.current = true;
+        setLoaded(true);
         setState(res.data);
       },
     );
@@ -183,7 +190,6 @@ export function useLobby(code: string) {
   }, []);
 
   // A first load that takes a while says so, instead of a silent spinner.
-  const loaded = state !== null;
   useEffect(() => {
     if (loaded) return;
     const t = window.setTimeout(() => setSlow(true), SLOW_MS);
@@ -235,5 +241,5 @@ export function useLobby(code: string) {
   /** True once `state` was loaded during this visit (safe to redirect on). */
   const isFresh = useCallback(() => fresh.current, []);
 
-  return { state, isFresh, online, notice, dismissNotice: () => setNotice(null), showNotice, error, slow, leave, remove, refresh };
+  return { state, isFresh, online, notice, dismissNotice: () => setNotice(null), showNotice, error, slow, loaded, leave, remove, refresh };
 }

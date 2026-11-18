@@ -66,11 +66,13 @@ export function SetupScreen({
   onBack,
   change,
   demo = false,
+  notice,
 }: {
   code: string;
   onBack: () => void;
   change?: GameInfo;
   demo?: boolean;
+  notice?: React.ReactNode;
 }) {
   const today = localDate();
   const [setup, setSetup] = useState<Setup>(
@@ -147,6 +149,7 @@ export function SetupScreen({
       <div className={styles.topBar}>
         <BackButton onClick={onBack} />
       </div>
+      {notice}
       <Title>{change ? "Change criteria" : "Set up the game"}</Title>
 
       <div className={styles.setupGroups}>

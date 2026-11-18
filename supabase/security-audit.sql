@@ -65,12 +65,17 @@ begin
     or to_regprocedure('public.finish_search(uuid,text,jsonb,jsonb)') is not null then
     raise exception 'Unfenced search RPC overload remains';
   end if;
-  -- Where pg_cron is installed (Supabase), the cleanup job must be scheduled.
+  -- The cleanup job: hourly, in this database, run by postgres, exactly
+  -- this command. Only a database that can't have pg_cron at all (plain
+  -- local Postgres) skips this; on Supabase a missing job fails.
   if to_regclass('cron.job') is not null then
     if not exists(select 1 from cron.job where jobname='pickle-cleanup' and active
-        and command like '%public.cleanup_old_data()%') then
-      raise exception 'Cleanup job is not scheduled';
+        and schedule='17 * * * *' and database=current_database() and username='postgres'
+        and command='select public.cleanup_old_data()') then
+      raise exception 'Cleanup job is missing or not as the migration scheduled it';
     end if;
+  elsif exists(select 1 from pg_available_extensions where name='pg_cron') then
+    raise exception 'pg_cron is available but not installed: the cleanup job never runs';
   end if;
   raise notice 'PASS: required schema/RPCs, provider source, forced RLS, browser grants, worker signatures, voting, change lobby and cleanup job';
 end $$;

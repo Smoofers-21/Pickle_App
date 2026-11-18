@@ -33,7 +33,7 @@ Built as a portfolio project to show full-stack work end to end: real-time multi
 | Database design and security | Postgres with forced row-level security and no browser access at all; every game rule is a SQL function only the server can call; 230+ SQL checks run on every change, and a read-only audit checks the live database |
 | API integration on free tiers | Geoapify Places (OpenStreetMap data) and Ticketmaster behind a swappable provider interface; keys server-side only; a shared daily credit budget reserved atomically in Postgres before every call |
 | Algorithms | Cancel-out rule for conflicting picks, tag matching, distance scoring, chain de-duplication, radius widening, ranked-vote tallies with tie-breaks, an OpenStreetMap opening-hours parser |
-| Privacy | No accounts; only a name and a hashed device token are stored; the host's location is rounded, never shown and deleted after the search; everything is deleted after 24 hours by a scheduled job; a check fails the build if a log line could print an IP or key |
+| Privacy | No accounts: a lobby stores names, a hashed device token per phone, and each player's private picks and rankings. The host's location is rounded to about 100 m, never shown and deleted after the search. Lobbies expire after 24 hours and an hourly job deletes them and everything in them (so nothing stays more than about 25 hours). A check fails the build if a log line could print an IP or key |
 | Reliability | Requests time out and retry; a lost connection keeps the last screen with a notice; browser regression tests cover race conditions from pages Next.js keeps alive in the background |
 | Frontend | Next.js 16 App Router PWA, a small design kit, screens built to a design spec, drag-to-rank with keyboard support |
 
@@ -52,7 +52,7 @@ Supabase Postgres (game rules as SQL functions, RLS on every table)
 Supabase Realtime ──► every phone reloads its view from the server
 ```
 
-Phones never read the database directly: each change sends a ping, and each phone asks the server for its own view of the lobby, which never includes anyone's picks, votes, scores or the host's location.
+Phones never read the database directly: each change sends a ping, and each phone asks the server for its own view of the lobby. That view includes the phone's own picks and ranking, but never other members' picks or rankings, any scores, or the host's location.
 
 ## Tech stack
 

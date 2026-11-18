@@ -21,7 +21,7 @@ its output:
 | build | `npm run build` |
 | bundle check | `npm run check:bundle` (no key names, values or API hosts in browser code; needs the build) |
 | log check | `npm run check:logs` (every console call in `src/` may log only fixed text, the request path and `errorLabel(err)`) |
-| browser | `npm run check:browser` (production build in Chromium with mocked API answers: hidden-page dialogs and redirects, late answers after Back, one Create per tap, broken answers show an error, Try again, the No connection bar and the slow-load message; skips with a note where Playwright is missing; needs the build) |
+| browser | `npm run check:browser` (production build in Chromium with mocked API answers: hidden-page dialogs and redirects, late answers after Back, one Create per tap, broken answers show an error, Try again (also after joining through a lobby link), the No connection bar on every screen with drafts kept, and the slow-load message; skips with a note where Playwright is missing; needs the build) |
 | SQL tests | `npm run check:sql`: stubs, every migration in order, every `supabase/tests/*_test.sql`, on a throwaway local database |
 | whitespace | `git diff --check HEAD` |
 

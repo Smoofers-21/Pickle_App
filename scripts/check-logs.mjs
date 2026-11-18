@@ -7,6 +7,7 @@
 // until it is written that way.
 //
 //   npm run check:logs        (also a step of npm run check:all)
+//   node scripts/check-logs.mjs <dir>   (check another folder; used by its tests)
 
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
@@ -61,8 +62,16 @@ function callArgs(src, open) {
 
 const problems = [];
 let calls = 0;
-for (const file of files("src")) {
+const ROOT = process.argv[2] ?? "src";
+for (const file of files(ROOT)) {
   const src = readFileSync(file, "utf8");
+  // Only plain console.method(...) calls can be checked; any other use of
+  // console (console["error"], console.warn?.(), passing console around)
+  // fails outright (Codex, PR 27).
+  for (const m of src.matchAll(/\bconsole\b(?!\.\w+\s*\()/g)) {
+    const line = src.slice(0, m.index).split("\n").length;
+    problems.push(`${file}:${line}: write log calls as console.method(...) so they can be checked`);
+  }
   for (const m of src.matchAll(/\bconsole\.(\w+)\s*\(/g)) {
     calls++;
     const line = src.slice(0, m.index).split("\n").length;

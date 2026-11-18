@@ -78,11 +78,13 @@ export function PicksScreen({
   game,
   initial,
   onSubmitted,
+  notice,
 }: {
   code: string;
   game: GameInfo;
   initial: { no: PickSide | null; yes: PickSide | null } | null;
   onSubmitted: () => void;
+  notice?: React.ReactNode;
 }) {
   const tags = TAGS[game.category];
   const labels = pickLabels(game.category);
@@ -123,6 +125,7 @@ export function PicksScreen({
         </MainButton>
       }
     >
+      {notice}
       <div className={styles.memberHeader}>
         <p className={styles.small}>{gameLabel(game)}</p>
         <Title>Your picks</Title>

@@ -21,11 +21,11 @@ Hobby is for non-commercial use, which fits a portfolio project.
 
 ## Slow connections
 
-Measured with `npm run measure:slow` (the production build, Chrome's network presets, API answers mocked), Nov 18, 2026:
+Time until each page is usable (its main button, code boxes or lobby heading showing and the page responding), measured with `npm run measure:slow`: the production build, Chrome's network presets, the lobby's answer delayed by one round trip plus 300 ms. Nov 18, 2026:
 
 | Network | Home | Enter code | Lobby |
 |---|---|---|---|
-| Fast 3G | 1.7 s | 1.5 s | 1.8 s |
-| Slow 3G | 5.7 s | 4.9 s | 7.8 s |
+| Fast 3G | 1.7 s | 1.5 s | 2.5 s |
+| Slow 3G | 5.7 s | 4.9 s | 7.3 s |
 
-On a slow connection the lobby says "Your connection may be slow" after 8 seconds instead of a silent wait. If the connection drops mid-game, a bar says so and the screen keeps the last update, retrying every 5 seconds; if the lobby can't load at all, the screen offers Try again and Back.
+On a slow connection the lobby says "Your connection may be slow" after 8 seconds instead of a silent wait. These are lab numbers from one machine, not a full game on a real phone. If the connection drops mid-game, a bar says so and the screen keeps the last update, retrying every 5 seconds; if the lobby can't load at all, the screen offers Try again and Back.

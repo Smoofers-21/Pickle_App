@@ -53,7 +53,7 @@ export function LobbyView() {
   const router = useRouter();
   // Arrived here by Change lobby (screen 17).
   const moved = useSearchParams().get("moved") === "1";
-  const { state, isFresh, online, notice, dismissNotice, showNotice, error, slow, leave, remove, refresh } = useLobby(code);
+  const { state, isFresh, online, notice, dismissNotice, showNotice, error, slow, loaded, leave, remove, refresh } = useLobby(code);
   const [confirmLeave, setConfirmLeave] = useState(false);
   const [leaving, setLeaving] = useState(false);
   const [leaveError, setLeaveError] = useState<string | null>(null);
@@ -125,17 +125,20 @@ export function LobbyView() {
     if (moved && hasGame) router.replace(`/lobby/${code}`);
   }, [moved, hasGame, code, router]);
 
+  // Loading failed before this visit had a screen to show: say why, with a
+  // way to try again or get out. An old "not a member" or "moved" answer
+  // kept from an earlier visit doesn't count; an old lobby screen does (it
+  // stays, with the No connection bar).
+  if (error && (!state || (!loaded && state.status !== "ok"))) {
+    return <LoadFailed offline={error.offline} message={error.message} retry={refresh} />;
+  }
+
   if (state?.status === "moved") {
     return (
       <Screen>
         <p className={styles.loading}>Moving to the new lobby…</p>
       </Screen>
     );
-  }
-
-  // The first load failed: say why, with a way to try again or get out.
-  if (!state && error) {
-    return <LoadFailed offline={error.offline} message={error.message} retry={refresh} />;
   }
 
   if (!state || state.status === "not_member") {
@@ -327,6 +330,7 @@ export function LobbyView() {
               game={game}
               initial={myPicks}
               onSubmitted={refresh}
+              notice={noticeBar}
             />
           );
         }
@@ -354,7 +358,15 @@ export function LobbyView() {
       if (game.stage === "searching") {
         const failed = game.search?.status === "nothing_found" || game.search?.status === "unavailable";
         if (failed && me.isHost && changingCriteria) {
-          return <SetupScreen code={code} change={game} demo={lobby.isDemo} onBack={() => setChangingCriteria(false)} />;
+          return (
+            <SetupScreen
+              code={code}
+              change={game}
+              demo={lobby.isDemo}
+              onBack={() => setChangingCriteria(false)}
+              notice={noticeBar}
+            />
+          );
         }
         if (failed) {
           return (
@@ -453,7 +465,7 @@ export function LobbyView() {
     }
 
     if (me.isHost && settingUp && lobby.status === "open") {
-      return <SetupScreen code={code} demo={lobby.isDemo} onBack={() => setSettingUp(false)} />;
+      return <SetupScreen code={code} demo={lobby.isDemo} onBack={() => setSettingUp(false)} notice={noticeBar} />;
     }
 
     if (me.isHost) {
