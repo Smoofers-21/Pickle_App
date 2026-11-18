@@ -15,11 +15,11 @@ export const POST = route(async ({ request, body, device, params }) => {
   if (!(await allow(request, device.hash, LIMITS.search))) return tooMany();
   if (!isValidCode(params.code)) return fail(404, "not_found", "This lobby has ended.");
 
-  const setup = readSetup(body);
-  if (!setup.ok) return fail(400, setup.error, setup.message);
-
   const found = await findActiveMember(params.code, device.hash);
   if (!found || !found.lobby.current_game_id) return fail(404, "not_found", "There's no game to change.");
+
+  const setup = readSetup(body, { demo: found.lobby.is_demo });
+  if (!setup.ok) return fail(400, setup.error, setup.message);
   const gameId = found.lobby.current_game_id;
 
   const { data, error } = await db().rpc("change_criteria", {

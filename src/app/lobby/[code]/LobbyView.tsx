@@ -330,7 +330,7 @@ export function LobbyView() {
       if (game.stage === "searching") {
         const failed = game.search?.status === "nothing_found" || game.search?.status === "unavailable";
         if (failed && me.isHost && changingCriteria) {
-          return <SetupScreen code={code} change={game} onBack={() => setChangingCriteria(false)} />;
+          return <SetupScreen code={code} change={game} demo={lobby.isDemo} onBack={() => setChangingCriteria(false)} />;
         }
         if (failed) {
           return (
@@ -429,7 +429,7 @@ export function LobbyView() {
     }
 
     if (me.isHost && settingUp && lobby.status === "open") {
-      return <SetupScreen code={code} onBack={() => setSettingUp(false)} />;
+      return <SetupScreen code={code} demo={lobby.isDemo} onBack={() => setSettingUp(false)} />;
     }
 
     if (me.isHost) {

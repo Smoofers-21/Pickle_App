@@ -248,6 +248,8 @@ Each milestone ends with something you can try on your phone. Search uses sample
 
     - Test: run a whole game alone on one phone.
 
+    - Built Nov 17, 2026: two demo locations, Fayetteville, AR (the downtown square) and Los Angeles, CA (downtown). In a demo lobby the host picks one from a "Demo location" dropdown on the setup screen instead of sharing the phone's location; distances and "open now" follow that area. Food and bars were recorded with `scripts/record-demo-samples.mjs` (100 restaurants each; 36 bars in Fayetteville, 100 in Los Angeles; 20 Geoapify credits). Events are recorded per area by the "Record demo events" GitHub Action, because Ticketmaster only accepts its key in the URL; it needs the repository secret `TICKETMASTER_API_KEY`. Once this is on main: Actions tab, Run workflow; it pushes the events to the branch `demo-events` and links a pull request to open and merge (main is protected). Do it shortly before a demo. Demo games replay a Friday at 7 pm in the chosen city for "open now" (so a morning demo still fills every round), and saved events are shown on the date the host picks: a sample, not a live schedule.
+
 9.  **Polish and demo prep**
 
     - Loading and error states, join errors (screen 04), spending caps checked, speed on a slow connection. Daily cleanup job, a check that no log message contains IP addresses or keys, and a pass through the Security and privacy checklist.

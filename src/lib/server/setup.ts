@@ -1,4 +1,5 @@
 import "server-only";
+import { demoArea } from "@/lib/game/demo-areas";
 import { EVENT_DAYS_AHEAD, isCalendarDate, RADIUS_OPTIONS, ROUND_OPTIONS } from "@/lib/game/setup";
 import { isCategory, type Category } from "@/lib/game/tags";
 import { isValidTimeZone } from "@/lib/places/opening-hours";
@@ -32,10 +33,16 @@ export type SetupParams = {
   p_time_zone: string | null;
 };
 
+/**
+ * In a demo lobby (`demo`), the search centers on the demo area the host
+ * picked (`demoArea`), never on the phone's location, and uses its time zone.
+ */
 export function readSetup(
   body: Record<string, unknown>,
+  { demo = false }: { demo?: boolean } = {},
 ): { ok: true; params: SetupParams } | { ok: false; error: string; message: string } {
-  const { category, eventDate, radiusMi, age, indoorOutdoor, rounds, lat, lng, timeZone } = body;
+  const { category, eventDate, radiusMi, age, indoorOutdoor, rounds, timeZone } = body;
+  let { lat, lng } = body;
   const bad = (message: string) => ({ ok: false as const, error: "bad_setup", message });
   if (!isCategory(category)) return bad("Pick Food, Bars or Events.");
   if (category === "events" && !validEventDate(eventDate)) return bad("Pick a date in the next two weeks.");
@@ -45,6 +52,12 @@ export function readSetup(
     return bad("Pick indoor, outdoor or either.");
   }
   if (!ROUND_OPTIONS.includes(rounds as (typeof ROUND_OPTIONS)[number])) return bad("Pick 1, 2 or 3 rounds.");
+  const area = demo ? demoArea(body.demoArea) : null;
+  if (demo) {
+    if (!area) return bad("Pick a demo location.");
+    lat = area.lat;
+    lng = area.lng;
+  }
   if (!isNumberIn(lat, -90, 90) || !isNumberIn(lng, -180, 180)) {
     return { ok: false, error: "no_location", message: "Pickle needs your location to search near you." };
   }
@@ -61,7 +74,7 @@ export function readSetup(
       p_lat: Math.round(lat * 1000) / 1000,
       p_lng: Math.round(lng * 1000) / 1000,
       // The phone's time zone, for "open now". Optional; unknown zones are dropped.
-      p_time_zone: isValidTimeZone(timeZone) ? timeZone : null,
+      p_time_zone: area ? area.timeZone : isValidTimeZone(timeZone) ? timeZone : null,
     },
   };
 }

@@ -11,3 +11,22 @@ describe("server setup dates", () => {
     expect(readSetup(setup).ok).toBe(true);
   });
 });
+
+describe("readSetup in a demo lobby", () => {
+  const base = { category: "food", radiusMi: 5, age: "all", indoorOutdoor: "either", rounds: 1 };
+
+  it("centers on the chosen demo area, never the phone's location", () => {
+    const res = readSetup({ ...base, demoArea: "los_angeles", lat: 40.7, lng: -74, timeZone: "America/New_York" }, { demo: true });
+    expect(res.ok && [res.params.p_lat, res.params.p_lng, res.params.p_time_zone]).toEqual([34.048, -118.253, "America/Los_Angeles"]);
+  });
+
+  it("needs one of the demo areas", () => {
+    expect(readSetup({ ...base, lat: 36, lng: -94 }, { demo: true }).ok).toBe(false);
+    expect(readSetup({ ...base, demoArea: "paris" }, { demo: true }).ok).toBe(false);
+  });
+
+  it("ignores a demo area outside demo lobbies", () => {
+    const res = readSetup({ ...base, demoArea: "los_angeles", lat: 40.7, lng: -74 });
+    expect(res.ok && [res.params.p_lat, res.params.p_lng]).toEqual([40.7, -74]);
+  });
+});

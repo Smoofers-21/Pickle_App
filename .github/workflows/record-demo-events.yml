@@ -1,0 +1,66 @@
+# "Record demo events": a button under the repo's Actions tab (it appears
+# once this file is on main). Records the Ticketmaster events around both
+# demo areas (Fayetteville, AR and Los Angeles, CA) for the next 14 days,
+# checks they parse, and pushes them to the branch "demo-events". Its
+# summary then links to a pull request: open it and merge it like any other
+# change (main is protected, and a pull request you open runs the usual
+# checks). Do this shortly before a demo so the demo's events are current.
+#
+# Needs the repository secret TICKETMASTER_API_KEY (Settings > Secrets and
+# variables > Actions). The key is only passed to the recording step and is
+# never printed or saved. Uses 2 of the free 5,000 Ticketmaster calls a day.
+
+name: Record demo events
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: record-demo-events
+  cancel-in-progress: false
+
+jobs:
+  record:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Record events (Ticketmaster)
+        env:
+          TICKETMASTER_API_KEY: ${{ secrets.TICKETMASTER_API_KEY }}
+        run: node scripts/record-demo-samples.mjs --events
+
+      - name: Check the samples
+        run: |
+          npm ci
+          npx vitest run src/lib/server/demo-search.test.ts
+
+      - name: Push to the demo-events branch
+        env:
+          BASE: ${{ github.ref_name }}
+          REPO: ${{ github.repository }}
+        run: |
+          git add src/lib/places/fixtures/demo/*-events.json
+          if git diff --cached --quiet; then
+            echo "No change in the demo events." | tee -a "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Record demo events for Fayetteville and Los Angeles"
+          git push --force origin HEAD:refs/heads/demo-events
+          {
+            echo "New demo events are on the branch demo-events."
+            echo ""
+            echo "Open the pull request and merge it once its checks pass:"
+            echo "https://github.com/$REPO/compare/$BASE...demo-events?expand=1"
+          } | tee -a "$GITHUB_STEP_SUMMARY"
