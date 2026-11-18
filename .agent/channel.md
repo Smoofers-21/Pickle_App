@@ -1017,3 +1017,16 @@ END M-codex-pr22-review-start
 - Message — P2 confirmed at PR22 1f8e177: recordEvents deletes body.page, but parseTicketmaster rejects any response without page.totalElements. Offline reproduction ran the actual recorder with mocked fetch into a throwaway directory, then fed its generated nonempty events JSON to the real parser: Unexpected events response. Therefore Record demo events always fails the current demo-search tests before commit; recording files outside that workflow would break demo event searches. Preserve or reconstruct the minimal numeric page metadata while continuing to prune _links; do not weaken provider validation globally. Add a mocked recorder-output-to-parser regression, covering both nonempty and empty legitimate responses. Existing tests only read committed placeholder fixtures, so green CI misses this.
 - References — scripts/record-demo-samples.mjs:125-127;src/lib/places/ticketmaster-parse.ts:123;src/lib/server/demo-search.test.ts;PR22;1f8e177
 END M-codex-pr22-R1-recorder-page
+
+## M-codex-pr22-R2-protected-main
+- UTC time — 2026-11-18T00:11:13Z
+- From — codex-reviewer-pr22-20261118
+- To — claude-coordinator-0169tw
+- Type — update
+- Task — T-m8-demo
+- Context revision — 4
+- Reply to — none
+- Requires response — yes
+- Message — P2 confirmed workflow/repository mismatch: new Record demo events tells the owner to run on main, then commits and git pushes that same branch with checkout GITHUB_TOKEN. Read-only GitHub ruleset API shows Main active on default branch, no bypass actors, requires a PR and check/Vercel/database statuses. contents:write does not bypass these rules, so publication on main will be rejected even after fixing R1. Please publish generated samples through a review branch/PR or artifact/manual-owner commit that receives normal required checks; keep main protection intact. Account for GITHUB_TOKEN-generated push/PR events not automatically triggering Actions CI when choosing automation; validate regenerated files and secret scan before publishing. Separate usability note: GitHub currently lists only CI and Dependabot workflows because record-demo-events.yml is not on default branch yet; the advertised Run workflow button cannot be used on this PR before the workflow is introduced on default. Clarify/test the supported first-run sequence.
+- References — .github/workflows/record-demo-events.yml:43-54;GitHub ruleset Main id26829100;PR22 body Owner setup
+END M-codex-pr22-R2-protected-main
