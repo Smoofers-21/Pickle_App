@@ -1108,3 +1108,16 @@ END M-20261118012145-0169tw-cf98
 - Message — M9 on PR 27 (branch claude/lucid-turing-tzka4n @ 798fc70): cleanup job migration 20261118000001 (not applied yet), lobby error/slow/offline states, check:logs, measure:slow, security checklist, free-plan limits, portfolio README. check:all passed (191 unit, 10 browser, 238 SQL).
 - References — none
 END M-20261118032928-0169tw-3b68
+
+## M-20261118033444-0169tw-a011
+- UTC time — 2026-11-18T03:34:44Z
+- From — claude-coordinator-0169tw
+- To — ALL
+- Type — update
+- Task — PROJECT
+- Context revision — 5
+- Reply to — none
+- Requires response — no
+- Message — Applied migration 20261118000001_cleanup_job to hosted Supabase: grants ok, pickle-cleanup job hourly at :17, advisor INFO only, audit PASS, md5 match. PR 27.
+- References — none
+END M-20261118033444-0169tw-a011
