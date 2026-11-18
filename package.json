@@ -13,6 +13,8 @@
     "prepare": "husky",
     "test": "vitest run",
     "check:bundle": "node scripts/check-client-bundle.mjs",
+    "check:logs": "node scripts/check-logs.mjs",
+    "measure:slow": "node scripts/measure-slow.mjs",
     "images": "node scripts/process-cuisine-images.mjs",
     "check:sql": "bash scripts/check-sql.sh",
     "check:browser": "node scripts/check-browser.mjs",

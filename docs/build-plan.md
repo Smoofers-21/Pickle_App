@@ -161,7 +161,7 @@ Secret keys live only on the server, every database table is locked down by defa
 
 - The host's location is used only to center the search, is stored rounded to about 100 m, is never shown to other members (they see distances only), and is deleted as soon as the game's last search is done: after round 1's search in a 1-round game, after the last round's search otherwise, after any search that found nothing (changing the criteria sends a fresh one), and at the latest when the game ends (built in milestone 4, decided Nov 10–11, 2026). Ending the game deletes the game and everything in it. The host's phone also sends its time zone, used only to tell whether places are open now.
 
-- A daily cleanup job deletes lobbies, members, picks, votes and saved places more than 24 hours old.
+- A cleanup job (hourly, built in milestone 9) deletes lobbies, members, picks, votes and saved places more than 24 hours old.
 
 - No ad trackers or third-party analytics. If analytics are added later, use a privacy-focused tool that doesn't store IP addresses.
 
@@ -253,6 +253,8 @@ Each milestone ends with something you can try on your phone. Search uses sample
 9.  **Polish and demo prep**
 
     - Loading and error states, join errors (screen 04), spending caps checked, speed on a slow connection. Daily cleanup job, a check that no log message contains IP addresses or keys, and a pass through the Security and privacy checklist.
+
+    - Built Nov 18, 2026: the cleanup job (`cleanup_old_data()`, hourly through pg_cron, migration `20261118000001_cleanup_job.sql`); lobby load errors with Try again, a slow-load message and a "No connection" bar mid-game; `npm run check:logs`; `npm run measure:slow`; the [security checklist](security-checklist.md) and [free-plan limits](free-plan-limits.md); the portfolio README with screenshots. Join errors (screen 04) were already built in milestone 2.
 
     - Test: a real game with friends, then rehearse the demo.
 

@@ -23,6 +23,7 @@ step() {
 }
 
 step "secret check"   npm run --silent check:secrets
+step "log check"      npm run --silent check:logs
 step "lint"           npm run --silent lint
 step "typecheck"      npm run --silent typecheck
 step "unit tests"     npm test --silent

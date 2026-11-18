@@ -48,3 +48,31 @@ describe("browser bundle secret check", () => {
     expect(run().status).toBe(0);
   });
 });
+
+const logScript = fileURLToPath(new URL("../../../scripts/check-logs.mjs", import.meta.url));
+describe("log check", () => {
+  let dir: string;
+  beforeEach(async () => { dir = await mkdtemp(join(tmpdir(), "pickle-logs-")); });
+  afterEach(async () => { await rm(dir, { recursive: true, force: true }); });
+  const check = async (code: string) => {
+    await writeFile(join(dir, "route.ts"), code);
+    return spawnSync(process.execPath, [logScript, dir], { encoding: "utf8" });
+  };
+
+  it("passes fixed text, the request path and error labels", async () => {
+    const r = await check('console.error("Route failed:", request.nextUrl.pathname, errorLabel(err));\nconsole.error(`search: ${errorLabel(err)}`);\n');
+    expect(r.status).toBe(0);
+    expect(r.stdout).toContain("2 log calls");
+  });
+
+  it.each([
+    ["a variable", "console.log(ip);"],
+    ["a raw error", "console.error(`failed ${err}`);"],
+    ["a computed method", 'console["error"](ip);'],
+    ["an optional call", "console.warn?.(ip);"],
+    ["console passed around", "const log = console; log.info(ip);"],
+  ])("rejects %s", async (_, code) => {
+    const r = await check(code);
+    expect(r.status).not.toBe(0);
+  });
+});
