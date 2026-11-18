@@ -1,6 +1,6 @@
 # "Record demo events": a button under the repo's Actions tab (it appears
 # once this file is on main). Records the Ticketmaster events around both
-# demo areas (Fayetteville, AR and Los Angeles, CA) for the next 14 days,
+# demo areas (Fayetteville, AR and Los Angeles, CA) for the next 30 days,
 # checks they parse, and pushes them to the branch "demo-events". Its
 # summary then links to a pull request: open it and merge it like any other
 # change (main is protected, and a pull request you open runs the usual
