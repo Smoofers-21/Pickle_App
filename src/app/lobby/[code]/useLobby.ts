@@ -17,6 +17,14 @@ const HEARTBEAT_MS = 30_000;
  */
 const PING_MIN_GAP_MS = 2_000;
 const PING_DEBOUNCE_MS = 150;
+/** After a failed reload, try again this soon (no connection) or this (anything else). */
+const RETRY_OFFLINE_MS = 5_000;
+const RETRY_ERROR_MS = 15_000;
+/** The first load counts as slow after this long. */
+const SLOW_MS = 8_000;
+
+/** Why the last reload failed: no connection, or anything else. */
+export type LobbyError = { offline: boolean; message: string };
 
 /** Works out what changed between two lobby states, for the black notice. */
 function describeChange(prev: LobbyState, next: LobbyState): Omit<NoticeText, "id"> | null {
@@ -47,7 +55,8 @@ export function useLobby(code: string) {
   const [state, setState] = useState<LobbyState | null>(null);
   const [online, setOnline] = useState<Set<string> | null>(null);
   const [notice, setNotice] = useState<NoticeText | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<LobbyError | null>(null);
+  const [slow, setSlow] = useState(false);
   const stateRef = useRef<LobbyState | null>(null);
   const noticeId = useRef(0);
 
@@ -80,11 +89,11 @@ export function useLobby(code: string) {
       },
       (res) => {
         if (!res.ok) {
-          setError(res.message);
+          setError({ offline: res.error === "offline", message: res.message });
           return;
         }
         if (!isLobbyState(res.data)) {
-          setError("Something went wrong. Try again.");
+          setError({ offline: false, message: "Something went wrong. Try again." });
           return;
         }
         setError(null);
@@ -158,6 +167,32 @@ export function useLobby(code: string) {
     };
   }, [lobbyId, myId, refresh]);
 
+  // After a failed reload, try again sooner than the heartbeat; and say so
+  // straight away when the phone itself reports it went offline.
+  const failing = error !== null;
+  const failingOffline = error?.offline ?? false;
+  useEffect(() => {
+    if (!failing) return;
+    const t = window.setInterval(refresh, failingOffline ? RETRY_OFFLINE_MS : RETRY_ERROR_MS);
+    return () => window.clearInterval(t);
+  }, [failing, failingOffline, refresh]);
+  useEffect(() => {
+    const onOffline = () => setError({ offline: true, message: "No connection. Check your signal and try again." });
+    window.addEventListener("offline", onOffline);
+    return () => window.removeEventListener("offline", onOffline);
+  }, []);
+
+  // A first load that takes a while says so, instead of a silent spinner.
+  const loaded = state !== null;
+  useEffect(() => {
+    if (loaded) return;
+    const t = window.setTimeout(() => setSlow(true), SLOW_MS);
+    return () => {
+      window.clearTimeout(t);
+      setSlow(false);
+    };
+  }, [loaded, code]);
+
   // While demo friends are about to pick, check back every couple of seconds.
   const demoPending = state?.status === "ok" && state.demoPending;
   useEffect(() => {
@@ -200,5 +235,5 @@ export function useLobby(code: string) {
   /** True once `state` was loaded during this visit (safe to redirect on). */
   const isFresh = useCallback(() => fresh.current, []);
 
-  return { state, isFresh, online, notice, dismissNotice: () => setNotice(null), showNotice, error, leave, remove, refresh };
+  return { state, isFresh, online, notice, dismissNotice: () => setNotice(null), showNotice, error, slow, leave, remove, refresh };
 }

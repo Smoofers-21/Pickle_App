@@ -31,7 +31,8 @@ begin
     'public.submit_vote(uuid,uuid,smallint,uuid[])', 'public.unready_vote(uuid,uuid,smallint)',
     'public.advance_after_votes(uuid)', 'public.continue_after_round(uuid,uuid)',
     'public.tally_round(public.games,smallint)', 'public.ballot_options(uuid,smallint)',
-    'public.change_lobby(uuid,uuid,text)', 'public.moved_lobby_code(text,text)'] loop
+    'public.change_lobby(uuid,uuid,text)', 'public.moved_lobby_code(text,text)',
+    'public.cleanup_old_data()'] loop
     f:=to_regprocedure(signature);
     if f is null then raise exception 'Missing required RPC: %',signature; end if;
   end loop;
@@ -64,6 +65,13 @@ begin
     or to_regprocedure('public.finish_search(uuid,text,jsonb,jsonb)') is not null then
     raise exception 'Unfenced search RPC overload remains';
   end if;
-  raise notice 'PASS: required schema/RPCs, provider source, forced RLS, browser grants, worker signatures, voting and change lobby';
+  -- Where pg_cron is installed (Supabase), the cleanup job must be scheduled.
+  if to_regclass('cron.job') is not null then
+    if not exists(select 1 from cron.job where jobname='pickle-cleanup' and active
+        and command like '%public.cleanup_old_data()%') then
+      raise exception 'Cleanup job is not scheduled';
+    end if;
+  end if;
+  raise notice 'PASS: required schema/RPCs, provider source, forced RLS, browser grants, worker signatures, voting, change lobby and cleanup job';
 end $$;
 rollback;

@@ -172,6 +172,37 @@ const checks = {
     if (!sent || sent.demoArea !== "los_angeles" || "lat" in sent) throw new Error(`sent ${JSON.stringify(sent)}`);
   },
 
+  async "a lobby that can't load offers Try again, which recovers"(page) {
+    let fail = true;
+    await page.route("**/api/lobbies/KKKKKK/state", (r) => (fail ? r.abort("internetdisconnected") : reply(r, lobby("KKKKKK", host))));
+    await page.goto(`${BASE}/lobby/KKKKKK`);
+    await page.getByText("No connection", { exact: true }).waitFor();
+    fail = false;
+    await page.getByRole("button", { name: "Try again" }).click();
+    await page.getByText("Ana", { exact: false }).first().waitFor();
+  },
+
+  async "losing the connection mid-game shows a bar that clears when it's back"(page) {
+    await page.route("**/api/lobbies/LLLLLL/state", (r) => reply(r, lobby("LLLLLL", host)));
+    await page.goto(`${BASE}/lobby/LLLLLL`);
+    await page.getByRole("button", { name: /Ana/ }).waitFor();
+    await page.context().setOffline(true);
+    await page.getByText("Showing the last update. Trying again…").waitFor();
+    if (!(await page.getByRole("button", { name: /Ana/ }).isVisible())) throw new Error("the lobby vanished while offline");
+    await page.context().setOffline(false);
+    await page.getByText("Showing the last update. Trying again…").waitFor({ state: "detached", timeout: 8000 });
+  },
+
+  async "a slow first load says so"(page) {
+    const state = held();
+    await page.route("**/api/lobbies/MMMMMM/state", state.handler);
+    await page.goto(`${BASE}/lobby/MMMMMM`);
+    await page.getByText("Loading the lobby…").waitFor();
+    await page.getByText(/Your connection may be slow/).waitFor({ timeout: 10_000 });
+    state.release(lobby("MMMMMM", host));
+    await page.getByRole("button", { name: /Ana/ }).waitFor();
+  },
+
   async "broken or contract-breaking state answers show an error, not a crash"(page) {
     const bodies = ['{"status":"ok","me":', JSON.stringify({ ...lobby("HHHHHH", host), members: [null] })];
     for (const body of bodies) {
@@ -179,6 +210,7 @@ const checks = {
       await page.route("**/api/lobbies/HHHHHH/state", (r) => reply(r, body, true));
       await page.goto(`${BASE}/lobby/HHHHHH`);
       await page.waitForTimeout(800);
+      await page.getByRole("button", { name: "Try again" }).waitFor();
       if (!(await visibleText(page)).includes("Something went wrong")) throw new Error(`no error shown for ${body.slice(0, 30)}`);
     }
   },

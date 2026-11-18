@@ -3,10 +3,12 @@
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import {
+  BackButton,
   ChipRow,
   CodeCard,
   ConfirmDialog,
   InfoCard,
+  InfoIcon,
   Label,
   MainButton,
   MainLink,
@@ -51,7 +53,7 @@ export function LobbyView() {
   const router = useRouter();
   // Arrived here by Change lobby (screen 17).
   const moved = useSearchParams().get("moved") === "1";
-  const { state, isFresh, online, notice, dismissNotice, showNotice, error, leave, remove, refresh } = useLobby(code);
+  const { state, isFresh, online, notice, dismissNotice, showNotice, error, slow, leave, remove, refresh } = useLobby(code);
   const [confirmLeave, setConfirmLeave] = useState(false);
   const [leaving, setLeaving] = useState(false);
   const [leaveError, setLeaveError] = useState<string | null>(null);
@@ -131,10 +133,17 @@ export function LobbyView() {
     );
   }
 
+  // The first load failed: say why, with a way to try again or get out.
+  if (!state && error) {
+    return <LoadFailed offline={error.offline} message={error.message} retry={refresh} />;
+  }
+
   if (!state || state.status === "not_member") {
     return (
       <Screen>
-        <p className={styles.loading}>{error ?? "Loading the lobby…"}</p>
+        <p className={styles.loading}>
+          {slow ? "Still loading the lobby… Your connection may be slow." : "Loading the lobby…"}
+        </p>
       </Screen>
     );
   }
@@ -158,7 +167,22 @@ export function LobbyView() {
   // Demo friends are never "connected", but they count as here.
   const isOffline = (id: string) =>
     id !== me.id && online !== null && !online.has(id) && !members.find((m) => m.id === id)?.isDemo;
-  const noticeBar = notice && <Notice key={notice.id} title={notice.title} body={notice.body} onClose={dismissNotice} />;
+  // Lost touch with the server after loading: keep showing the last update,
+  // and say so until a reload works again.
+  const connectionBar = error && (
+    <Notice
+      key="connection"
+      icon={<InfoIcon />}
+      title={error.offline ? "No connection" : "Couldn't update the lobby"}
+      body="Showing the last update. Trying again…"
+    />
+  );
+  const noticeBar = (connectionBar || notice) && (
+    <>
+      {connectionBar}
+      {notice && <Notice key={notice.id} title={notice.title} body={notice.body} onClose={dismissNotice} />}
+    </>
+  );
 
   async function addDemoFriends() {
     setAddingDemo(true);
@@ -553,6 +577,33 @@ function Removed({ code }: { code: string }) {
         </div>
         <Title>You were removed from the lobby</Title>
         <Subtitle>The host removed you from lobby {code}. You can join a different lobby with a new code.</Subtitle>
+      </div>
+    </Screen>
+  );
+}
+
+/** The lobby couldn't be loaded at all: why, plus Try again and Back. */
+function LoadFailed({ offline, message, retry }: { offline: boolean; message: string; retry: () => Promise<void> }) {
+  const [trying, setTrying] = useState(false);
+  async function tryAgain() {
+    setTrying(true);
+    await retry();
+    setTrying(false);
+  }
+  return (
+    <Screen
+      footer={
+        <MainButton onClick={tryAgain} disabled={trying}>
+          {trying ? "Trying…" : "Try again"}
+        </MainButton>
+      }
+    >
+      <div className={styles.topBar}>
+        <BackButton href="/" />
+      </div>
+      <div className={styles.center}>
+        <Title>{offline ? "No connection" : "Couldn't load the lobby"}</Title>
+        <Subtitle>{offline ? "Check your signal, then try again." : message}</Subtitle>
       </div>
     </Screen>
   );
