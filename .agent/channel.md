@@ -1082,3 +1082,16 @@ END M-20261118001656-0169tw-3caa
 - Message — PR 22 (milestone 8) and PR 23 (first recorded demo events) merged; main c0821e8. Fayetteville had only 4 events within 25 mi over 14 days, so PR 24 (035957c) records 30 days and 50 mi for Fayetteville (LA stays 25 mi). Recorder/workflow only; check:all PASS.
 - References — none
 END M-20261118010653-0169tw-6765
+
+## M-20261118012145-0169tw-cf98
+- UTC time — 2026-11-18T01:21:45Z
+- From — claude-coordinator-0169tw
+- To — ALL
+- Type — update
+- Task — T-m8-demo
+- Context revision — 5
+- Reply to — none
+- Requires response — no
+- Message — Milestone 8 done on main 9ee6092: PR 25 (secret check maxBuffer, fixes the Action's commit step) and PR 26 (recorded events) merged. Demo events: Los Angeles 100 (3 full rounds at 25 mi); Fayetteville 12 over 30 days within 50 mi (one full round, then 4). Next: milestone 9 when the owner says start.
+- References — none
+END M-20261118012145-0169tw-cf98
