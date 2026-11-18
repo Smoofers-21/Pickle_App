@@ -2,7 +2,8 @@ import { describe, expect, it, vi } from "vitest";
 vi.mock("server-only", () => ({}));
 import { DEMO_AREAS, nearestDemoArea } from "@/lib/game/demo-areas";
 import { chooseOptions, combinePicks } from "@/lib/game/scoring";
-import { AREAS, CATEGORIES } from "../../../scripts/record-demo-samples.mjs";
+import { AREAS, CATEGORIES, geohash as recorderGeohash } from "../../../scripts/record-demo-samples.mjs";
+import { geohash } from "@/lib/places/ticketmaster-parse";
 import { GEOAPIFY_CATEGORIES } from "@/lib/places/geoapify-parse";
 import { demoSearch } from "./demo-search";
 
@@ -18,6 +19,7 @@ describe("demo areas", () => {
       DEMO_AREAS.map((a) => [a.key, a.lat, a.lng]),
     );
     expect(CATEGORIES).toEqual(GEOAPIFY_CATEGORIES);
+    for (const a of DEMO_AREAS) expect(recorderGeohash(a.lat, a.lng)).toBe(geohash(a.lat, a.lng));
   });
 
   it("finds the area a game's center belongs to", () => {
@@ -48,6 +50,14 @@ describe("demoSearch", () => {
     const la = demoSearch("food", null, DEMO_AREAS[1]).candidates.map((c) => c.sourceId);
     expect(la.some((id) => fay.has(id))).toBe(false);
   });
+
+  for (const area of DEMO_AREAS) {
+    it(`${area.label} events: saved and readable`, () => {
+      const { candidates } = demoSearch("events", "2026-12-01", area);
+      expect(candidates.length).toBeGreaterThan(0);
+      expect(candidates.every((c) => c.name && c.source === "ticketmaster")).toBe(true);
+    });
+  }
 
   it("gives events the game's date", () => {
     const { candidates } = demoSearch("events", "2026-12-01", DEMO_AREAS[0]);

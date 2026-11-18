@@ -6,7 +6,9 @@
 //
 //   GEOAPIFY_API_KEY=... TICKETMASTER_API_KEY=... node scripts/record-demo-samples.mjs [--places] [--events]
 //
-// With neither flag it records both. Keys come only from the environment
+// With neither flag it records both. Events are normally recorded by the
+// "Record demo events" GitHub Action, since Ticketmaster takes its key in the
+// URL. Keys come only from the environment
 // and are never written to the samples or printed. Costs per run: 5
 // Geoapify credits per area and category, 1 Ticketmaster call per area.
 
@@ -34,6 +36,38 @@ function needKey(name) {
     process.exit(1);
   }
   return value;
+}
+
+/** The same geohash the app sends Ticketmaster (ticketmaster-parse.ts; checked by a test). */
+export function geohash(lat, lng, precision = 9) {
+  const BASE32 = "0123456789bcdefghjkmnpqrstuvwxyz";
+  let latRange = [-90, 90];
+  let lngRange = [-180, 180];
+  let hash = "";
+  let bit = 0;
+  let ch = 0;
+  let even = true;
+  while (hash.length < precision) {
+    const range = even ? lngRange : latRange;
+    const value = even ? lng : lat;
+    const mid = (range[0] + range[1]) / 2;
+    if (value >= mid) {
+      ch = (ch << 1) | 1;
+      if (even) lngRange = [mid, range[1]];
+      else latRange = [mid, range[1]];
+    } else {
+      ch <<= 1;
+      if (even) lngRange = [range[0], mid];
+      else latRange = [range[0], mid];
+    }
+    even = !even;
+    if (++bit === 5) {
+      hash += BASE32[ch];
+      bit = 0;
+      ch = 0;
+    }
+  }
+  return hash;
 }
 
 /** Drops Ticketmaster's link trees, which the app never reads. */
@@ -80,7 +114,7 @@ async function recordEvents() {
   const iso = (d) => d.toISOString().slice(0, 19) + "Z";
   for (const area of AREAS) {
     const url = new URL("https://app.ticketmaster.com/discovery/v2/events.json");
-    url.searchParams.set("latlong", `${area.lat},${area.lng}`);
+    url.searchParams.set("geoPoint", geohash(area.lat, area.lng));
     url.searchParams.set("radius", "25");
     url.searchParams.set("unit", "miles");
     url.searchParams.set("startDateTime", iso(start));

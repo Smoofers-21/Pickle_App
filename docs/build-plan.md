@@ -248,7 +248,7 @@ Each milestone ends with something you can try on your phone. Search uses sample
 
     - Test: run a whole game alone on one phone.
 
-    - Built Nov 17, 2026: two demo locations, Fayetteville, AR (the downtown square) and Los Angeles, CA (downtown). In a demo lobby the host picks one from a "Demo location" dropdown on the setup screen instead of sharing the phone's location; distances and "open now" follow that area. Food and bars were recorded with `scripts/record-demo-samples.mjs` (100 restaurants each; 36 bars in Fayetteville, 100 in Los Angeles; 20 Geoapify credits). Events still use the older general sample until they are recorded per area (Ticketmaster only accepts its key in the URL, so it can't be recorded from a Claude session).
+    - Built Nov 17, 2026: two demo locations, Fayetteville, AR (the downtown square) and Los Angeles, CA (downtown). In a demo lobby the host picks one from a "Demo location" dropdown on the setup screen instead of sharing the phone's location; distances and "open now" follow that area. Food and bars were recorded with `scripts/record-demo-samples.mjs` (100 restaurants each; 36 bars in Fayetteville, 100 in Los Angeles; 20 Geoapify credits). Events are recorded per area by the "Record demo events" GitHub Action (Actions tab, Run workflow), because Ticketmaster only accepts its key in the URL; it needs the repository secret `TICKETMASTER_API_KEY`. Run it on main shortly before a demo so the events are current.
 
 9.  **Polish and demo prep**
 
