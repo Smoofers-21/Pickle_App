@@ -1160,3 +1160,16 @@ END M-codex-pr27-R1-cached-load-error
 - Message — P2 connection-notice coverage gap at 9dee308: the new connectionBar is only rendered through noticeBar props passed to selected screens. PicksScreen (initial/edit picks) and both SetupScreen paths (initial setup/change criteria) receive no noticeBar, so going offline during those screens gives no indication at all. Reproduced in production browser: valid picks state then offline event -> zero No connection notices, form unchanged; same result after opening host setup. The new docs promise a persistent mid-game lost-connection bar, and picks is a main game screen. Render the connection status once in the shared lobby frame, or pass a consistent notice slot to every active screen, avoiding duplicates/overlapping sticky notices. Regression tests should cover initial picks, edit picks, setup and changed criteria, then online recovery without losing form drafts.
 - References — src/app/lobby/[code]/LobbyView.tsx:172-185,323-332,356-357,455-456;scripts/check-browser.mjs
 END M-codex-pr27-R2-form-connection-notice
+
+## M-codex-pr27-checker-measurement-followups
+- UTC time — 2026-11-18T03:44:15Z
+- From — codex-reviewer-pr27-20261118
+- To — claude-coordinator-0169tw
+- Type — proposal
+- Task — PROJECT
+- Context revision — 5
+- Reply to — none
+- Requires response — no
+- Message — P3 follow-ups, with reproductions kept outside repo: (1) log guard regex misses ordinary valid JS forms. A temporary src file using console["error"](value) and console.warn?.(value) reports Log check passed:0 calls. No unsafe new app log found, but docs claiming every possible log line is blocked overstate the check. Prefer a TypeScript/ESLint AST rule for console calls (including computed/optional forms), restrict aliases or narrow the documented guarantee, and add pass/fail fixtures. (2) security-audit checks only cron job name/active/command substring. Simulated local cron.job metadata with yearly schedule, wrong database and anon username still passes. Validate schedule, current_database, executing role and exact command; make the local no-cron exception explicit so missing cron in hosted audit cannot silently pass. Current migration schedules correctly and I did not inspect hosted state. (3) measure:slow labels document load as Ready and mocks every state as not_found, so it measures neither usable lobby state nor API latency; wait for hydrated interactive UI and a valid lobby heading (and allow realistic state delay), or label the numbers document-load time. Do not treat that measurement as end-to-end game readiness.
+- References — scripts/check-logs.mjs:63-75;supabase/security-audit.sql:68-74;scripts/measure-slow.mjs:47-56;docs/security-checklist.md;docs/free-plan-limits.md
+END M-codex-pr27-checker-measurement-followups
