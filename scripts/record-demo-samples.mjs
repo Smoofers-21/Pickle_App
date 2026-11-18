@@ -16,9 +16,12 @@ import { mkdirSync, writeFileSync } from "node:fs";
 
 // Keep in step with src/lib/game/demo-areas.ts and GEOAPIFY_CATEGORIES in
 // src/lib/places/geoapify-parse.ts (checked by demo-samples.test.ts).
+// eventRadiusMi: how far to look for events. Fayetteville looks across
+// Northwest Arkansas (Rogers, Bentonville, Springdale): within 25 mi
+// Ticketmaster listed only 4 events in two weeks (Nov 18, 2026).
 export const AREAS = [
-  { key: "fayetteville", file: "fayetteville", lat: 36.062, lng: -94.157 },
-  { key: "los_angeles", file: "los-angeles", lat: 34.048, lng: -118.253 },
+  { key: "fayetteville", file: "fayetteville", lat: 36.062, lng: -94.157, eventRadiusMi: 50 },
+  { key: "los_angeles", file: "los-angeles", lat: 34.048, lng: -118.253, eventRadiusMi: 25 },
 ];
 export const CATEGORIES = {
   food: ["catering.restaurant"],
@@ -27,7 +30,7 @@ export const CATEGORIES = {
 
 const OUT = "src/lib/places/fixtures/demo";
 const RADIUS_M = 16_093; // 10 miles
-const EVENT_DAYS = 14;
+const EVENT_DAYS = 30;
 
 function needKey(name) {
   const value = process.env[name];
@@ -125,7 +128,7 @@ async function recordEvents() {
   for (const area of AREAS) {
     const url = new URL("https://app.ticketmaster.com/discovery/v2/events.json");
     url.searchParams.set("geoPoint", geohash(area.lat, area.lng));
-    url.searchParams.set("radius", "25");
+    url.searchParams.set("radius", String(area.eventRadiusMi));
     url.searchParams.set("unit", "miles");
     url.searchParams.set("startDateTime", iso(start));
     url.searchParams.set("endDateTime", iso(end));
