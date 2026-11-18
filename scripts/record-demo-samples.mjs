@@ -38,6 +38,16 @@ function needKey(name) {
   return value;
 }
 
+/**
+ * A Ticketmaster answer as saved for demo mode: link trees dropped, but the
+ * page counts kept, because the app's parser checks them (Codex, PR 22).
+ */
+export function cleanEvents(body) {
+  const { page, ...rest } = prune(body);
+  const n = (v) => (Number.isFinite(Number(v)) ? Number(v) : 0);
+  return { ...rest, page: { size: n(page?.size), totalElements: n(page?.totalElements), totalPages: n(page?.totalPages), number: n(page?.number) } };
+}
+
 /** The same geohash the app sends Ticketmaster (ticketmaster-parse.ts; checked by a test). */
 export function geohash(lat, lng, precision = 9) {
   const BASE32 = "0123456789bcdefghjkmnpqrstuvwxyz";
@@ -80,7 +90,7 @@ function prune(value) {
 }
 
 async function getJson(url, headers = {}) {
-  const res = await fetch(url, { headers: { accept: "application/json", ...headers } });
+  const res = await fetch(url, { headers: { accept: "application/json", ...headers }, signal: AbortSignal.timeout(20_000) });
   if (!res.ok) throw new Error(`${url.host} answered ${res.status}`);
   return res.json();
 }
@@ -122,8 +132,7 @@ async function recordEvents() {
     url.searchParams.set("size", "100");
     url.searchParams.set("sort", "date,asc");
     url.searchParams.set("apikey", key);
-    const body = prune(await getJson(url));
-    delete body.page;
+    const body = cleanEvents(await getJson(url));
     save(`${area.file}-events`, body);
     console.log(`${area.key} events: ${body._embedded?.events?.length ?? 0} events`);
   }

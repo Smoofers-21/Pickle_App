@@ -2,7 +2,8 @@
 // Public place and event data only. Food and bars are recorded with
 // scripts/record-demo-samples.mjs; events with the "Record demo events"
 // GitHub Action (.github/workflows/record-demo-events.yml), which runs the
-// same script with the Ticketmaster key kept in GitHub's secrets.
+// same script with the Ticketmaster key kept in GitHub's secrets and offers
+// the result as a pull request.
 
 import type { DemoArea } from "@/lib/game/demo-areas";
 import fayettevilleBars from "./fayetteville-bars.json";

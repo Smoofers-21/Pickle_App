@@ -13,6 +13,7 @@ import {
 import { isOpenNow } from "@/lib/places/opening-hours";
 import type { PlacesPage, SearchArea } from "@/lib/places/provider";
 import { errorLabel } from "./api";
+import { demoNow } from "@/lib/game/demo-areas";
 import { demoSearch } from "./demo-search";
 import { findPicks, type PickRow } from "./lobby";
 import { geoapify, ProviderError, searchEvents } from "./providers";
@@ -84,13 +85,13 @@ export function memberPicks(rows: PickRow[], activeMembers?: ReadonlySet<string>
 }
 
 /** Saved options for this game: unshown ones as Candidates, plus the keys already shown. */
-async function loadCache(gameId: string, timeZone: string | null) {
+async function loadCache(gameId: string, timeZone: string | null, demo: boolean) {
   const { data, error } = await db()
     .from("options")
     .select("source, source_id, shown_in_round, details")
     .eq("game_id", gameId);
   if (error) throw error;
-  const now = new Date();
+  const now = demo ? demoNow(timeZone) : new Date();
   const candidates: Candidate[] = [];
   const shown = new Set<string>();
   for (const row of data ?? []) {
@@ -196,7 +197,7 @@ async function runSearch(gameId: string): Promise<void> {
 
   try {
     const pool = combinePicks(claim.category, memberPicks(await findPicks(gameId), new Set(claim.active_member_ids)));
-    const cache = await loadCache(gameId, claim.time_zone);
+    const cache = await loadCache(gameId, claim.time_zone, claim.is_demo);
     const all = new Map(cache.candidates.map((c) => [`${c.source}:${c.sourceId}`, c]));
     let radiusMi = settings.radiusMi;
     const choose = () => chooseOptions([...all.values()], pool, settings, { radiusMi, alreadyShown: cache.shown });

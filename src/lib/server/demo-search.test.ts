@@ -1,17 +1,12 @@
 import { describe, expect, it, vi } from "vitest";
 vi.mock("server-only", () => ({}));
-import { DEMO_AREAS, nearestDemoArea } from "@/lib/game/demo-areas";
+import { DEMO_AREAS, demoNow, nearestDemoArea } from "@/lib/game/demo-areas";
 import { chooseOptions, combinePicks } from "@/lib/game/scoring";
-import { AREAS, CATEGORIES, geohash as recorderGeohash } from "../../../scripts/record-demo-samples.mjs";
-import { geohash } from "@/lib/places/ticketmaster-parse";
+import { AREAS, CATEGORIES, cleanEvents, geohash as recorderGeohash } from "../../../scripts/record-demo-samples.mjs";
+import sampleEvents from "@/lib/places/fixtures/ticketmaster-sample.json";
+import { geohash, parseTicketmaster } from "@/lib/places/ticketmaster-parse";
 import { GEOAPIFY_CATEGORIES } from "@/lib/places/geoapify-parse";
 import { demoSearch } from "./demo-search";
-
-// 7 pm on a Friday in each area, so "open now" is realistic and stable.
-const EVENING: Record<string, Date> = {
-  fayetteville: new Date("2026-11-21T01:00:00Z"),
-  los_angeles: new Date("2026-11-21T03:00:00Z"),
-};
 
 describe("demo areas", () => {
   it("each phone-side area matches the recorder's", () => {
@@ -28,19 +23,51 @@ describe("demo areas", () => {
   });
 });
 
+describe("demo clock", () => {
+  it("replays a Friday at 7 pm in each area", () => {
+    for (const a of DEMO_AREAS) {
+      const local = new Intl.DateTimeFormat("en-US", { timeZone: a.timeZone, weekday: "short", hour: "numeric", hour12: false }).format(demoNow(a.timeZone));
+      expect(local).toBe("Fri, 19");
+    }
+  });
+});
+
+describe("recorded events", () => {
+  it("keep what the parser needs (page counts) and drop the link trees", () => {
+    const raw = {
+      ...sampleEvents,
+      _links: { self: { href: "https://example.test" } },
+      page: { size: 100, totalElements: 2, totalPages: 1, number: 0 },
+    };
+    const saved = cleanEvents(raw);
+    expect(JSON.stringify(saved)).not.toContain("_links");
+    expect(parseTicketmaster(saved).candidates.length).toBeGreaterThan(0);
+  });
+
+  it("an empty answer saves as no events, not a broken file", () => {
+    const saved = cleanEvents({ page: { size: 100, totalElements: 0, totalPages: 0, number: 0 } });
+    expect(parseTicketmaster(saved).candidates).toEqual([]);
+  });
+});
+
 describe("demoSearch", () => {
   for (const area of DEMO_AREAS) {
     for (const category of ["food", "bars"] as const) {
-      it(`${area.label} ${category}: local places, measured from the demo spot, enough for a round`, () => {
-        const { candidates } = demoSearch(category, null, area, EVENING[area.key]);
+      it(`${area.label} ${category}: local places, measured from the demo spot, three full rounds`, () => {
+        const { candidates } = demoSearch(category, null, area);
         expect(candidates.length).toBeGreaterThan(20);
         expect(Math.max(...candidates.map((c) => c.distanceMi))).toBeLessThan(10.5);
-        // With nobody's picks and the default 5 mi (widening to 10), a round still fills.
+        // With nobody's picks and the default 5 mi (widening to 10), every
+        // round of a 3-round game fills, whatever the real time of day.
         const settings = { category, radiusMi: 5, age: "all" as const, indoorOutdoor: "either" as const };
         const pool = combinePicks(category, []);
-        const at5 = chooseOptions(candidates, pool, settings, { radiusMi: 5 });
-        const filled = at5.needsWidening ? chooseOptions(candidates, pool, settings, { radiusMi: 10 }) : at5;
-        expect(filled.options).toHaveLength(6);
+        const shown = new Set<string>();
+        for (let round = 1; round <= 3; round++) {
+          const at5 = chooseOptions(candidates, pool, settings, { radiusMi: 5, alreadyShown: shown });
+          const filled = at5.needsWidening ? chooseOptions(candidates, pool, settings, { radiusMi: 10, alreadyShown: shown }) : at5;
+          expect(filled.options, `round ${round}`).toHaveLength(6);
+          for (const o of filled.options) shown.add(`${o.source}:${o.sourceId}`);
+        }
       });
     }
   }

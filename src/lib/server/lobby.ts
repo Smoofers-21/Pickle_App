@@ -4,6 +4,7 @@ import type { Candidate } from "@/lib/game/scoring";
 import type { GameInfo, LobbyState, OptionView, PickSide, SearchInfo } from "@/lib/lobby-types";
 import { isOpenNow } from "@/lib/places/opening-hours";
 import { MAX_MEMBERS } from "@/lib/lobby-rules";
+import { demoNow } from "@/lib/game/demo-areas";
 import { runDemoPicks, runDemoVotes } from "./demo";
 import { db } from "./supabase";
 
@@ -168,8 +169,7 @@ export function votingRound(game: GameRow): number | null {
  * round's top 2. Results: the deciding round in order, with places (ties
  * share one). Point totals never leave the server.
  */
-export async function stageOptions(game: GameRow): Promise<OptionView[]> {
-  const now = new Date();
+export async function stageOptions(game: GameRow, now = new Date()): Promise<OptionView[]> {
   if (game.stage === "cards_and_voting") {
     const { data, error } = await db()
       .from("options")
@@ -274,9 +274,11 @@ export async function lobbyState(code: string, deviceHash: string): Promise<Lobb
   const mine = picks.find((p) => p.member_id === me.id);
 
   let round = currentGame ? votingRound(currentGame) : null;
+  // Demo games replay their area's Friday evening for "open now".
+  const clock = lobby.is_demo && currentGame ? demoNow(currentGame.time_zone) : new Date();
   // Independent reads for this phone's request; run them together.
   let [options, votes] = await Promise.all([
-    currentGame ? stageOptions(currentGame) : Promise.resolve([] as OptionView[]),
+    currentGame ? stageOptions(currentGame, clock) : Promise.resolve([] as OptionView[]),
     currentGame && round !== null ? findVotes(currentGame.id, round) : Promise.resolve([] as VoteRow[]),
   ]);
   if (currentGame && round !== null) {
@@ -287,7 +289,7 @@ export async function lobbyState(code: string, deviceHash: string): Promise<Lobb
         currentGame = (await findGame(currentGame.id)) ?? currentGame;
         round = votingRound(currentGame);
         [options, votes] = await Promise.all([
-          stageOptions(currentGame),
+          stageOptions(currentGame, clock),
           round === null ? Promise.resolve([]) : findVotes(currentGame.id, round),
         ]);
       }
