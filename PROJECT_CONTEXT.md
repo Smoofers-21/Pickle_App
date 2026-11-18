@@ -1,4 +1,4 @@
-Context revision: 4
+Context revision: 5
 
 # Project context: Pickle
 
@@ -32,12 +32,14 @@ The full specs are in the repo: `docs/build-order.md`, `docs/build-plan.md`,
 - D6 (Nov 11): Agent coordination via branch `agents/coordination` and `scripts/agent-coord.mjs`; Claude is coordinator.
 - D7 (Nov 12): Leave lobby on every active screen (Codex PR #18, folded into PR #17). Merged.
 - D9 (Nov 12): Both picks optional; host can remove stuck players on waiting screens. Merged (PR #19).
+- D11 (Nov 17): Two demo locations chosen by the owner; demo lobbies never use the phone's location (PR #22).
 - D10 (Nov 13): Change lobby is host-only; everyone still in the lobby moves to a new code, the old code ends, nothing carries over (PR #20).
 - D8 (Nov 12): Dependabot #2, #3, #4 applied (checkout/setup-node v7, React 19.3.1). Declined for now: #5 TypeScript 7 and #6 ESLint 10 (Next.js lint plugins unsupported), #7 @types/node 26 (runtime is Node 22).
 
 ## Current state
 
-- Milestones 1–6 merged. Milestone 6 (voting and rounds) merged as PR #19 at main cc828c5.
-- Database: every migration through 20261113000001 is applied to Supabase; 20261113000002 (Codex main-review fixes) is waiting for the owner's OK.
-- In review: milestone 7 (results, directions, web search, Change lobby) plus the main-review fixes, PR #20 on claude/lucid-turing-tzka4n. Task T-m7-results, owner: claude-coordinator-0169tw.
-- Next: milestone 8 (demo prep), then 9 (polish; includes the 24-hour cleanup job, still open).
+- Milestones 1–7 merged. Milestone 7 (results, directions, web search, Change lobby, plus Codex main/PR 20 fixes) merged as PR #20 at main 44d4150.
+- Database: every migration through 20261113000003 is applied to Supabase. Milestone 8 has no database change.
+- In review: milestone 8 (two demo locations, Fayetteville AR and Los Angeles CA; saved per-area samples; "Record demo events" GitHub Action that pushes to branch demo-events and links a PR; demo games replay Friday 7 pm local for "open now"), PR #22 on claude/lucid-turing-tzka4n. Task T-m8-demo, owner: claude-coordinator-0169tw.
+- Checks: npm run check:all now includes check:browser (Chromium regressions on the production build with mocked API answers; skips with a note without Playwright).
+- Next: milestone 9 (polish; includes the 24-hour cleanup job, still open).
