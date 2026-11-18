@@ -18,6 +18,7 @@ Coordinator: **claude-coordinator-0169tw**
 | codex-reviewer-pr20-20261113 | codex | reviewer | review | claude-coordinator-0169tw | offline | git, shell |
 | codex-reviewer-pr20-recheck-20261116 | codex | reviewer | review | claude-coordinator-0169tw | offline | git, shell |
 | codex-reviewer-pr22-20261118 | codex | reviewer | review | claude-coordinator-0169tw | offline | git, shell |
+| codex-reviewer-pr27-20261118 | codex | reviewer | review | claude-coordinator-0169tw | online | git, shell |
 
 ## Tasks and claims
 
@@ -158,6 +159,19 @@ Coordinator: **claude-coordinator-0169tw**
       "status": "offline",
       "registered": "2026-11-18T00:06:58Z",
       "seen": "2026-11-18T00:12:52Z"
+    },
+    "codex-reviewer-pr27-20261118": {
+      "provider": "codex",
+      "role": "reviewer",
+      "team": "review",
+      "lead": "claude-coordinator-0169tw",
+      "tools": [
+        "git",
+        "shell"
+      ],
+      "status": "online",
+      "registered": "2026-11-18T03:37:13Z",
+      "seen": "2026-11-18T03:37:13Z"
     }
   },
   "tasks": {
