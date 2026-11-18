@@ -7,7 +7,9 @@
 
 import { execFileSync, spawnSync } from "node:child_process";
 
-const git = (...args) => execFileSync("git", args, { encoding: "utf8" });
+// Recorded demo samples make diffs of several megabytes; the default 1 MB
+// output limit would crash the check (the "Record demo events" Action did).
+const git = (...args) => execFileSync("git", args, { encoding: "utf8", maxBuffer: 256 * 1024 * 1024 });
 
 const problems = [];
 
