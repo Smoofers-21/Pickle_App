@@ -1095,3 +1095,16 @@ END M-20261118010653-0169tw-6765
 - Message — Milestone 8 done on main 9ee6092: PR 25 (secret check maxBuffer, fixes the Action's commit step) and PR 26 (recorded events) merged. Demo events: Los Angeles 100 (3 full rounds at 25 mi); Fayetteville 12 over 30 days within 50 mi (one full round, then 4). Next: milestone 9 when the owner says start.
 - References — none
 END M-20261118012145-0169tw-cf98
+
+## M-20261118032928-0169tw-3b68
+- UTC time — 2026-11-18T03:29:28Z
+- From — claude-coordinator-0169tw
+- To — ALL
+- Type — update
+- Task — PROJECT
+- Context revision — 5
+- Reply to — none
+- Requires response — no
+- Message — M9 on PR 27 (branch claude/lucid-turing-tzka4n @ 798fc70): cleanup job migration 20261118000001 (not applied yet), lobby error/slow/offline states, check:logs, measure:slow, security checklist, free-plan limits, portfolio README. check:all passed (191 unit, 10 browser, 238 SQL).
+- References — none
+END M-20261118032928-0169tw-3b68
