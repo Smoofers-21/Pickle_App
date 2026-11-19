@@ -23,6 +23,8 @@ Built as a portfolio project to show full-stack work end to end: real-time multi
 4. Everyone ranks the options; points decide each round. With more rounds, each round's top 2 go to a final vote.
 5. Results show the winner and runners-up with directions (Apple or Google Maps) and a web search. The host can move everyone to a new lobby for the next game.
 
+**Try it:** open `/demo` on the live site, type a name, and you host a game with 3 simulated friends (no sign-up, no location, no API credits spent).
+
 **Demo mode:** "Add demo friends" fills the lobby with simulated players who pick and vote a few seconds after you, and a demo lobby searches saved real data for Fayetteville, AR or Los Angeles, CA, so a whole game runs on one phone without spending API credits.
 
 ## What it demonstrates

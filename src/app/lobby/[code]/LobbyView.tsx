@@ -491,6 +491,11 @@ export function LobbyView() {
             </span>
           </div>
           {chips}
+          {hasDemo && !moved && (
+            <InfoCard>
+              {demoNames(members)} are simulated: they pick and vote a few seconds after you. Tap Set up the game to start.
+            </InfoCard>
+          )}
           {!hasDemo && roomForDemo && (
             <div className={styles.otherField}>
               <SoftButton onClick={addDemoFriends} disabled={addingDemo}>
@@ -619,4 +624,10 @@ function LoadFailed({ offline, message, retry }: { offline: boolean; message: st
       </div>
     </Screen>
   );
+}
+
+/** "Maya, Jordan and Sam" for the demo friends in the lobby. */
+function demoNames(members: LobbyMember[]) {
+  const names = members.filter((m) => m.isDemo).map((m) => m.name);
+  return names.length > 1 ? `${names.slice(0, -1).join(", ")} and ${names[names.length - 1]}` : names.join("");
 }
