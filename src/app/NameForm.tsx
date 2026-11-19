@@ -24,9 +24,10 @@ type Problem = { title: string; body: string; fatal?: boolean };
 
 /**
  * Screen 03: "What should the group call you?"
- * With a code it joins that lobby; without one it creates a new lobby.
+ * With a code it joins that lobby; without one it creates a new lobby. With
+ * `demo` (the /demo link) the new lobby also gets 3 demo friends.
  */
-export function NameForm({ code }: { code?: string }) {
+export function NameForm({ code, demo = false }: { code?: string; demo?: boolean }) {
   const router = useRouter();
   const [name, setName] = useState("");
   const [busy, setBusy] = useState(false);
@@ -90,6 +91,10 @@ export function NameForm({ code }: { code?: string }) {
       const res = await post<{ code: string }>("/api/lobbies", { name: clean });
       if (stale()) return;
       if (res.ok) {
+        // If adding the demo friends fails, the lobby still opens and its
+        // "Add demo friends" button is there to try again.
+        if (demo) await post(`/api/lobbies/${res.data.code}/demo`);
+        if (stale()) return;
         router.push(`/lobby/${res.data.code}`);
         return;
       }
@@ -110,7 +115,7 @@ export function NameForm({ code }: { code?: string }) {
           </PillLink>
         ) : (
           <MainButton arrow onClick={submit} disabled={busy || !name.trim()}>
-            {busy ? (code ? "Joining…" : "Creating…") : code ? "Join lobby" : "Create lobby"}
+            {busy ? (code ? "Joining…" : "Creating…") : code ? "Join lobby" : demo ? "Start the demo" : "Create lobby"}
           </MainButton>
         )
       }
@@ -119,8 +124,12 @@ export function NameForm({ code }: { code?: string }) {
         <BackButton href={code ? "/join" : "/"} />
         {code && <CodeChip code={code} />}
       </div>
-      <Title>What should the group call you?</Title>
-      <Subtitle>Your name is shown in the lobby. Nothing else is needed.</Subtitle>
+      <Title>{demo ? "Try Pickle" : "What should the group call you?"}</Title>
+      <Subtitle>
+        {demo
+          ? "You'll host a game with 3 simulated friends, using saved real places. No sign-up or location needed."
+          : "Your name is shown in the lobby. Nothing else is needed."}
+      </Subtitle>
       <form
         className={styles.form}
         onSubmit={(e) => {

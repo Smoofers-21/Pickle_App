@@ -280,6 +280,31 @@ const checks = {
     if ((await food.getAttribute("aria-pressed")) !== "true") throw new Error("the setup draft was lost");
   },
 
+  async "the /demo link makes a lobby with demo friends and says what to do"(page) {
+    let demoAdded = false;
+    await page.route("**/api/lobbies", (r) => reply(r, { code: "RRRRRR", memberId: "m1", name: "Sam" }));
+    await page.route("**/api/lobbies/RRRRRR/demo", (r) => {
+      demoAdded = true;
+      return reply(r, { status: "ok" });
+    });
+    const demoFriends = ["Maya", "Jordan", "Sam 2"].map((name, i) => ({ id: `d${i}`, name, isHost: false, isDemo: true }));
+    await page.route("**/api/lobbies/RRRRRR/state", (r) =>
+      reply(r, {
+        ...lobby("RRRRRR", host),
+        lobby: { id: "l-R", code: "RRRRRR", status: "open", isDemo: true },
+        members: [members[0], ...demoFriends],
+      }),
+    );
+    await page.goto(`${BASE}/demo`);
+    await page.getByText("Try Pickle", { exact: true }).waitFor();
+    await page.locator("#name:visible").fill("Sam");
+    await page.getByRole("button", { name: /Start the demo/ }).click();
+    await page.waitForURL("**/lobby/RRRRRR");
+    await page.getByText("Maya, Jordan and Sam 2 are simulated", { exact: false }).waitFor();
+    if (!demoAdded) throw new Error("demo friends were never added");
+    if (await page.getByRole("button", { name: "Add demo friends" }).count()) throw new Error("still offers Add demo friends");
+  },
+
   async "broken or contract-breaking state answers show an error, not a crash"(page) {
     const bodies = ['{"status":"ok","me":', JSON.stringify({ ...lobby("HHHHHH", host), members: [null] })];
     for (const body of bodies) {
