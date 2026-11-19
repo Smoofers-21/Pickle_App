@@ -2,6 +2,8 @@
 
 A mobile web app that helps a group of friends decide where to go — a restaurant, a bar or an event — in a few minutes. Everyone joins a lobby with a code, can pick a **No preference** ("Not my ideal place") and a **Yes preference** ("I’d like to go"), both optional, and Pickle finds real places nearby, scores them against the group's picks, and runs a quick ranked vote to a top 3. A No lowers a matching option's score rather than vetoing it; a Yes boosts it rather than guaranteeing a match. When the same preference appears on both sides, it cancels out.
 
+**[▶ Try the live demo](https://pickleapp-rho.vercel.app/demo)** (opens a game with simulated friends; best on a phone)
+
 Built as a portfolio project to show full-stack work end to end: real-time multiplayer state, a locked-down database, third-party API integration on free tiers, a tested scoring algorithm and a mobile-first design system.
 
 <p>
@@ -23,7 +25,7 @@ Built as a portfolio project to show full-stack work end to end: real-time multi
 4. Everyone ranks the options; points decide each round. With more rounds, each round's top 2 go to a final vote.
 5. Results show the winner and runners-up with directions (Apple or Google Maps) and a web search. The host can move everyone to a new lobby for the next game.
 
-**Try it:** open `/demo` on the live site, type a name, and you host a game with 3 simulated friends (no sign-up, no location, no API credits spent).
+**Try it:** [pickleapp-rho.vercel.app/demo](https://pickleapp-rho.vercel.app/demo). Type a name and you host a game with 3 simulated friends (no sign-up, no location, no API credits spent). Best on a phone.
 
 **Demo mode:** "Add demo friends" fills the lobby with simulated players who pick and vote a few seconds after you, and a demo lobby searches saved real data for Fayetteville, AR or Los Angeles, CA, so a whole game runs on one phone without spending API credits.
 
